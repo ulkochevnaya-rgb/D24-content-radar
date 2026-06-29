@@ -2211,12 +2211,34 @@
     fbAuth.onAuthStateChanged(function(user) {
       currentUser = (user && user.email === 'ul.kochevnaya@gmail.com') ? user : null;
       var btn = document.getElementById('auth-btn');
-      var status = document.getElementById('auth-status');
       if (btn) {
         btn.textContent = currentUser ? '✓ Вошла как Юлия' : '🔐 Войти';
         btn.style.background = currentUser ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.07)';
         btn.style.color = currentUser ? '#4ade80' : 'rgba(255,255,255,0.6)';
         btn.style.borderColor = currentUser ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.15)';
+      }
+      // One-time cleanup: remove deleted tasks from custom_json in Firebase
+      if (currentUser && fbDb) {
+        fbDb.ref('tasks/custom_json').once('value', function(snap) {
+          var raw = snap.val();
+          if (!raw) return;
+          var ct = {};
+          try { ct = JSON.parse(raw); } catch(e) { return; }
+          var deleted = loadDeleted();
+          var changed = false;
+          Object.keys(ct).forEach(function(groupKey) {
+            var before = ct[groupKey].length;
+            ct[groupKey] = ct[groupKey].filter(function(t) {
+              return !deleted[t.text.trim().slice(0, 60)];
+            });
+            if (ct[groupKey].length !== before) changed = true;
+            if (!ct[groupKey].length) delete ct[groupKey];
+          });
+          if (changed) {
+            _skipCustomListener = true;
+            fbDb.ref('tasks/custom_json').set(JSON.stringify(ct));
+          }
+        });
       }
     });
   } catch(e) { fbDb = null; }
