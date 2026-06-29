@@ -3028,7 +3028,11 @@
           Object.keys(ct).forEach(function(groupKey) {
             var before = ct[groupKey].length;
             ct[groupKey] = ct[groupKey].filter(function(t) {
-              return !deleted[t.text.trim().slice(0, 60)];
+              var rawKey = t.text.trim().slice(0, 60);
+              // Check both prefixed and unprefixed keys
+              return !Object.keys(deleted).some(function(k) {
+                return k === rawKey || k.endsWith(':' + rawKey);
+              });
             });
             if (ct[groupKey].length !== before) changed = true;
             if (!ct[groupKey].length) delete ct[groupKey];
@@ -3367,7 +3371,9 @@
   function saveBacklogAsTemplates(e) {
     if (e) e.stopPropagation();
     if (!currentUser) { showAuthToast(); return; }
-    var items = document.querySelectorAll('#s-backlog .backlog-item');
+    const activePanel = document.querySelector('.sprint-panel.active');
+    const backlogEl = activePanel?.querySelector('#s-backlog') || document.getElementById('s-backlog');
+    var items = backlogEl ? backlogEl.querySelectorAll('.backlog-item') : [];
     var templates = loadTemplates();
     var added = 0;
     items.forEach(function(item) {
@@ -3504,7 +3510,8 @@
   }
 
   function getOrCreateS2BZone() {
-    const backlogSection = document.getElementById('s-backlog');
+    const activePanel = document.querySelector('.sprint-panel.active');
+    const backlogSection = activePanel?.querySelector('#s-backlog, [id$="-s-backlog"]') || document.getElementById('s-backlog');
     if (!backlogSection) return null;
     let zone = backlogSection.querySelector('.s2b-zone');
     if (!zone) {
@@ -3693,7 +3700,8 @@
   }
 
   function addDraftToSection(sectionId, text) {
-    const section = document.getElementById(sectionId);
+    const activePanel = document.querySelector('.sprint-panel.active');
+    const section = activePanel?.querySelector('#' + sectionId) || document.getElementById(sectionId);
     if (!section) return;
     section.style.display = '';
     let zone = section.querySelector('.draft-zone');
@@ -4032,7 +4040,7 @@
     }
   }
 
-  function createCustomTaskLi(taskId, text) {
+  function createCustomTaskLi(taskId, text, sprintId) {
     const li = document.createElement('li');
     li.className = 'subtask';
     li.dataset.customId = taskId;
@@ -4042,12 +4050,15 @@
     const meta = document.createElement('div'); meta.className = 'subtask-meta';
     body.appendChild(titleEl); body.appendChild(meta);
     li.appendChild(cb); li.appendChild(body);
-    const stateKey = text.trim().slice(0, 60);
+    // Use sprint-prefixed key to match getSubtaskId format
+    const stateKey = sprintId ? sprintId + ':' + text.trim().slice(0, 60) : text.trim().slice(0, 60);
     if (loadState()[stateKey] === true) applyDone(li, true);
     li.addEventListener('click', () => {
       const isDone = li.classList.contains('done');
       applyDone(li, !isDone);
-      const s = loadState(); s[stateKey] = !isDone; saveState(s);
+      // Re-derive key from DOM at click time (li is in DOM by then)
+      const key = getSubtaskId(li) || stateKey;
+      const s = loadState(); s[key] = !isDone; saveState(s);
       updateGroupCount(li.closest('.task-group'));
       updateSectionCount(li.closest('.section'));
       const sp = li.closest('.sprint-panel');
@@ -4104,7 +4115,8 @@
     const taskId = 'custom-' + Date.now();
     ct[groupKey].push({ id: taskId, text });
     saveCustomTasks(ct);
-    const li = createCustomTaskLi(taskId, text);
+    const sprintId = list.closest('.sprint-panel')?.id || '';
+    const li = createCustomTaskLi(taskId, text, sprintId);
     const addRow = list.querySelector('.add-task-row');
     if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
     updateGroupCount(li.closest('.task-group'));
@@ -4117,6 +4129,7 @@
     ct = ct || loadCustomTasks();
     if (!Object.keys(ct).length) return;
     document.querySelectorAll('.sprint-panel.active, .sprint-panel[data-dynamic]').forEach(panel => {
+      const panelId = panel.id;
       panel.querySelectorAll('.section').forEach(section => {
         const sectionId = section.id || '';
         section.querySelectorAll('.task-group').forEach((group, gIdx) => {
@@ -4129,7 +4142,7 @@
           const addRow = list.querySelector('.add-task-row');
           tasks.forEach(({ id, text }) => {
             if (list.querySelector('[data-custom-id="' + id + '"]')) return;
-            const li = createCustomTaskLi(id, text);
+            const li = createCustomTaskLi(id, text, panelId);
             if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
           });
           updateGroupCount(group);
