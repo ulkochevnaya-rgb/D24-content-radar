@@ -4138,6 +4138,8 @@
       panel.querySelectorAll('.task-group').forEach(updateGroupCount);
       updateAllSectionCounts();
       updateProgress(sprintId);
+      // Refresh content widgets in the newly visible panel
+      panel.querySelectorAll('.cw-grid-root').forEach(cwRenderOne);
     }
   }
 
@@ -4542,9 +4544,17 @@
       var dates = cwGetWeek(gridEl);
       var wk = cwWeekKey(dates);
       var prevWk = gridEl.dataset.cwWk;
-      // Render immediately
+      // Render from localStorage immediately (may be empty on fresh visit)
       cwRenderUI(gridEl, lbl, dates, wk, cwLoad(wk));
-      if (wk === prevWk) return; // already subscribed
+      if (fbDb) {
+        // Always do a one-time read to get fresh data from Firebase
+        fbDb.ref('content_hub/' + wk).once('value', function(snap) {
+          var fbState = snap.val() || {};
+          try { localStorage.setItem(wk, JSON.stringify(fbState)); } catch(e) {}
+          cwRenderUI(gridEl, lbl, dates, wk, fbState);
+        });
+      }
+      if (wk === prevWk) return; // already have real-time listener
       gridEl.dataset.cwWk = wk;
       // Clear previous Firebase listener on this element
       if (gridEl._cwRef) { gridEl._cwRef.off(); gridEl._cwRef = null; }
