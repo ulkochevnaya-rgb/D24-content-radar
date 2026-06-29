@@ -2239,7 +2239,7 @@
   function saveState(state) {
     _taskStateCache = state;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    if (fbDb) try { fbDb.ref('tasks/state').set(state); } catch(e) {}
+    if (fbDb) try { fbDb.ref('tasks/state_json').set(JSON.stringify(state)); } catch(e) {}
   }
 
   function getSubtaskId(el) {
@@ -2474,7 +2474,7 @@
   function loadDeleted() { try { return JSON.parse(localStorage.getItem(DELETED_KEY)) || {}; } catch { return {}; } }
   function saveDeleted(d) {
     localStorage.setItem(DELETED_KEY, JSON.stringify(d));
-    if (fbDb) try { fbDb.ref('tasks/deleted').set(d); } catch(e) {}
+    if (fbDb) try { fbDb.ref('tasks/deleted_json').set(JSON.stringify(d)); } catch(e) {}
   }
 
   const BACKLOG_DELETED_KEY = 'delegator24_backlog_deleted_v1';
@@ -3088,7 +3088,7 @@
   function loadCustomTasks() { try { return JSON.parse(localStorage.getItem(CUSTOM_TASKS_KEY)) || {}; } catch { return {}; } }
   function saveCustomTasks(d) {
     localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(d));
-    if (fbDb) try { fbDb.ref('tasks/custom').set(d); } catch(e) {}
+    if (fbDb) try { fbDb.ref('tasks/custom_json').set(JSON.stringify(d)); } catch(e) {}
   }
 
   function createCustomTaskLi(taskId, text) {
@@ -3345,8 +3345,9 @@
 
     // Real-time Firebase listeners — обновляют всем открытым страницам
     if (fbDb) {
-      fbDb.ref('tasks/state').on('value', function(snap) {
-        var fbState = snap.val() || {};
+      fbDb.ref('tasks/state_json').on('value', function(snap) {
+        var fbState = {};
+        try { fbState = JSON.parse(snap.val() || '{}'); } catch(e) {}
         _taskStateCache = fbState;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(fbState));
         document.querySelectorAll('.subtask').forEach(function(subtask) {
@@ -3359,8 +3360,9 @@
         updateAllSectionCounts();
       }, function() {});
 
-      fbDb.ref('tasks/custom').on('value', function(snap) {
-        var fbCustom = snap.val() || {};
+      fbDb.ref('tasks/custom_json').on('value', function(snap) {
+        var fbCustom = {};
+        try { fbCustom = JSON.parse(snap.val() || '{}'); } catch(e) {}
         localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(fbCustom));
         document.querySelectorAll('[data-custom-id]').forEach(function(el) { el.remove(); });
         restoreCustomTasks(fbCustom);
@@ -3368,8 +3370,9 @@
         updateAllSectionCounts();
       }, function() {});
 
-      fbDb.ref('tasks/deleted').on('value', function(snap) {
-        var fbDeleted = snap.val() || {};
+      fbDb.ref('tasks/deleted_json').on('value', function(snap) {
+        var fbDeleted = {};
+        try { fbDeleted = JSON.parse(snap.val() || '{}'); } catch(e) {}
         localStorage.setItem(DELETED_KEY, JSON.stringify(fbDeleted));
         document.querySelectorAll('.subtask').forEach(function(st) {
           st.style.display = fbDeleted[getSubtaskId(st)] ? 'none' : '';
