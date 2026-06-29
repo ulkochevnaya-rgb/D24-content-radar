@@ -3874,6 +3874,7 @@
     function cwRender() {
       document.querySelectorAll('.cw-grid-root').forEach(cwRenderOne);
     }
+    window.cwRender = cwRender;
 
     // Toggle content widget template preference
     window.cwSaveAsTemplate = function(btn) {
@@ -4112,12 +4113,9 @@
   }
 
   function createNewSprint() {
-    try { _createNewSprintImpl(); } catch(err) { showAuthToast('Ошибка: ' + err.message); console.error(err); }
-  }
-  function _createNewSprintImpl() {
-    if (!currentUser) { showAuthToast('нет авторизации'); return; }
+    if (!currentUser) return;
     var val = document.getElementById('new-sprint-start').value;
-    if (!val) { showAuthToast('нет даты'); return; }
+    if (!val) return;
     var start = new Date(val + 'T12:00:00');
     var end = new Date(start.getTime() + 6 * 86400000);
     var id = 'sprint-dyn-' + val.replace(/-/g, '');
