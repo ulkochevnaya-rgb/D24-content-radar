@@ -96,6 +96,26 @@
     }
     .sprint-item.new-sprint-btn:hover .sprint-item-dates { color: rgba(255,255,255,0.65); }
 
+    .sprint-item { position: relative; }
+    .sprint-delete-btn {
+      display: none;
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.25);
+      font-size: 15px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 4px;
+      transition: color 0.12s, background 0.12s;
+    }
+    .sprint-item:hover .sprint-delete-btn { display: block; }
+    .sprint-delete-btn:hover { color: #ef4444; background: rgba(239,68,68,0.12); }
+
     .sprint-now-badge {
       font-size: 8px;
       font-weight: 700;
@@ -961,6 +981,55 @@
       cursor: pointer; white-space: nowrap;
     }
     .quick-add-cancel:hover { border-color: #c0c4d8; color: #4a5070; }
+
+    /* ===================== SPRINT STEP 2 ===================== */
+    .sprint-pick-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #9096b0;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 14px 0 6px;
+    }
+    .sprint-pick-group-label:first-child { padding-top: 4px; }
+    .sprint-task-pick {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 7px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .sprint-task-pick:hover { background: #f4f5ff; }
+    .sprint-task-pick input[type="checkbox"] {
+      flex-shrink: 0;
+      width: 15px;
+      height: 15px;
+      margin-top: 2px;
+      accent-color: #4361ee;
+      cursor: pointer;
+    }
+    .sprint-task-pick-body { flex: 1; min-width: 0; }
+    .sprint-task-pick-text { font-size: 13px; color: #1a1d2e; line-height: 1.4; }
+    .sprint-task-pick-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      color: #9096b0;
+      background: #f0f1f8;
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-top: 3px;
+      letter-spacing: 0.03em;
+    }
+    .sprint-pick-empty { font-size: 12px; color: #b0b5cc; padding: 8px 4px; }
+    .sprint-tmpl-delete {
+      background: none; border: none; color: #c0c4d8; font-size: 13px;
+      cursor: pointer; padding: 0 3px; flex-shrink: 0; line-height: 1;
+      transition: color 0.12s;
+    }
+    .sprint-tmpl-delete:hover { color: #ef4444; }
 
     /* ===================== AUTH TOAST ===================== */
     #auth-toast {
@@ -2553,6 +2622,37 @@
 
   const BACKLOG_DELETED_KEY = 'delegator24_backlog_deleted_v1';
   function loadBacklogDeleted() { try { return JSON.parse(localStorage.getItem(BACKLOG_DELETED_KEY)) || {}; } catch { return {}; } }
+
+  // ===================== TEMPLATES =====================
+  const TEMPLATES_KEY = 'delegator24_templates_v1';
+  function loadTemplates() { try { return JSON.parse(localStorage.getItem(TEMPLATES_KEY)) || []; } catch { return []; } }
+  var _skipTemplatesListener = false;
+  function saveTemplates(arr) {
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(arr));
+    if (fbDb) { _skipTemplatesListener = true; try { fbDb.ref('tasks/templates_json').set(JSON.stringify(arr)); } catch(e) {} }
+  }
+
+  function saveSubtaskAsTemplate(subtask) {
+    if (!currentUser) { showAuthToast(); return; }
+    var text = subtask.querySelector('.subtask-title')?.textContent?.trim();
+    if (!text) return;
+    var section = subtask.closest('.section');
+    var rawId = section?.id || '';
+    // Normalize dynamic sprint section IDs: "sprint-dyn-20260629-s-crm" → "s-crm"
+    var sectionId = rawId.replace(/^sprint-dyn-\d+-/, '');
+    var sectionLabel = SECTIONS.find(function(s) { return s.id === sectionId; })?.label
+                    || section?.querySelector('.section-label')?.textContent?.trim()
+                    || 'Задачи';
+    var templates = loadTemplates();
+    if (templates.some(function(t) { return t.text === text; })) {
+      showAuthToast('Уже есть в шаблонах ↻');
+      return;
+    }
+    templates.push({ id: Date.now(), text: text, sectionId: sectionId, sectionLabel: sectionLabel });
+    saveTemplates(templates);
+    showAuthToast('Добавлено в шаблоны ↻');
+  }
+  // ===================== END TEMPLATES =====================
   var _skipBacklogDeletedListener = false;
   function saveBacklogDeleted(d) { localStorage.setItem(BACKLOG_DELETED_KEY, JSON.stringify(d)); if (fbDb) { _skipBacklogDeletedListener = true; try { fbDb.ref('tasks/backlog_deleted_json').set(JSON.stringify(d)); } catch(e) {} } }
 
@@ -2627,6 +2727,12 @@
     const wrap = document.createElement('div');
     wrap.className = 'subtask-actions';
 
+    const tmplBtn = document.createElement('button');
+    tmplBtn.className = 'subtask-action-btn';
+    tmplBtn.textContent = '↻';
+    tmplBtn.title = 'Сохранить как шаблон (повторяющаяся задача)';
+    tmplBtn.addEventListener('click', (e) => { e.stopPropagation(); saveSubtaskAsTemplate(subtask); });
+
     const backlogBtn = document.createElement('button');
     backlogBtn.className = 'subtask-action-btn';
     backlogBtn.textContent = '↙ бэклог';
@@ -2638,6 +2744,7 @@
     delBtn.title = 'Удалить задачу';
     delBtn.addEventListener('click', (e) => { e.stopPropagation(); deleteSubtask(subtask); });
 
+    wrap.appendChild(tmplBtn);
     wrap.appendChild(backlogBtn);
     wrap.appendChild(delBtn);
     subtask.appendChild(wrap);
@@ -3580,6 +3687,20 @@
         restoreDraftMoves();
       }, function() {});
 
+      // Templates sync
+      fbDb.ref('tasks/templates_json').on('value', function(snap) {
+        if (_skipTemplatesListener) { _skipTemplatesListener = false; return; }
+        var raw = snap.val();
+        if (raw === null) {
+          var local = loadTemplates();
+          if (local.length) { _skipTemplatesListener = true; fbDb.ref('tasks/templates_json').set(JSON.stringify(local)); }
+          return;
+        }
+        var arr = [];
+        try { arr = JSON.parse(raw); } catch(e) {}
+        localStorage.setItem(TEMPLATES_KEY, JSON.stringify(arr));
+      }, function() {});
+
       // Backlog deleted sync
       fbDb.ref('tasks/backlog_deleted_json').on('value', function(snap) {
         if (_skipBacklogDeletedListener) { _skipBacklogDeletedListener = false; return; }
@@ -3756,8 +3877,12 @@
 
   function openNewSprintModal() {
     if (!currentUser) { showAuthToast('🔐 Войдите чтобы создать спринт'); return; }
-    document.getElementById('new-sprint-overlay').style.display = 'flex';
-    document.getElementById('new-sprint-modal').style.display = 'block';
+    document.getElementById('new-sprint-overlay').style.display = 'block';
+    var modal = document.getElementById('new-sprint-modal');
+    modal.style.display = 'flex';
+    document.getElementById('sprint-step-1').style.display = 'flex';
+    document.getElementById('sprint-step-2').style.display = 'none';
+    document.getElementById('new-sprint-modal-title').textContent = 'Новый спринт';
     var d = new Date(), day = d.getDay();
     var daysToMon = day === 0 ? 1 : day === 1 ? 7 : 8 - day;
     var nextMon = new Date(d.getTime() + daysToMon * 86400000);
@@ -3768,6 +3893,122 @@
   function closeNewSprintModal() {
     document.getElementById('new-sprint-overlay').style.display = 'none';
     document.getElementById('new-sprint-modal').style.display = 'none';
+  }
+
+  function goToSprintStep2() {
+    var val = document.getElementById('new-sprint-start').value;
+    if (!val) { showAuthToast('Выберите дату начала'); return; }
+
+    document.getElementById('sprint-step-1').style.display = 'none';
+    document.getElementById('sprint-step-2').style.display = 'flex';
+    document.getElementById('new-sprint-modal-title').textContent = 'Задачи нового спринта';
+
+    var content = document.getElementById('sprint-step2-content');
+    content.innerHTML = '';
+
+    // ─── Templates ───
+    var templates = loadTemplates();
+    var tmplLabel = document.createElement('div');
+    tmplLabel.className = 'sprint-pick-group-label';
+    tmplLabel.textContent = '↻ Шаблоны (повторяющиеся)';
+    content.appendChild(tmplLabel);
+
+    if (templates.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'sprint-pick-empty';
+      empty.textContent = 'Нет шаблонов. Наведи на задачу и нажми ↻ чтобы добавить.';
+      content.appendChild(empty);
+    } else {
+      templates.forEach(function(t) {
+        var row = document.createElement('div');
+        row.className = 'sprint-task-pick';
+        var cb = document.createElement('input');
+        cb.type = 'checkbox'; cb.checked = true;
+        cb.dataset.taskText = t.text; cb.dataset.sectionId = t.sectionId;
+        cb.dataset.source = 'template'; cb.dataset.templateId = t.id;
+        var body = document.createElement('div'); body.className = 'sprint-task-pick-body';
+        var txt = document.createElement('div'); txt.className = 'sprint-task-pick-text'; txt.textContent = t.text;
+        var badge = document.createElement('div'); badge.className = 'sprint-task-pick-badge'; badge.textContent = t.sectionLabel || t.sectionId;
+        body.appendChild(txt); body.appendChild(badge);
+        var delBtn = document.createElement('button'); delBtn.className = 'sprint-tmpl-delete'; delBtn.textContent = '×';
+        delBtn.title = 'Удалить из шаблонов';
+        delBtn.onclick = function(e) {
+          e.stopPropagation();
+          var arr = loadTemplates().filter(function(x) { return x.id !== t.id; });
+          saveTemplates(arr);
+          row.remove();
+          if (!content.querySelectorAll('[data-source="template"]').length) {
+            var emp = document.createElement('div'); emp.className = 'sprint-pick-empty';
+            emp.textContent = 'Все шаблоны удалены.';
+            tmplLabel.after(emp);
+          }
+        };
+        row.appendChild(cb); row.appendChild(body); row.appendChild(delBtn);
+        row.addEventListener('click', function(e) { if (e.target !== delBtn) cb.checked = !cb.checked; });
+        content.appendChild(row);
+      });
+    }
+
+    // ─── Carry-over from active sprint ───
+    var carryLabel = document.createElement('div');
+    carryLabel.className = 'sprint-pick-group-label';
+    carryLabel.style.marginTop = '4px';
+    carryLabel.textContent = '📋 Незакрытые из текущего спринта';
+    content.appendChild(carryLabel);
+
+    var activePanel = document.querySelector('.sprint-panel.active');
+    var incomplete = activePanel ? gatherIncompleteTasks(activePanel) : [];
+    if (incomplete.length === 0) {
+      var doneMsg = document.createElement('div');
+      doneMsg.className = 'sprint-pick-empty';
+      doneMsg.textContent = activePanel ? '🎉 Все задачи выполнены' : 'Нет активного спринта';
+      content.appendChild(doneMsg);
+    } else {
+      incomplete.forEach(function(t, i) {
+        var row = document.createElement('div');
+        row.className = 'sprint-task-pick';
+        var cb = document.createElement('input');
+        cb.type = 'checkbox'; cb.checked = false;
+        cb.dataset.taskText = t.text; cb.dataset.sectionId = t.sectionId;
+        cb.dataset.source = 'carryover';
+        var body = document.createElement('div'); body.className = 'sprint-task-pick-body';
+        var txt = document.createElement('div'); txt.className = 'sprint-task-pick-text'; txt.textContent = t.text;
+        var badge = document.createElement('div'); badge.className = 'sprint-task-pick-badge'; badge.textContent = t.sectionLabel;
+        body.appendChild(txt); body.appendChild(badge);
+        row.appendChild(cb); row.appendChild(body);
+        row.addEventListener('click', function() { cb.checked = !cb.checked; });
+        content.appendChild(row);
+      });
+    }
+  }
+
+  function backToSprintStep1() {
+    document.getElementById('sprint-step-2').style.display = 'none';
+    document.getElementById('sprint-step-1').style.display = 'flex';
+    document.getElementById('new-sprint-modal-title').textContent = 'Новый спринт';
+  }
+
+  function gatherIncompleteTasks(panel) {
+    var tasks = [];
+    var seen = {};
+    panel.querySelectorAll('.section').forEach(function(section) {
+      if (section.id === 's-backlog' || section.id === 's-new') return;
+      var sectionId = section.id || '';
+      // Normalize dynamic sprint section IDs
+      var normId = sectionId.replace(/^sprint-dyn-\d+-/, '');
+      var sectionLabel = SECTIONS.find(function(s) { return s.id === normId; })?.label
+                       || section.querySelector('.section-label')?.textContent?.trim()
+                       || 'Задачи';
+      section.querySelectorAll('.subtask').forEach(function(st) {
+        if (st.classList.contains('done')) return;
+        if (st.style.display === 'none') return;
+        var text = st.querySelector('.subtask-title')?.textContent?.trim();
+        if (!text || seen[text]) return;
+        seen[text] = true;
+        tasks.push({ text: text, sectionId: normId || sectionId, sectionLabel: sectionLabel });
+      });
+    });
+    return tasks;
   }
 
   function updateNewSprintPreview() {
@@ -3790,9 +4031,15 @@
     if (document.getElementById(id)) { showAuthToast('Этот спринт уже существует'); return; }
 
     var monthsShort = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-    var label = start.getDate() + '–' + end.getDate() + ' ' + monthsShort[start.getMonth()];
-    var monthName = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'][start.getMonth()];
-    var monthKey = 'month-dyn-' + start.getFullYear() + '-' + (start.getMonth() + 1);
+    var monthsFull = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+    // Cross-month label: "22–28 июн" OR "29 июн – 5 июл"
+    var label = start.getMonth() === end.getMonth()
+      ? start.getDate() + '–' + end.getDate() + ' ' + monthsShort[start.getMonth()]
+      : start.getDate() + ' ' + monthsShort[start.getMonth()] + ' – ' + end.getDate() + ' ' + monthsShort[end.getMonth()];
+    // Classify sprint month by Thursday (ISO standard for week months)
+    var thursday = new Date(start.getTime() + 3 * 86400000);
+    var monthName = monthsFull[thursday.getMonth()];
+    var monthKey = 'month-dyn-' + thursday.getFullYear() + '-' + (thursday.getMonth() + 1);
 
     // Build panel DOM
     var panel = buildDynamicSprintPanel(id, val, label);
@@ -3821,6 +4068,26 @@
       hdr.addEventListener('click', function() {
         hdr.closest('.task-group').classList.toggle('group-collapsed');
       });
+    });
+
+    // Add selected tasks (templates + carry-over) from step 2
+    var checkboxes = document.querySelectorAll('#sprint-step2-content input[type="checkbox"]:checked');
+    checkboxes.forEach(function(cb) {
+      var text = cb.dataset.taskText;
+      var sectionId = cb.dataset.sectionId || '';
+      if (!text) return;
+      // Find matching section in new panel
+      var sectionEl = panel.querySelector('#' + id + '-' + sectionId)
+                   || panel.querySelector('.section');
+      if (!sectionEl) return;
+      var group = sectionEl.querySelector('.task-group');
+      if (!group) return;
+      var headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+      var gIdx = 0;
+      var dynSectionId = sectionEl.id || '';
+      var groupKey = 'group:' + dynSectionId + ':' + (headerTitle || 'g' + gIdx);
+      var list = group.querySelector('.subtask-list');
+      if (list) addCustomTask(groupKey, text, list);
     });
 
     // Persist
@@ -3936,10 +4203,12 @@
     var item = document.createElement('div');
     item.className = 'sprint-item';
     item.setAttribute('data-sprint', id);
+    item.setAttribute('data-dynamic-id', id);
     item.onclick = function() { showSprint(id); };
     item.innerHTML =
       '<div class="sprint-item-dates">' + label + '</div>' +
-      '<div class="sprint-item-progress" id="sidebar-progress-' + id + '">0/0 выполнено</div>';
+      '<div class="sprint-item-progress" id="sidebar-progress-' + id + '">0/0 выполнено</div>' +
+      '<button class="sprint-delete-btn" title="Удалить спринт" onclick="event.stopPropagation(); deleteDynamicSprint(\'' + id + '\')">×</button>';
 
     // Insert before the "new sprint" button if it's in the same group
     var addBtn = sprintsContainer.querySelector('.new-sprint-btn');
@@ -3955,6 +4224,51 @@
     if (!container || !metaEl) return;
     var n = container.querySelectorAll('.sprint-item:not(.new-sprint-btn)').length;
     metaEl.textContent = n + ' ' + (n === 1 ? 'спринт' : n < 5 ? 'спринта' : 'спринтов');
+  }
+
+  function deleteDynamicSprint(id) {
+    if (!currentUser) { showAuthToast(); return; }
+    if (!confirm('Удалить спринт? Добавленные через быстрое добавление задачи будут потеряны.')) return;
+
+    // Remove panel
+    var panel = document.getElementById(id);
+    if (panel) panel.remove();
+
+    // Remove sidebar item and update month
+    var sidebarItem = document.querySelector('[data-dynamic-id="' + id + '"]');
+    if (sidebarItem) {
+      var monthSprints = sidebarItem.closest('[id^="sprints-"]');
+      sidebarItem.remove();
+      if (monthSprints) {
+        var remaining = monthSprints.querySelectorAll('.sprint-item:not(.new-sprint-btn)').length;
+        var mk = monthSprints.id.replace('sprints-', '');
+        if (remaining === 0) {
+          var monthGroup = document.getElementById(mk);
+          if (monthGroup) monthGroup.remove();
+        } else {
+          updateMonthMeta(mk);
+        }
+      }
+    }
+
+    // Remove its tasks from custom_json
+    var ct = loadCustomTasks();
+    var changed = false;
+    Object.keys(ct).forEach(function(key) {
+      if (key.indexOf(id) !== -1) { delete ct[key]; changed = true; }
+    });
+    if (changed) saveCustomTasks(ct);
+
+    // Save updated dynamic sprints list
+    var arr = loadDynamicSprints().filter(function(s) { return s.id !== id; });
+    saveDynamicSprints(arr);
+
+    // If this sprint was being viewed, switch to default sprint
+    if (!document.querySelector('.sprint-panel.active')) {
+      showSprint('sprint-22-jun');
+    }
+
+    showAuthToast('Спринт удалён');
   }
 
   // Restore dynamic sprints from Firebase or localStorage on page load
@@ -4013,19 +4327,30 @@
 </script>
 
 <!-- ===================== NEW SPRINT MODAL ===================== -->
-<div id="new-sprint-overlay" style="display:none;position:fixed;inset:0;background:rgba(26,29,46,0.4);z-index:1000;display:none;align-items:center;justify-content:center;" onclick="closeNewSprintModal()"></div>
-<div id="new-sprint-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:0;width:360px;box-shadow:0 8px 40px rgba(30,40,100,0.2);z-index:1001;overflow:hidden;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid #eef0f8;">
-    <div style="font-size:15px;font-weight:700;color:#1a1d2e;">Новый спринт</div>
+<div id="new-sprint-overlay" onclick="closeNewSprintModal()" style="display:none;position:fixed;inset:0;background:rgba(26,29,46,0.4);z-index:1000;"></div>
+<div id="new-sprint-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:0;width:380px;max-height:85vh;display:none;flex-direction:column;box-shadow:0 8px 40px rgba(30,40,100,0.2);z-index:1001;overflow:hidden;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid #eef0f8;flex-shrink:0;">
+    <div id="new-sprint-modal-title" style="font-size:15px;font-weight:700;color:#1a1d2e;">Новый спринт</div>
     <button onclick="closeNewSprintModal()" style="background:none;border:none;font-size:20px;color:#9096b0;cursor:pointer;line-height:1;padding:0 2px;">✕</button>
   </div>
-  <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+  <!-- Step 1: date -->
+  <div id="sprint-step-1" style="padding:20px;display:flex;flex-direction:column;gap:14px;">
     <div>
       <label style="display:block;font-size:12px;font-weight:600;color:#9096b0;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em;">Дата начала (понедельник)</label>
       <input type="date" id="new-sprint-start" oninput="updateNewSprintPreview()" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #c7ceff;border-radius:8px;font-size:14px;color:#1a1d2e;outline:none;">
     </div>
     <div id="new-sprint-preview" style="font-size:13px;color:#4a5070;background:#f4f5ff;border-radius:8px;padding:10px 14px;min-height:36px;"></div>
-    <button onclick="createNewSprint()" style="background:#4361ee;color:#fff;border:none;border-radius:10px;padding:11px 0;font-size:14px;font-weight:700;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#3451de'" onmouseout="this.style.background='#4361ee'">Создать спринт</button>
+    <button onclick="goToSprintStep2()" style="background:#4361ee;color:#fff;border:none;border-radius:10px;padding:11px 0;font-size:14px;font-weight:700;cursor:pointer;">Далее →</button>
+  </div>
+  <!-- Step 2: templates + carry-over -->
+  <div id="sprint-step-2" style="display:none;flex-direction:column;overflow:hidden;">
+    <div style="overflow-y:auto;padding:4px 20px 0;flex:1;">
+      <div id="sprint-step2-content"></div>
+    </div>
+    <div style="padding:16px 20px;border-top:1px solid #eef0f8;display:flex;gap:8px;flex-shrink:0;">
+      <button onclick="backToSprintStep1()" style="flex:0 0 auto;background:#f4f5ff;color:#4361ee;border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;">← Назад</button>
+      <button onclick="createNewSprint()" style="flex:1;background:#4361ee;color:#fff;border:none;border-radius:10px;padding:10px 0;font-size:14px;font-weight:700;cursor:pointer;">Создать спринт</button>
+    </div>
   </div>
 </div>
 
