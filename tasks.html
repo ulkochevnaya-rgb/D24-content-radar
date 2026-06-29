@@ -1134,6 +1134,16 @@
     .cw-chip.done .cw-chk { opacity: 1; background: currentColor; }
     .cw-chip.done .cw-chk::after { content: '✓'; color: #fff; }
     .cw-chip.done { opacity: .5; text-decoration: line-through; }
+    .cw-chip-tmpl {
+      display: none;
+      background: none; border: none;
+      font-size: 9px; font-weight: 700;
+      color: currentColor; opacity: 0.5;
+      cursor: pointer; padding: 0 0 0 3px; line-height: 1;
+      flex-shrink: 0;
+    }
+    .cw-chip:hover .cw-chip-tmpl { display: inline-block; }
+    .cw-chip-tmpl:hover { opacity: 1 !important; }
     .cw-tg { background:#e8f6ff; color:#0077bb; border-color:#b8e0f7; }
     .cw-ig { background:#fff0f5; color:#b0004a; border-color:#f5c0d5; }
     .cw-fb { background:#e8f0fe; color:#0e5cbf; border-color:#b8d0f7; }
@@ -3839,7 +3849,9 @@
             var cid = ch.id+'_t'+ri+'_d'+di;  // совпадает с chipId() в content_hub.html
             var done = !!state[cid];
             html += '<div class="cw-chip '+ch.cls+(done?' done':'')+'" onclick="cwToggle(this,\''+wk+'\',\''+cid+'\')">'
-              +'<span class="cw-chk"></span>'+task.l+'</div>';
+              +'<span class="cw-chk"></span>'+task.l
+              +'<button class="cw-chip-tmpl" onclick="event.stopPropagation();saveCwChipAsTemplate(\''+ch.name+'\',\''+task.l+'\')" title="Сохранить как шаблон задачи">↻</button>'
+              +'</div>';
           });
           html += '</div>';
         }
@@ -3849,13 +3861,26 @@
     }
 
     window.cwToggle = function(el, wk, cid) {
-      if (!currentUser) return;
+      if (!currentUser) { showAuthToast(); return; }
       var state = cwLoad(wk);
       var done = el.classList.contains('done');
       if (done) { delete state[cid]; el.classList.remove('done'); }
       else { state[cid]=true; el.classList.add('done'); }
       cwSave(wk, state);
       cwPostToHub({type:'d24_plan_update'});
+    };
+
+    window.saveCwChipAsTemplate = function(channelName, taskLabel) {
+      if (!currentUser) { showAuthToast(); return; }
+      var text = channelName + ': ' + taskLabel;
+      var templates = loadTemplates();
+      if (templates.some(function(t) { return t.text === text; })) {
+        showAuthToast('Уже есть в шаблонах ↻');
+        return;
+      }
+      templates.push({ id: Date.now(), text: text, sectionId: 's-content', sectionLabel: 'Контент' });
+      saveTemplates(templates);
+      showAuthToast('Добавлено в шаблоны ↻');
     };
 
     document.addEventListener('DOMContentLoaded', cwRender);
