@@ -4513,7 +4513,10 @@
       var startAttr = panel ? panel.getAttribute('data-week-start') : null;
       var mon;
       if (startAttr) {
-        mon = new Date(startAttr + 'T12:00:00');
+        var candidate = new Date(startAttr + 'T12:00:00');
+        var cdow = candidate.getDay();
+        mon = new Date(candidate);
+        mon.setDate(candidate.getDate() - (cdow === 0 ? 6 : cdow - 1));
       } else {
         var now = new Date(), dow = now.getDay();
         mon = new Date(now);
