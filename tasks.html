@@ -3113,26 +3113,26 @@
   }
 
   function updateGroupCount(group) {
-    const all = group.querySelectorAll('.subtask');
-    const done = group.querySelectorAll('.subtask.done').length;
+    const visible = Array.from(group.querySelectorAll('.subtask')).filter(el => el.style.display !== 'none');
+    const done = visible.filter(el => el.classList.contains('done')).length;
     const countEl = group.querySelector('.task-group-count');
-    if (countEl) countEl.textContent = done + '/' + all.length;
-    if (done === all.length && all.length > 0) group.classList.add('all-done');
+    if (countEl) countEl.textContent = done + '/' + visible.length;
+    if (done === visible.length && visible.length > 0) group.classList.add('all-done');
     else group.classList.remove('all-done');
   }
 
   function updateProgress(sprintId) {
     const panel = document.getElementById(sprintId);
     if (!panel) return;
-    const all = panel.querySelectorAll('.subtask');
-    const done = panel.querySelectorAll('.subtask.done').length;
-    const pct = all.length ? Math.round(done / all.length * 100) : 0;
+    const visible = Array.from(panel.querySelectorAll('.subtask')).filter(el => el.style.display !== 'none');
+    const done = visible.filter(el => el.classList.contains('done')).length;
+    const pct = visible.length ? Math.round(done / visible.length * 100) : 0;
     const bar = document.getElementById('progress-bar-' + sprintId);
     const label = document.getElementById('progress-label-' + sprintId);
     const sidebarLabel = document.getElementById('sidebar-progress-' + sprintId);
     if (bar) bar.style.width = pct + '%';
-    if (label) label.textContent = done + ' из ' + all.length + ' подзадач · ' + pct + '%';
-    if (sidebarLabel) sidebarLabel.textContent = done + '/' + all.length + ' выполнено';
+    if (label) label.textContent = done + ' из ' + visible.length + ' подзадач · ' + pct + '%';
+    if (sidebarLabel) sidebarLabel.textContent = done + '/' + visible.length + ' выполнено';
   }
 
   // ===================== MOVE TO SPRINT =====================
