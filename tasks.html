@@ -4178,7 +4178,7 @@
       var dynSectionId = sectionEl.id || '';
       var groupKey = 'group:' + dynSectionId + ':' + (headerTitle || 'g' + gIdx);
       var list = group.querySelector('.subtask-list');
-      if (list) addCustomTask(groupKey, text, list);
+      if (list) addCustomTask(groupKey, list, text);
     });
 
     // Persist
