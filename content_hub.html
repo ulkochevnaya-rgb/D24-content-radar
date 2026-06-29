@@ -923,33 +923,29 @@ function lsSave(wk, s) { try { localStorage.setItem(wk, JSON.stringify(s)); } ca
 function renderPlan() {
   var dates = getWeekDates();
   var wk = weekKey(dates);
-  // Always render immediately from localStorage so grid is never blank
+  // Render immediately from localStorage so grid is never blank
   stateCache[wk] = lsLoad(wk);
-  renderPlanUI(dates, wk, stateCache[wk], 'ls');
-  if (!fbDb) { renderPlanUI(dates, wk, stateCache[wk], 'no-fb'); return; }
-  // One-time immediate read (same as widget)
+  renderPlanUI(dates, wk, stateCache[wk]);
+  if (!fbDb) return;
+  // One-time immediate read for fresh data
   fbDb.ref('content_hub/' + wk).once('value', function(snap) {
     var data = snap.val() || {};
     stateCache[wk] = data;
     lsSave(wk, data);
-    renderPlanUI(dates, wk, data, 'once:' + Object.keys(data).length);
-  }, function(err) {
-    renderPlanUI(dates, wk, stateCache[wk], 'once-err:' + (err && err.code || '?'));
-  });
-  // Then subscribe to Firebase and re-render when data arrives / changes
+    renderPlanUI(dates, wk, data);
+  }, function() {});
+  // Real-time listener for updates
   if (fbListener && currentWk) fbDb.ref('content_hub/' + currentWk).off('value', fbListener);
   currentWk = wk;
   fbListener = fbRef(wk).on('value', function(snap) {
     var data = snap.val() || {};
     stateCache[wk] = data;
-    lsSave(wk, data); // keep localStorage in sync
-    renderPlanUI(dates, wk, data, 'on:' + Object.keys(data).length);
-  }, function(err) {
-    renderPlanUI(dates, wk, stateCache[wk], 'on-err:' + (err && err.code || '?'));
-  });
+    lsSave(wk, data);
+    renderPlanUI(dates, wk, data);
+  }, function() {});
 }
 
-function renderPlanUI(dates, wk, state, diagTag) {
+function renderPlanUI(dates, wk, state) {
   var today = new Date();
   var fmt = function(d) { return d.getDate() + '.' + String(d.getMonth()+1).padStart(2,'0'); };
   document.getElementById('week-label').textContent = fmt(dates[0]) + ' – ' + fmt(dates[6]) + ' ' + dates[0].getFullYear();
@@ -980,15 +976,6 @@ function renderPlanUI(dates, wk, state, diagTag) {
   });
   document.getElementById('plan-rows').innerHTML = rows;
   document.getElementById('week-progress').textContent = done + ' / ' + total + ' выполнено';
-  var diagEl = document.getElementById('hub-diag');
-  if (!diagEl) {
-    diagEl = document.createElement('div');
-    diagEl.id = 'hub-diag';
-    diagEl.style.cssText = 'font-size:10px;color:#999;padding:4px 8px;margin-top:4px';
-    var pg = document.querySelector('.plan-grid');
-    if (pg && pg.parentNode) pg.parentNode.insertBefore(diagEl, pg.nextSibling);
-  }
-  diagEl.textContent = '⚙ hub · ' + wk + ' · items:' + Object.keys(state||{}).length + ' · done:' + done + (diagTag ? ' [' + diagTag + ']' : '');
 }
 
 function toggleChip(el, wk, cid) {
