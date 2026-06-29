@@ -1060,6 +1060,7 @@
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body>
 
@@ -1067,7 +1068,8 @@
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">Delegator24 <span>·</span> Задачи</div>
-      <div class="sidebar-sub">Юлия Кочевная</div>
+      <div class="sidebar-sub" id="auth-status">Юлия Кочевная</div>
+      <button id="auth-btn" onclick="toggleAuth()" style="margin-top:10px;width:100%;padding:6px 0;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.6);font-size:11px;font-weight:600;cursor:pointer">🔐 Войти</button>
     </div>
 
     <div class="sidebar-section">
@@ -2200,10 +2202,33 @@
     appId:             "1:749886002183:web:4e4dc29c5660a2a810c6a2"
   };
   var fbDb = null;
+  var fbAuth = null;
+  var currentUser = null;
   try {
     if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
     fbDb = firebase.database();
+    fbAuth = firebase.auth();
+    fbAuth.onAuthStateChanged(function(user) {
+      currentUser = (user && user.email === 'ul.kochevnaya@gmail.com') ? user : null;
+      var btn = document.getElementById('auth-btn');
+      var status = document.getElementById('auth-status');
+      if (btn) {
+        btn.textContent = currentUser ? '✓ Вошла как Юлия' : '🔐 Войти';
+        btn.style.background = currentUser ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.07)';
+        btn.style.color = currentUser ? '#4ade80' : 'rgba(255,255,255,0.6)';
+        btn.style.borderColor = currentUser ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.15)';
+      }
+    });
   } catch(e) { fbDb = null; }
+
+  function toggleAuth() {
+    if (!fbAuth) return;
+    if (currentUser) {
+      fbAuth.signOut();
+    } else {
+      fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(){});
+    }
+  }
 
   var _taskStateCache = null;
 
@@ -3201,6 +3226,7 @@
 
       subtask.addEventListener('click', () => {
         if (subtask.closest('.sprint-panel[data-archived]')) return;
+        if (!currentUser) return;
         const isDone = subtask.classList.contains('done');
         applyDone(subtask, !isDone);
         const s = loadState();
@@ -3461,6 +3487,7 @@
     }
 
     window.cwToggle = function(el, wk, cid) {
+      if (!currentUser) return;
       var state = cwLoad(wk);
       var done = el.classList.contains('done');
       if (done) { delete state[cid]; el.classList.remove('done'); }

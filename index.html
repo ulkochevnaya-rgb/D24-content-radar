@@ -364,6 +364,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body>
 
@@ -374,6 +375,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
     <button class="tab" onclick="showTab('matrix',this)">📊 Матрица</button>
     <button class="tab" onclick="showTab('plan',this)">📅 Недельный план</button>
   </nav>
+  <button id="auth-btn" onclick="toggleAuth()" style="margin-left:12px;padding:5px 14px;border-radius:20px;border:1px solid #dde0f0;background:#fff;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;white-space:nowrap">🔐 Войти</button>
 </div>
 
 <!-- ══════════ TAB 1: КАРТА ══════════ -->
@@ -877,10 +879,32 @@ var FIREBASE_CONFIG = {
 };
 
 var fbDb = null;
+var fbAuth = null;
+var currentUser = null;
 try {
   var fbApp = firebase.initializeApp(FIREBASE_CONFIG);
   fbDb = firebase.database();
+  fbAuth = firebase.auth();
+  fbAuth.onAuthStateChanged(function(user) {
+    currentUser = (user && user.email === 'ul.kochevnaya@gmail.com') ? user : null;
+    var btn = document.getElementById('auth-btn');
+    if (btn) {
+      btn.textContent = currentUser ? '✓ Юлия' : '🔐 Войти';
+      btn.style.background = currentUser ? '#e8f5e9' : '#fff';
+      btn.style.color = currentUser ? '#2e7d32' : '#6b7280';
+      btn.style.borderColor = currentUser ? '#a5d6a7' : '#dde0f0';
+    }
+  });
 } catch(e) { fbDb = null; }
+
+function toggleAuth() {
+  if (!fbAuth) return;
+  if (currentUser) {
+    fbAuth.signOut();
+  } else {
+    fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(){});
+  }
+}
 
 // ── STATE ─────────────────────────────────────────
 var stateCache  = {};
@@ -948,6 +972,7 @@ function renderPlanUI(dates, wk, state) {
 }
 
 function toggleChip(el, wk, cid) {
+  if (!currentUser) return;
   var isDone = el.classList.contains('done');
   if (isDone) { el.classList.remove('done'); } else { el.classList.add('done'); }
   if (!stateCache[wk]) stateCache[wk] = {};
