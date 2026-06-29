@@ -4298,6 +4298,7 @@
         });
         document.querySelectorAll('.task-group').forEach(updateGroupCount);
         updateAllSectionCounts();
+        document.querySelectorAll('.sprint-panel').forEach(function(p) { updateProgress(p.id); });
       }, function() {});
 
       fbDb.ref('tasks/custom_json').on('value', function(snap) {
@@ -4332,6 +4333,7 @@
           });
         });
         updateAllSectionCounts();
+        document.querySelectorAll('.sprint-panel').forEach(function(p) { updateProgress(p.id); });
       }, function() {});
 
       // Backlog → Sprint moves
