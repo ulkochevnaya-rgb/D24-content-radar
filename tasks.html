@@ -4552,7 +4552,13 @@
           var fbState = snap.val() || {};
           try { localStorage.setItem(wk, JSON.stringify(fbState)); } catch(e) {}
           cwRenderUI(gridEl, lbl, dates, wk, fbState);
+          // Show diagnostic info in widget label
+          if (lbl) lbl.title = 'key:' + wk + ' items:' + Object.keys(fbState).length;
+        }, function(err) {
+          if (lbl) lbl.title = 'Firebase error: ' + (err && err.code || 'unknown');
         });
+      } else {
+        if (lbl) lbl.title = 'fbDb=null (Firebase не инициализирован)';
       }
       if (wk === prevWk) return; // already have real-time listener
       gridEl.dataset.cwWk = wk;
@@ -4631,6 +4637,9 @@
         }
       });
       html += '</div>';
+      var itemCount = Object.keys(state).length;
+      html += '<div style="font-size:10px;color:#aaa;padding:2px 4px;margin-top:2px">'
+        + '⚙ ' + wk + ' · ' + (fbDb ? 'FB:' + itemCount : 'Firebase не готов') + '</div>';
       grid.innerHTML = html;
     }
 
