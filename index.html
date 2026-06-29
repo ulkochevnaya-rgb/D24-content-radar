@@ -897,16 +897,20 @@ function lsSave(wk, s) { try { localStorage.setItem(wk, JSON.stringify(s)); } ca
 function renderPlan() {
   var dates = getWeekDates();
   var wk = weekKey(dates);
-  if (!fbDb) {
-    stateCache[wk] = lsLoad(wk);
-    renderPlanUI(dates, wk, stateCache[wk]);
-    return;
-  }
+  // Always render immediately from localStorage so grid is never blank
+  stateCache[wk] = lsLoad(wk);
+  renderPlanUI(dates, wk, stateCache[wk]);
+  if (!fbDb) return;
+  // Then subscribe to Firebase and re-render when data arrives / changes
   if (fbListener && currentWk) fbDb.ref('content_hub/' + currentWk).off('value', fbListener);
   currentWk = wk;
   fbListener = fbRef(wk).on('value', function(snap) {
-    stateCache[wk] = snap.val() || {};
-    renderPlanUI(dates, wk, stateCache[wk]);
+    var data = snap.val() || {};
+    stateCache[wk] = data;
+    lsSave(wk, data); // keep localStorage in sync
+    renderPlanUI(dates, wk, data);
+  }, function() {
+    // Firebase error — localStorage version already shown, nothing to do
   });
 }
 
