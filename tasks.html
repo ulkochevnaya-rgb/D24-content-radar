@@ -3343,43 +3343,36 @@
     renderDrafts();
     updateDraftsCount();
 
-    // After local init: pull Firebase state and reconcile
+    // Real-time Firebase listeners — обновляют всем открытым страницам
     if (fbDb) {
-      // Sync checkbox state
-      fbDb.ref('tasks/state').once('value', function(snap) {
+      fbDb.ref('tasks/state').on('value', function(snap) {
         var fbState = snap.val() || {};
-        var merged = Object.assign({}, loadState(), fbState);
-        _taskStateCache = merged;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        _taskStateCache = fbState;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(fbState));
         document.querySelectorAll('.subtask').forEach(function(subtask) {
           var id = getSubtaskId(subtask);
           if (!id) return;
-          var shouldBeDone = merged[id] === true;
+          var shouldBeDone = fbState[id] === true;
           if (shouldBeDone !== subtask.classList.contains('done')) applyDone(subtask, shouldBeDone);
         });
         document.querySelectorAll('.task-group').forEach(updateGroupCount);
         updateAllSectionCounts();
       }, function() {});
 
-      // Sync custom (quick-add) tasks
-      fbDb.ref('tasks/custom').once('value', function(snap) {
+      fbDb.ref('tasks/custom').on('value', function(snap) {
         var fbCustom = snap.val() || {};
-        var merged = Object.assign({}, loadCustomTasks(), fbCustom);
-        localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(merged));
-        // Remove locally rendered custom tasks and re-render from Firebase
+        localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(fbCustom));
         document.querySelectorAll('[data-custom-id]').forEach(function(el) { el.remove(); });
-        restoreCustomTasks(merged);
+        restoreCustomTasks(fbCustom);
         document.querySelectorAll('.task-group').forEach(updateGroupCount);
         updateAllSectionCounts();
       }, function() {});
 
-      // Sync deleted items
-      fbDb.ref('tasks/deleted').once('value', function(snap) {
+      fbDb.ref('tasks/deleted').on('value', function(snap) {
         var fbDeleted = snap.val() || {};
-        var merged = Object.assign({}, loadDeleted(), fbDeleted);
-        localStorage.setItem(DELETED_KEY, JSON.stringify(merged));
+        localStorage.setItem(DELETED_KEY, JSON.stringify(fbDeleted));
         document.querySelectorAll('.subtask').forEach(function(st) {
-          if (merged[getSubtaskId(st)]) st.style.display = 'none';
+          st.style.display = fbDeleted[getSubtaskId(st)] ? 'none' : '';
         });
       }, function() {});
     }
