@@ -3364,9 +3364,29 @@
         var fbCustom = {};
         try { fbCustom = JSON.parse(snap.val() || '{}'); } catch(e) {}
         localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(fbCustom));
-        document.querySelectorAll('[data-custom-id]').forEach(function(el) { el.remove(); });
-        restoreCustomTasks(fbCustom);
-        document.querySelectorAll('.task-group').forEach(updateGroupCount);
+        // Smart reconcile: add missing, remove deleted — no full re-render to avoid duplicates
+        document.querySelector('.sprint-panel.active')?.querySelectorAll('.section').forEach(function(section) {
+          var sectionId = section.id || '';
+          section.querySelectorAll('.task-group').forEach(function(group, gIdx) {
+            var headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+            var groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
+            var tasks = fbCustom[groupKey] || [];
+            var list = group.querySelector('.subtask-list');
+            if (!list) return;
+            // Remove tasks deleted in Firebase
+            list.querySelectorAll('[data-custom-id]').forEach(function(el) {
+              if (!tasks.find(function(t) { return t.id === el.dataset.customId; })) el.remove();
+            });
+            // Add tasks not yet in DOM
+            var addRow = list.querySelector('.add-task-row');
+            tasks.forEach(function(t) {
+              if (list.querySelector('[data-custom-id="' + t.id + '"]')) return;
+              var li = createCustomTaskLi(t.id, t.text);
+              if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
+            });
+            updateGroupCount(group);
+          });
+        });
         updateAllSectionCounts();
       }, function() {});
 
