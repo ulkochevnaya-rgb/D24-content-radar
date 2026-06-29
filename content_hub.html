@@ -861,6 +861,7 @@ function getWeekDates() {
   var dow = now.getDay();
   var monday = new Date(now);
   monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1) + weekOffset * 7);
+  monday.setHours(12, 0, 0, 0); // anchor to noon so toISOString() gives correct date in any timezone
   return Array.from({length:7}, function(_,i) {
     var d = new Date(monday);
     d.setDate(monday.getDate() + i);
