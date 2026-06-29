@@ -362,8 +362,8 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 }
 </style>
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -876,8 +876,11 @@ var FIREBASE_CONFIG = {
   appId:             "1:749886002183:web:4e4dc29c5660a2a810c6a2"
 };
 
-var fbApp = firebase.initializeApp(FIREBASE_CONFIG);
-var fbDb  = firebase.database();
+var fbDb = null;
+try {
+  var fbApp = firebase.initializeApp(FIREBASE_CONFIG);
+  fbDb = firebase.database();
+} catch(e) { fbDb = null; }
 
 // ── STATE ─────────────────────────────────────────
 var stateCache  = {};
@@ -886,11 +889,19 @@ var fbListener  = null;
 
 function weekKey(dates) { return 'd24_plan_' + dates[0].toISOString().slice(0,10); }
 function chipId(chId, ti, d) { return chId + '_t' + ti + '_d' + d; }
-function fbRef(wk) { return fbDb.ref('content_hub/' + wk); }
+function fbRef(wk) { return fbDb ? fbDb.ref('content_hub/' + wk) : null; }
+
+function lsLoad(wk) { try { return JSON.parse(localStorage.getItem(wk)||'{}'); } catch(e) { return {}; } }
+function lsSave(wk, s) { try { localStorage.setItem(wk, JSON.stringify(s)); } catch(e) {} }
 
 function renderPlan() {
   var dates = getWeekDates();
   var wk = weekKey(dates);
+  if (!fbDb) {
+    stateCache[wk] = lsLoad(wk);
+    renderPlanUI(dates, wk, stateCache[wk]);
+    return;
+  }
   if (fbListener && currentWk) fbDb.ref('content_hub/' + currentWk).off('value', fbListener);
   currentWk = wk;
   fbListener = fbRef(wk).on('value', function(snap) {
@@ -937,7 +948,7 @@ function toggleChip(el, wk, cid) {
   if (isDone) { el.classList.remove('done'); } else { el.classList.add('done'); }
   if (!stateCache[wk]) stateCache[wk] = {};
   if (isDone) { delete stateCache[wk][cid]; } else { stateCache[wk][cid] = true; }
-  fbRef(wk).set(stateCache[wk]);
+  if (fbDb) { fbRef(wk).set(stateCache[wk]); } else { lsSave(wk, stateCache[wk]); }
   var d = document.querySelectorAll('.task-chip.done').length;
   var t = document.querySelectorAll('.task-chip').length;
   document.getElementById('week-progress').textContent = d + ' / ' + t + ' выполнено';
@@ -951,7 +962,7 @@ function resetWeek() {
   var dates = getWeekDates();
   var wk = weekKey(dates);
   stateCache[wk] = {};
-  fbRef(wk).remove();
+  if (fbDb) { fbRef(wk).remove(); } else { lsSave(wk, {}); }
   renderPlanUI(dates, wk, {});
 }
 
