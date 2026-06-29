@@ -3383,8 +3383,10 @@
               if (!tasks.find(function(t) { return t.id === el.dataset.customId; })) el.remove();
             });
             var addRow = list.querySelector('.add-task-row');
+            var deleted = loadDeleted();
             tasks.forEach(function(t) {
               if (list.querySelector('[data-custom-id="' + t.id + '"]')) return;
+              if (deleted[t.text.trim().slice(0, 60)]) return; // skip already deleted
               var li = createCustomTaskLi(t.id, t.text);
               if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
             });
