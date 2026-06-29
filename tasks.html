@@ -1121,6 +1121,13 @@
     .cw-week { font-size: 11px; color: #8a6abf; }
     .cw-link { font-size: 11px; font-weight: 600; color: #7c3aed; text-decoration: none; padding: 3px 10px; background: #fff; border: 1px solid #c8bcf0; border-radius: 20px; white-space: nowrap; }
     .cw-link:hover { background: #ece6ff; }
+    .cw-tmpl-btn {
+      background: none; border: 1px solid #c8bcf0; border-radius: 6px;
+      color: #7c3aed; font-size: 11px; font-weight: 700;
+      padding: 3px 8px; cursor: pointer; transition: all 0.12s; white-space: nowrap;
+    }
+    .cw-tmpl-btn:hover { background: #ece6ff; }
+    .cw-tmpl-btn.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
     .cw-grid { display: grid; grid-template-columns: 110px repeat(5,1fr); }
     .cw-day-hd { padding: 6px 4px; text-align: center; font-size: 10px; font-weight: 700; color: #9096b0; background: #f5f5f8; border-bottom: 1px solid #e8eaf4; border-left: 1px solid #e8eaf4; }
     .cw-day-hd:first-child { border-left: none; }
@@ -1668,10 +1675,11 @@
         <div class="cw-wrap">
           <div class="cw-header">
             <span class="cw-title">📅 Контент этой недели</span>
-            <span class="cw-week" id="cw-week-label"></span>
+            <span class="cw-week cw-week-lbl" id="cw-week-label"></span>
+            <button class="cw-tmpl-btn" onclick="cwSaveAsTemplate(this)" title="Добавить контент-виджет в шаблон нового спринта">↻</button>
             <a class="cw-link" href="#" onclick="showSprint('content-hub');return false;">Полная карта →</a>
           </div>
-          <div id="cw-grid"></div>
+          <div id="cw-grid" class="cw-grid-root"></div>
         </div>
 
       </div>
@@ -3775,13 +3783,12 @@
       ]}
     ];
 
-    function cwGetWeek() {
-      var grid = document.getElementById('cw-grid');
-      var panel = grid ? grid.closest('.sprint-panel') : null;
+    function cwGetWeek(gridEl) {
+      var panel = gridEl ? gridEl.closest('.sprint-panel') : null;
       var startAttr = panel ? panel.getAttribute('data-week-start') : null;
       var mon;
       if (startAttr) {
-        mon = new Date(startAttr);
+        mon = new Date(startAttr + 'T12:00:00');
       } else {
         var now = new Date(), dow = now.getDay();
         mon = new Date(now);
@@ -3799,27 +3806,57 @@
       if (fbDb) try { fbDb.ref('content_hub/' + k).set(s); } catch(e) {}
     }
 
-    var _cwFbListener = null;
-    var _cwCurrentWk = null;
-
-    function cwRender() {
-      var grid = document.getElementById('cw-grid');
-      var lbl  = document.getElementById('cw-week-label');
-      if (!grid) return;
-      var dates = cwGetWeek();
+    // Render a single grid element (supports multiple widgets per page)
+    function cwRenderOne(gridEl) {
+      if (!gridEl) return;
+      var wrap = gridEl.closest('.cw-wrap');
+      var lbl = wrap ? wrap.querySelector('.cw-week-lbl') : null;
+      var dates = cwGetWeek(gridEl);
       var wk = cwWeekKey(dates);
-      // Render immediately from localStorage
-      var state = cwLoad(wk);
-      cwRenderUI(grid, lbl, dates, wk, state);
-      // Subscribe to Firebase for live updates
+      var prevWk = gridEl.dataset.cwWk;
+      // Render immediately
+      cwRenderUI(gridEl, lbl, dates, wk, cwLoad(wk));
+      if (wk === prevWk) return; // already subscribed
+      gridEl.dataset.cwWk = wk;
+      // Clear previous Firebase listener on this element
+      if (gridEl._cwRef) { gridEl._cwRef.off(); gridEl._cwRef = null; }
       if (fbDb) {
-        if (_cwFbListener && _cwCurrentWk) fbDb.ref('content_hub/' + _cwCurrentWk).off('value', _cwFbListener);
-        _cwCurrentWk = wk;
-        _cwFbListener = fbDb.ref('content_hub/' + wk).on('value', function(snap) {
+        gridEl._cwRef = fbDb.ref('content_hub/' + wk);
+        gridEl._cwRef.on('value', function(snap) {
           var fbState = snap.val() || {};
           try { localStorage.setItem(wk, JSON.stringify(fbState)); } catch(e) {}
-          cwRenderUI(grid, lbl, dates, wk, fbState);
+          cwRenderUI(gridEl, lbl, dates, wk, fbState);
         }, function() {});
+      }
+    }
+
+    // Render all content widgets on the page
+    function cwRender() {
+      document.querySelectorAll('.cw-grid-root').forEach(cwRenderOne);
+    }
+
+    // Toggle content widget template preference
+    window.cwSaveAsTemplate = function(btn) {
+      var PREF_KEY = 'delegator24_cw_in_template';
+      var isOn = localStorage.getItem(PREF_KEY) === '1';
+      if (isOn) {
+        localStorage.removeItem(PREF_KEY);
+        document.querySelectorAll('.cw-tmpl-btn').forEach(function(b) { b.classList.remove('active'); b.title = 'Добавить контент-виджет в шаблон нового спринта'; });
+        showAuthToast('Виджет убран из шаблона спринта');
+      } else {
+        localStorage.setItem(PREF_KEY, '1');
+        document.querySelectorAll('.cw-tmpl-btn').forEach(function(b) { b.classList.add('active'); b.title = 'Контент-виджет включён в шаблон (нажмите чтобы отключить)'; });
+        showAuthToast('Виджет будет добавляться в каждый новый спринт ↻');
+      }
+    };
+
+    // Check and apply saved template pref on load
+    function cwApplyTemplatePref() {
+      if (localStorage.getItem('delegator24_cw_in_template') === '1') {
+        document.querySelectorAll('.cw-tmpl-btn').forEach(function(b) {
+          b.classList.add('active');
+          b.title = 'Контент-виджет включён в шаблон (нажмите чтобы отключить)';
+        });
       }
     }
 
@@ -3849,9 +3886,7 @@
             var cid = ch.id+'_t'+ri+'_d'+di;  // совпадает с chipId() в content_hub.html
             var done = !!state[cid];
             html += '<div class="cw-chip '+ch.cls+(done?' done':'')+'" onclick="cwToggle(this,\''+wk+'\',\''+cid+'\')">'
-              +'<span class="cw-chk"></span>'+task.l
-              +'<button class="cw-chip-tmpl" onclick="event.stopPropagation();saveCwChipAsTemplate(\''+ch.name+'\',\''+task.l+'\')" title="Сохранить как шаблон задачи">↻</button>'
-              +'</div>';
+              +'<span class="cw-chk"></span>'+task.l+'</div>';
           });
           html += '</div>';
         }
@@ -3870,20 +3905,10 @@
       cwPostToHub({type:'d24_plan_update'});
     };
 
-    window.saveCwChipAsTemplate = function(channelName, taskLabel) {
-      if (!currentUser) { showAuthToast(); return; }
-      var text = channelName + ': ' + taskLabel;
-      var templates = loadTemplates();
-      if (templates.some(function(t) { return t.text === text; })) {
-        showAuthToast('Уже есть в шаблонах ↻');
-        return;
-      }
-      templates.push({ id: Date.now(), text: text, sectionId: 's-content', sectionLabel: 'Контент' });
-      saveTemplates(templates);
-      showAuthToast('Добавлено в шаблоны ↻');
-    };
-
-    document.addEventListener('DOMContentLoaded', cwRender);
+    document.addEventListener('DOMContentLoaded', function() {
+      cwRender();
+      cwApplyTemplatePref();
+    });
 
     window.addEventListener('message', function(e) {
       if (e.data && e.data.type === 'd24_plan_update') cwRender();
@@ -4076,6 +4101,7 @@
     initQuickAddOnPanel(panel);
     restoreCustomTasksOnPanel(panel);
     updateProgress(id);
+    cwRender(); // render content widgets (including any in dynamic panels)
 
     // Add to sidebar
     addSprintToSidebar(id, label, monthKey, monthName, start.getFullYear(), val);
@@ -4150,6 +4176,20 @@
       '</div>';
     }).join('');
 
+    // Content widget (if preference enabled)
+    var cwHtml = '';
+    if (localStorage.getItem('delegator24_cw_in_template') === '1') {
+      cwHtml = '<div class="cw-wrap" style="margin-top:16px;">' +
+        '<div class="cw-header">' +
+          '<span class="cw-title">📅 Контент этой недели</span>' +
+          '<span class="cw-week-lbl"></span>' +
+          '<button class="cw-tmpl-btn active" onclick="cwSaveAsTemplate(this)" title="Контент-виджет включён в шаблон (нажмите чтобы отключить)">↻</button>' +
+          '<a class="cw-link" href="#" onclick="showSprint(\'content-hub\');return false;">Полная карта →</a>' +
+        '</div>' +
+        '<div class="cw-grid-root"></div>' +
+      '</div>';
+    }
+
     panel.innerHTML =
       '<header>' +
         '<div class="badge">Delegator24 · Маркетинг</div>' +
@@ -4165,7 +4205,7 @@
           '<button class="toolbar-btn" onclick="toggleHideDone()">✓ Скрыть выполненные</button>' +
         '</div>' +
       '</header>' +
-      sectionsHtml;
+      sectionsHtml + cwHtml;
 
     return panel;
   }
