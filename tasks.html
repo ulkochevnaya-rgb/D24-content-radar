@@ -1112,7 +1112,7 @@
   <main class="main">
 
     <!-- ====== СПРИНТ: 22–28 ИЮНЯ ====== -->
-    <div class="sprint-panel active" id="sprint-22-jun">
+    <div class="sprint-panel active" id="sprint-22-jun" data-week-start="2026-06-22">
 
       <header>
         <div class="badge">Delegator24 · Маркетинг</div>
@@ -3378,9 +3378,17 @@
     ];
 
     function cwGetWeek() {
-      var now = new Date(), dow = now.getDay();
-      var mon = new Date(now);
-      mon.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1));
+      var grid = document.getElementById('cw-grid');
+      var panel = grid ? grid.closest('.sprint-panel') : null;
+      var startAttr = panel ? panel.getAttribute('data-week-start') : null;
+      var mon;
+      if (startAttr) {
+        mon = new Date(startAttr);
+      } else {
+        var now = new Date(), dow = now.getDay();
+        mon = new Date(now);
+        mon.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1));
+      }
       return Array.from({length:5}, function(_,i) {
         var d = new Date(mon); d.setDate(mon.getDate()+i); return d;
       });
