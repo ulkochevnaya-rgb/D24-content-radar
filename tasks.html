@@ -1,0 +1,3472 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delegator24 — Задачи</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>💡</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f2f8;
+      color: #1a1d2e;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* ===================== SIDEBAR ===================== */
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: #1a1d2e;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 22px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .sidebar-logo {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .sidebar-logo span { color: #4361ee; }
+
+    .sidebar-sub {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 3px;
+    }
+
+    .sidebar-section {
+      padding: 16px 0 8px;
+    }
+
+    .sidebar-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      padding: 0 20px;
+      margin-bottom: 6px;
+    }
+
+    .sprint-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+      position: relative;
+    }
+
+    .sprint-item:hover { background: rgba(255,255,255,0.05); }
+
+    .sprint-item.active {
+      background: rgba(67,97,238,0.15);
+      border-left-color: #4361ee;
+    }
+
+    .sprint-item-dates {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sprint-item.active .sprint-item-dates { color: #fff; }
+
+    .sprint-now-badge {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #4361ee;
+      color: #fff;
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+
+    .sprint-item-progress {
+      font-size: 10px;
+      color: rgba(255,255,255,0.28);
+      margin-top: 3px;
+    }
+
+    .sprint-item.active .sprint-item-progress { color: rgba(255,255,255,0.5); }
+
+    .sprint-item-done .sprint-item-progress { color: #22a06b; }
+
+    /* ===================== MONTH GROUP ===================== */
+    .sidebar-year {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      padding: 16px 20px 6px;
+    }
+
+    .month-group { border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .month-group:last-child { border-bottom: none; }
+
+    .month-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .month-header:hover { background: rgba(255,255,255,0.04); }
+
+    .month-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .month-meta {
+      font-size: 10px;
+      color: rgba(255,255,255,0.28);
+      margin-top: 2px;
+    }
+
+    .month-arrow {
+      width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.3);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .month-arrow svg { display: block; }
+
+    .month-group.open .month-arrow { transform: rotate(180deg); }
+
+    .month-sprints {
+      display: none;
+      padding-bottom: 8px;
+    }
+    .month-group.open .month-sprints { display: block; }
+
+    /* ===================== MAIN ===================== */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 28px;
+      min-width: 0;
+    }
+
+    .sprint-panel { display: none; }
+    .sprint-panel.active { display: block; }
+
+    /* ===================== HEADER ===================== */
+    header {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 12px rgba(60,80,180,0.07);
+    }
+
+    .badge {
+      display: inline-block;
+      background: #eef0ff;
+      color: #4361ee;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    h1 { font-size: 22px; font-weight: 700; color: #1a1d2e; margin-bottom: 4px; }
+    .subtitle { font-size: 13px; color: #9096b0; }
+
+    .progress-wrap { margin: 16px 0 4px; }
+    .progress-bar-bg {
+      background: #eef0ff;
+      border-radius: 6px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4361ee, #7c6dfa);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .progress-label { font-size: 12px; color: #9096b0; text-align: right; }
+
+    /* ===================== SECTIONS ===================== */
+    .section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(60,80,180,0.06);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f2f8;
+    }
+
+    .section-icon {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .icon-crm     { background: #eef0ff; }
+    .icon-leads   { background: #edfaf3; }
+    .icon-partner { background: #fff8eb; }
+    .icon-content { background: #f5eeff; }
+    .icon-ai      { background: #e8f6ff; }
+    .icon-backlog { background: #f5f5f5; }
+    .icon-today   { background: #fff1f1; }
+
+    .section-label { font-size: 15px; font-weight: 700; color: #1a1d2e; flex: 1; }
+
+    .section-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .tag-crm     { background: #eef0ff; color: #4361ee; }
+    .tag-leads   { background: #edfaf3; color: #22a06b; }
+    .tag-partner { background: #fff8eb; color: #d97706; }
+    .tag-content { background: #f5eeff; color: #7c3aed; }
+    .tag-ai      { background: #e8f6ff; color: #0284c7; }
+    .tag-backlog { background: #f5f5f5; color: #9096b0; }
+    .tag-today   { background: #fff1f1; color: #ef4444; }
+
+    /* ===================== TASK GROUP ===================== */
+    .task-group {
+      background: #f8f9ff;
+      border: 1px solid #e8eaf4;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .task-group:last-child { margin-bottom: 0; }
+
+    .task-group-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      background: #eef0fa;
+      border-bottom: 1px solid #e4e6f2;
+    }
+
+    .task-group-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a1d2e;
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .task-group-count {
+      font-size: 11px;
+      color: #9096b0;
+      font-weight: 600;
+      background: #fff;
+      border: 1px solid #dde0f0;
+      border-radius: 20px;
+      padding: 2px 9px;
+      flex-shrink: 0;
+    }
+
+    .task-group.all-done .task-group-header {
+      background: #edfaf3;
+      border-bottom-color: #c8eed8;
+    }
+    .task-group.all-done .task-group-title { color: #15803d; }
+    .task-group.all-done .task-group-count {
+      background: #d1fae5;
+      border-color: #a7f3d0;
+      color: #15803d;
+    }
+
+    /* ===================== COLLAPSIBLE ===================== */
+    .task-group-header { cursor: pointer; user-select: none; }
+
+    .task-group-toggle {
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      color: #b0b4c8;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .task-group-toggle svg { display: block; }
+    .task-group.collapsed .task-group-toggle { transform: rotate(-90deg); }
+    .task-group.collapsed .subtask-list { display: none; }
+    .task-group.collapsed .backlog-list  { display: none; }
+
+    /* Bare task-group — no inner header, tasks directly under section */
+    .task-group-bare { background: transparent; border: none; border-radius: 0; margin-bottom: 0; }
+    .task-group-bare .subtask-list { padding: 4px 0 0; }
+    .task-group-bare .backlog-list { padding: 0; }
+
+    .backlog-list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+    /* ===================== TASK GROUP COLOR THEMES ===================== */
+    .task-group[data-color="blue"]   { background: #f4f5ff; border-color: #c8ceee; }
+    .task-group[data-color="blue"]   .task-group-header { background: #e8eeff; border-bottom-color: #c8ceee; }
+    .task-group[data-color="blue"]   .task-group-title  { color: #2a3a9e; }
+
+    .task-group[data-color="green"]  { background: #f1fcf6; border-color: #b0e8cc; }
+    .task-group[data-color="green"]  .task-group-header { background: #e4f9ee; border-bottom-color: #b0e8cc; }
+    .task-group[data-color="green"]  .task-group-title  { color: #1a6b40; }
+
+    .task-group[data-color="amber"]  { background: #fffbf0; border-color: #f5d88a; }
+    .task-group[data-color="amber"]  .task-group-header { background: #fef5dc; border-bottom-color: #f5d88a; }
+    .task-group[data-color="amber"]  .task-group-title  { color: #8a5500; }
+
+    .task-group[data-color="purple"] { background: #f7f4ff; border-color: #c8bcf0; }
+    .task-group[data-color="purple"] .task-group-header { background: #ece6ff; border-bottom-color: #c8bcf0; }
+    .task-group[data-color="purple"] .task-group-title  { color: #5a28b0; }
+
+    .task-group[data-color="sky"]    { background: #f0f8ff; border-color: #90d0f0; }
+    .task-group[data-color="sky"]    .task-group-header { background: #ddf0fc; border-bottom-color: #90d0f0; }
+    .task-group[data-color="sky"]    .task-group-title  { color: #0856a0; }
+
+    .task-group[data-color="teal"]   { background: #f0fdf8; border-color: #84d9ba; }
+    .task-group[data-color="teal"]   .task-group-header { background: #daf5ec; border-bottom-color: #84d9ba; }
+    .task-group[data-color="teal"]   .task-group-title  { color: #0a6048; }
+
+    .task-group[data-color="gray"]   { background: #f5f5f8; border-color: #d8d8e8; }
+    .task-group[data-color="gray"]   .task-group-header { background: #eeeef4; border-bottom-color: #d8d8e8; }
+    .task-group[data-color="gray"]   .task-group-title  { color: #4a5070; }
+
+    /* ===================== COLLAPSIBLE SECTIONS ===================== */
+    .section-header { cursor: pointer; user-select: none; }
+    .section-toggle {
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(60,80,180,0.22);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      margin-left: 6px;
+    }
+    .section-toggle svg { display: block; }
+    .section.collapsed .section-toggle  { transform: rotate(-90deg); }
+
+    .section-count {
+      font-size: 11px;
+      color: #9096b0;
+      font-weight: 600;
+      background: #f0f2f8;
+      border: 1px solid #e0e3f0;
+      border-radius: 20px;
+      padding: 2px 9px;
+      flex-shrink: 0;
+    }
+    .section.collapsed .section-header  { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .section.collapsed .task-group,
+    .section.collapsed .s2b-zone,
+    .section.collapsed .cw-wrap         { display: none; }
+
+    /* all-done overrides themed colors */
+    .task-group[data-color].all-done .task-group-header { background: #edfaf3; border-bottom-color: #c8eed8; }
+    .task-group[data-color].all-done .task-group-title  { color: #15803d; }
+    .task-group[data-color].all-done .task-group-count  { background: #d1fae5; border-color: #a7f3d0; color: #15803d; }
+
+    /* ===================== NESTED SUBTASKS ===================== */
+    .subtask-sub {
+      margin-left: 26px;
+      border-left: 2px solid #e0e3f0;
+      padding-left: 10px;
+      border-radius: 0 8px 8px 0;
+      background: #fafbff;
+    }
+    .subtask-sub:hover { background: #eef0ff; }
+    .subtask-sub .subtask-title { font-size: 12px; color: #4a5068; }
+    .subtask-sub .sub-checkbox { width: 14px; height: 14px; margin-top: 2px; }
+
+    /* ===================== SUBTASKS ===================== */
+    .subtask-list {
+      list-style: none;
+      padding: 8px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .subtask {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .subtask:hover { background: #e8ebff; }
+
+    .subtask.done { opacity: 0.45; }
+    .subtask.done .subtask-title {
+      text-decoration: line-through;
+      color: #9096b0;
+    }
+
+    .sub-checkbox {
+      width: 17px; height: 17px;
+      border-radius: 50%;
+      border: 2px solid #c8cce8;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      background: #fff;
+      transition: all 0.15s;
+    }
+    .sub-checkbox.checked {
+      background: #4361ee;
+      border-color: #4361ee;
+    }
+    .sub-checkbox.checked::after {
+      content: '';
+      width: 4px; height: 7px;
+      border: 2px solid #fff;
+      border-top: none; border-left: none;
+      transform: rotate(45deg) translate(-0.5px, -1px);
+      display: block;
+    }
+    .sub-checkbox.in-progress {
+      border-color: #4361ee;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(67,97,238,0.3); }
+      50%       { box-shadow: 0 0 0 4px rgba(67,97,238,0); }
+    }
+
+    .subtask-body { flex: 1; min-width: 0; }
+
+    .subtask-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1d2e;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .subtask-meta {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* ===================== PILLS ===================== */
+    .pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .pill-done    { background: #edfaf3; color: #22a06b; border: 1px solid #c3eedb; }
+    .pill-active  { background: #eef0ff; color: #4361ee; border: 1px solid #c7ceff; }
+    .pill-today   { background: #fff8eb; color: #d97706; border: 1px solid #fde68a; }
+    .pill-week    { background: #f5f5f5; color: #9096b0; border: 1px solid #e0e0e0; }
+    .pill-p1      { background: #fff1f1; color: #ef4444; border: 1px solid #fecaca; }
+    .pill-p2      { background: #fff8eb; color: #d97706; border: 1px solid #fde68a; }
+    .pill-ai      { background: #e8f6ff; color: #0284c7; border: 1px solid #bae6fd; }
+    .pill-idea    { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+
+    /* ===================== BACKLOG ===================== */
+    .backlog-item {
+      background: #fafafa;
+      border: 1px solid #eeeff4;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .backlog-del-btn {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: none;
+      border: 1px solid #e8eaf4;
+      border-radius: 6px;
+      color: #c0c4d8;
+      font-size: 11px;
+      padding: 2px 7px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.12s, background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .backlog-item:hover .backlog-del-btn { opacity: 1; }
+    .backlog-del-btn:hover { background: #fff1f1; color: #ef4444; border-color: #fecaca; }
+    .backlog-item:last-child { margin-bottom: 0; }
+
+    .backlog-dot {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px dashed #d0d4e8;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .backlog-content { flex: 1; }
+
+    .backlog-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1d2e;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .backlog-desc {
+      font-size: 11px;
+      color: #7a80a0;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .plan-steps {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+    .plan-steps li {
+      font-size: 11px;
+      color: #9096b0;
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .plan-steps li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #c0c4d8;
+    }
+
+    .backlog-meta {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #e8eaf4;
+      margin: 24px 0;
+    }
+
+    /* ===================== ARCHIVED SPRINT ===================== */
+    .archived-sprint-summary {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(60,80,180,0.06);
+    }
+
+    .archived-sprint-summary h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #9096b0;
+      margin-bottom: 6px;
+    }
+
+    .archived-sprint-stats {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .archived-stat {
+      font-size: 12px;
+      color: #9096b0;
+    }
+
+    .archived-stat strong { color: #1a1d2e; }
+
+    /* ===================== MOVE TO SPRINT ===================== */
+    .backlog-move-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #4361ee;
+      background: #eef0ff;
+      border: 1px solid #c7ceff;
+      border-radius: 8px;
+      padding: 5px 12px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      letter-spacing: 0.03em;
+    }
+    .backlog-move-btn:hover { background: #4361ee; color: #fff; border-color: #4361ee; }
+
+    .backlog-item.moved { opacity: 0.45; }
+
+    .move-popup {
+      position: fixed;
+      z-index: 9999;
+      background: #fff;
+      border: 1px solid #e0e3f0;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(30,40,100,0.16);
+      min-width: 230px;
+      overflow: hidden;
+    }
+    .move-popup-header {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9096b0;
+      padding: 10px 14px 8px;
+      border-bottom: 1px solid #f0f2f8;
+    }
+    .move-popup-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1d2e;
+      transition: background 0.12s;
+    }
+    .move-popup-item:hover { background: #eef0ff; color: #4361ee; }
+    .move-popup-icon { width: 20px; text-align: center; font-size: 14px; }
+
+    /* ===================== ARCHIVED SPRINT ===================== */
+    .sprint-archive-badge {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.38);
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+
+    .archive-header-badge {
+      display: inline-block;
+      background: #f0f2f8;
+      color: #9096b0;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .sprint-panel[data-archived] .subtask { cursor: default; }
+    .sprint-panel[data-archived] .subtask:hover { background: transparent; }
+    .sprint-panel[data-archived] .subtask-actions { display: none !important; }
+    .sprint-panel[data-archived] header { opacity: 0.9; }
+
+    /* ===================== SUBTASK ACTIONS ===================== */
+    .subtask { position: relative; }
+
+    .subtask-actions {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.15s;
+      pointer-events: none;
+    }
+    .subtask:hover .subtask-actions {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .subtask-action-btn {
+      background: #f0f2ff;
+      border: 1px solid #dde0f0;
+      border-radius: 6px;
+      color: #9096b0;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      cursor: pointer;
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+    .subtask-action-btn:hover { background: #eef0ff; color: #4361ee; border-color: #c7ceff; }
+    .subtask-action-btn.del:hover { background: #fff1f1; color: #ef4444; border-color: #fecaca; }
+
+    .s2b-zone { margin-bottom: 12px; }
+
+    /* ===================== DRAFTS ===================== */
+    .drafts-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #4361ee;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(67,97,238,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+      z-index: 900;
+    }
+    .drafts-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(67,97,238,0.5); }
+
+    .drafts-fab-count {
+      position: absolute;
+      top: -3px; right: -3px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 18px; height: 18px;
+      border-radius: 20px;
+      padding: 0 4px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .drafts-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,29,46,0.25);
+      z-index: 910;
+      display: none;
+    }
+    .drafts-overlay.open { display: block; }
+
+    .drafts-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 360px;
+      height: 100vh;
+      background: #fff;
+      border-radius: 16px 0 0 16px;
+      box-shadow: -4px 0 40px rgba(30,40,100,0.14);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 920;
+    }
+    .drafts-panel.open { display: flex; }
+
+    .drafts-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #f0f2f8;
+      flex-shrink: 0;
+    }
+    .drafts-panel-title { font-size: 14px; font-weight: 700; color: #1a1d2e; }
+    .drafts-panel-close {
+      background: none; border: none; color: #9096b0;
+      font-size: 20px; cursor: pointer; line-height: 1; padding: 0 2px;
+    }
+    .drafts-panel-close:hover { color: #1a1d2e; }
+
+    .drafts-input-area {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f2f8;
+      flex-shrink: 0;
+    }
+    .drafts-textarea {
+      width: 100%;
+      background: #f8f9ff;
+      border: 1px solid #e0e3f0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #1a1d2e;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+      transition: border-color 0.15s;
+    }
+    .drafts-textarea:focus { border-color: #4361ee; background: #fff; }
+    .drafts-textarea::placeholder { color: #b0b4c8; }
+
+    .drafts-input-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .drafts-save-btn {
+      background: #4361ee; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 7px 14px; font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .drafts-save-btn:hover { background: #3451de; }
+    .drafts-hint { font-size: 10px; color: #c0c4d8; }
+
+    .drafts-list { overflow-y: auto; flex: 1; padding: 6px 0; }
+    .drafts-empty { font-size: 12px; color: #c0c4d8; text-align: center; padding: 20px; }
+
+    .draft-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 9px 16px;
+      border-bottom: 1px solid #f8f9ff;
+      transition: background 0.12s;
+    }
+    .draft-item:last-child { border-bottom: none; }
+    .draft-item:hover { background: #f8f9ff; }
+
+    .draft-item-body { flex: 1; min-width: 0; }
+    .draft-item-text { font-size: 13px; color: #1a1d2e; line-height: 1.4; user-select: text; cursor: text; }
+    .draft-item-time { font-size: 10px; color: #c0c4d8; margin-top: 2px; }
+
+    .draft-item-actions { display: flex; gap: 4px; flex-shrink: 0; padding-top: 1px; }
+    .draft-action-btn {
+      background: none;
+      border: 1px solid #e8eaf4;
+      border-radius: 6px;
+      color: #9096b0;
+      font-size: 11px;
+      padding: 2px 7px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .draft-action-btn.move:hover { background: #eef0ff; color: #4361ee; border-color: #c7ceff; }
+    .draft-action-btn.edit:hover { background: #fff8eb; color: #d97706; border-color: #fde68a; }
+    .draft-action-btn.del:hover  { background: #fff1f1; color: #ef4444; border-color: #fecaca; }
+
+    /* ===================== HEADER TOOLBAR ===================== */
+    .header-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar-btn {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9096b0;
+      background: #f0f2f8;
+      border: 1px solid #e0e3f0;
+      border-radius: 8px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all 0.12s;
+      letter-spacing: 0.02em;
+    }
+    .toolbar-btn:hover { background: #eef0ff; color: #4361ee; border-color: #c7ceff; }
+    .toolbar-btn.active { background: #eef0ff; color: #4361ee; border-color: #c7ceff; }
+
+    /* ===================== HIDE DONE ===================== */
+    .sprint-panel.hide-done .subtask.done { display: none !important; }
+
+    /* ===================== QUICK ADD ===================== */
+    .add-task-row { list-style: none; padding: 2px 10px 4px; }
+    .add-task-btn {
+      font-size: 12px;
+      color: #c0c4d8;
+      cursor: pointer;
+      display: inline-block;
+      transition: color 0.12s;
+      user-select: none;
+    }
+    .add-task-btn:hover { color: #4361ee; }
+    .quick-add-wrap { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .quick-add-input {
+      flex: 1;
+      min-width: 160px;
+      border: 1px solid #c7ceff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #1a1d2e;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    .quick-add-input:focus { border-color: #4361ee; }
+    .quick-add-save {
+      background: #4361ee; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 6px 12px; font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: background 0.12s; white-space: nowrap;
+    }
+    .quick-add-save:hover { background: #3451de; }
+    .quick-add-cancel {
+      background: none; color: #9096b0;
+      border: 1px solid #e0e3f0; border-radius: 8px;
+      padding: 6px 10px; font-size: 12px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .quick-add-cancel:hover { border-color: #c0c4d8; color: #4a5070; }
+
+    /* ===================== EXPORT MODAL ===================== */
+    .export-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,29,46,0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .export-modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      width: 580px;
+      max-width: 92vw;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 40px rgba(30,40,100,0.18);
+    }
+    .export-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .export-modal-title { font-size: 15px; font-weight: 700; color: #1a1d2e; }
+    .export-modal-close {
+      background: none; border: none;
+      font-size: 22px; color: #9096b0; cursor: pointer; line-height: 1; padding: 0 2px;
+    }
+    .export-modal-close:hover { color: #1a1d2e; }
+    .export-textarea {
+      flex: 1;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #1a1d2e;
+      background: #f8f9ff;
+      border: 1px solid #e0e3f0;
+      border-radius: 10px;
+      padding: 14px;
+      resize: none;
+      outline: none;
+      line-height: 1.7;
+      min-height: 260px;
+      max-height: 52vh;
+      overflow-y: auto;
+      user-select: text;
+    }
+    .export-modal-footer { display: flex; gap: 8px; margin-top: 12px; }
+    .export-copy-btn {
+      background: #4361ee; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 8px 18px; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: background 0.12s;
+    }
+    .export-copy-btn:hover { background: #3451de; }
+
+    /* ===================== CONTENT WEEK WIDGET ===================== */
+    .cw-wrap { margin-top: 16px; border: 1px solid #e8eaf4; border-radius: 12px; overflow: hidden; background: #fafbff; }
+    .cw-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #ece6ff; border-bottom: 1px solid #d8d0f8; }
+    .cw-title { font-size: 12px; font-weight: 700; color: #5a28b0; flex: 1; }
+    .cw-week { font-size: 11px; color: #8a6abf; }
+    .cw-link { font-size: 11px; font-weight: 600; color: #7c3aed; text-decoration: none; padding: 3px 10px; background: #fff; border: 1px solid #c8bcf0; border-radius: 20px; white-space: nowrap; }
+    .cw-link:hover { background: #ece6ff; }
+    .cw-grid { display: grid; grid-template-columns: 110px repeat(5,1fr); }
+    .cw-day-hd { padding: 6px 4px; text-align: center; font-size: 10px; font-weight: 700; color: #9096b0; background: #f5f5f8; border-bottom: 1px solid #e8eaf4; border-left: 1px solid #e8eaf4; }
+    .cw-day-hd:first-child { border-left: none; }
+    .cw-day-hd.cw-today { background: #eef0ff; color: #4361ee; }
+    .cw-day-hd .cw-date { display: block; font-size: 9px; font-weight: 500; color: #b0b4c8; }
+    .cw-row { display: contents; }
+    .cw-ch { padding: 6px 10px; font-size: 10px; font-weight: 700; color: #4a5070; background: #f5f5f8; border-top: 1px solid #e8eaf4; display: flex; align-items: flex-start; padding-top: 8px; }
+    .cw-cell { padding: 4px; border-top: 1px solid #e8eaf4; border-left: 1px solid #e8eaf4; display: flex; flex-direction: column; gap: 3px; min-height: 36px; }
+    .cw-chip { display: flex; align-items: center; gap: 3px; padding: 2px 6px 2px 3px; border-radius: 5px; font-size: 9px; font-weight: 600; cursor: pointer; border: 1px solid transparent; user-select: none; transition: opacity .1s; }
+    .cw-chip .cw-chk { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid currentColor; opacity: .5; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 7px; }
+    .cw-chip.done .cw-chk { opacity: 1; background: currentColor; }
+    .cw-chip.done .cw-chk::after { content: '✓'; color: #fff; }
+    .cw-chip.done { opacity: .5; text-decoration: line-through; }
+    .cw-tg { background:#e8f6ff; color:#0077bb; border-color:#b8e0f7; }
+    .cw-ig { background:#fff0f5; color:#b0004a; border-color:#f5c0d5; }
+    .cw-fb { background:#e8f0fe; color:#0e5cbf; border-color:#b8d0f7; }
+    .cw-vk { background:#edf3ff; color:#0050cc; border-color:#b8d0f7; }
+    .cw-mx { background:#f5f0ff; color:#6030c0; border-color:#d0b8f5; }
+    .cw-dz { background:#fff4eb; color:#b84400; border-color:#f5ceaa; }
+    .cw-bl { background:#f5f5f8; color:#3a3f5a; border-color:#d8d8e8; }
+    .cw-th { background:#f5f5f5; color:#333;    border-color:#ddd; }
+    .cw-yt { background:#fff0f0; color:#cc0000; border-color:#f5c0c0; }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 768px) {
+      body { flex-direction: column; overflow: auto; height: auto; }
+      .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; }
+      .sidebar-header { display: none; }
+      .sidebar-section { display: flex; padding: 10px 8px; gap: 6px; flex-shrink: 0; }
+      .sidebar-section-label { display: none; }
+      .sprint-item { border-left: none; border-bottom: 3px solid transparent; padding: 8px 12px; white-space: nowrap; }
+      .sprint-item.active { border-bottom-color: #4361ee; background: rgba(67,97,238,0.12); }
+      .sprint-item-progress { display: none; }
+      .main { padding: 16px; height: auto; }
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Delegator24 <span>·</span> Задачи</div>
+      <div class="sidebar-sub">Юлия Кочевная</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Инструменты</div>
+      <div class="sprint-item" data-sprint="content-hub" onclick="showSprint('content-hub')">
+        <div class="sprint-item-dates">📊 Контент-маркетинг</div>
+        <div class="sprint-item-progress">Карта · Матрица · Недельный план</div>
+      </div>
+    </div>
+
+    <div class="sidebar-year">2026</div>
+
+    <!-- Месяц: Июнь -->
+    <div class="month-group open" id="month-jun-2026">
+      <div class="month-header" onclick="toggleMonth('month-jun-2026')">
+        <div>
+          <div class="month-name">Июнь</div>
+          <div class="month-meta">2 спринта</div>
+        </div>
+        <div class="month-arrow">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 4l4 4 4-4" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="month-sprints">
+        <div class="sprint-item active" data-sprint="sprint-22-jun" onclick="showSprint('sprint-22-jun')">
+          <div class="sprint-item-dates">22–28 июня <span class="sprint-now-badge">сейчас</span></div>
+          <div class="sprint-item-progress" id="sidebar-progress-sprint-22-jun">загрузка...</div>
+        </div>
+        <div class="sprint-item" data-sprint="sprint-15-jun" onclick="showSprint('sprint-15-jun')">
+          <div class="sprint-item-dates">15–21 июня <span class="sprint-archive-badge">закрыт</span></div>
+          <div class="sprint-item-progress">4 / 13 выполнено</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Будущие месяцы добавятся сюда -->
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+
+    <!-- ====== СПРИНТ: 22–28 ИЮНЯ ====== -->
+    <div class="sprint-panel active" id="sprint-22-jun">
+
+      <header>
+        <div class="badge">Delegator24 · Маркетинг</div>
+        <h1>Неделя 22–28 июня</h1>
+        <p class="subtitle">Юлия Кочевная · Директор по маркетингу</p>
+        <div class="progress-wrap">
+          <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar-sprint-22-jun"></div></div>
+          <div class="progress-label" id="progress-label-sprint-22-jun">загрузка...</div>
+        </div>
+        <div class="header-toolbar">
+          <button class="toolbar-btn" onclick="collapseAll()">↑ Свернуть всё</button>
+          <button class="toolbar-btn" onclick="expandAll()">↓ Развернуть всё</button>
+          <button class="toolbar-btn" id="hide-done-btn" onclick="toggleHideDone()">✓ Скрыть выполненные</button>
+          <button class="toolbar-btn" onclick="showExport()">↗ Экспорт задач</button>
+        </div>
+      </header>
+
+
+      <!-- Новое (входящие) -->
+      <div class="section" id="s-new" style="display:none;">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fff8eb;">📥</div>
+          <div class="section-label">Новое · Входящие</div>
+          <span class="section-tag" style="background:#fff8eb;color:#d97706;">Разобрать</span>
+        </div>
+      </div>
+
+
+      <!-- Разовые задачи -->
+      <div class="section" id="s-today">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f5f5f5;">📋</div>
+          <div class="section-label">Разовые задачи · Входящее</div>
+          <span class="section-tag" style="background:#f5f5f5;color:#9096b0;">Входящее</span>
+        </div>
+
+        <div class="task-group task-group-bare" data-color="gray">
+          <ul class="subtask-list">
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Sendsay: настроить домен и DKIM-подпись — жду доступы к домену от партнёра Михаила</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">причина найдена</span>
+                  <span class="pill pill-week">ждём доступы</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Рекламный бюджет июля: 200 000 ₽ → определить каналы 2 и 3 + написать краткое обоснование по каждому (Яндекс Директ уже понятен — 100к)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p1">P1</span>
+                  <span class="pill pill-today">срочно</span>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- Аналитика и CRM -->
+      <div class="section" id="s-crm">
+        <div class="section-header">
+          <div class="section-icon icon-crm">🔧</div>
+          <div class="section-label">Аналитика и CRM</div>
+          <span class="section-tag tag-crm">Инфраструктура</span>
+        </div>
+
+        <div class="task-group" data-color="blue">
+          <div class="task-group-header">
+            <div class="task-group-title">Регулярные задачи · CRM</div>
+            <span class="task-group-count">0/3</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Прогресс сделок по воронке — движение по этапам, нет ли зависших без активности</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">ежедневно</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Актуальность данных в сделках: источники привлечения, статусы, заполнение полей</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">ежедневно</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Аудит касаний: своевременность и регулярность контактов с клиентами → рост конверсии в базе</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">ежедневно</span>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+        <div class="task-group" data-color="blue">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи · Настройка amoCRM</div>
+            <span class="task-group-count">0/7</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Карточка сделки, воронка, каналы, квалификация A/B/C/D. Единые формы Тильды подключены</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено 22.06</span></div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Исходящие звонки с записью из карточки сделки</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено 23.06</span></div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">МОПам: поиск по информации о клиенте через поисковые сети прямо из сделки</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено 23.06</span></div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Виджет местного времени клиента по номеру телефона в карточке сделки</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено 23.06</span></div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Настроить карточку компании + автозаполнение реквизитов по ИНН/названию</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p2">P2</span>
+                  <span class="pill pill-week">до 28.06</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Wazzap: выставить счёт и сделать заявку на оплату за июль (12 000 ₽)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p1">P1</span>
+                  <span class="pill pill-week">эта неделя</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Проставить каналы в ~70 существующих сделках (фильтр по FORMNAME — пачками, не по одной)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p2">P2</span>
+                  <span class="pill pill-week">до 28.06</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Интеграция бота с amoCRM: видеть активность лида в боте из карточки сделки + возможность ОП включиться в диалог</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p2">P2</span>
+                  <span class="pill pill-ai">интеграция</span>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+      </div>
+
+
+      <!-- Лидогенерация -->
+      <div class="section" id="s-leads">
+        <div class="section-header">
+          <div class="section-icon icon-leads">🎯</div>
+          <div class="section-label">Лидогенерация</div>
+          <span class="section-tag tag-leads">Новые лиды</span>
+        </div>
+
+        <div class="task-group" data-color="green">
+          <div class="task-group-header">
+            <div class="task-group-title">Регулярные задачи · Реклама</div>
+            <span class="task-group-count">0/2</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask">
+              <div class="sub-checkbox in-progress"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Яндекс Директ: диагностика — показы/клики, конверсия, динамика за 6 недель</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">еженедельно</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox in-progress"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Тестировать новые рекламные связки: объявление (поиск + РСЯ) → лид-магнит → воронка в боте</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">2× в месяц</span>
+                  <span class="pill pill-week">подготовить сейчас → запустить после</span>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+        <div class="task-group" data-color="green">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">0/8</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Глубокий анализ ЦА: ABC-сегменты, карта болей и смыслов, возражения → переупаковка позиционирования</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p1">P1</span>
+                  <span class="pill pill-today">эта неделя</span>
+                  <a href="https://miro.com/app/board/uXjVGGFwjDs=/?share_link_id=853044597433"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ Miro</a>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask subtask-sub">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Опросы текущей базы: что купили, почему, какие смыслы сработали (Яндекс.Взгляд / Формы / Юпифай)</div>
+                <div class="subtask-meta"><span class="pill pill-idea">количественный</span><span class="pill pill-week">→ следующий спринт</span></div>
+              </div>
+            </li>
+
+            <li class="subtask subtask-sub">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Анализ соцсетей, отзовиков, форумов, чатов — боли, жалобы, хейт конкурентов, за что хвалят</div>
+                <div class="subtask-meta"><span class="pill pill-idea">количественный</span></div>
+              </div>
+            </li>
+
+            <li class="subtask subtask-sub">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Кастдевы и JTBD — почему купили, какие возражения, что повлияло на решение</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-idea">качественный</span>
+                  <span class="pill" style="background:#edfaf3;color:#22a06b;border:1px solid #c3eedb;">есть свежие данные</span>
+                  <a href="https://habr.com/ru/articles/704812/"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ JTBD</a>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask subtask-sub">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Яндекс Вордстат — тренды и поисковые запросы: как аудитория формулирует свои боли</div>
+                <div class="subtask-meta"><span class="pill pill-idea">количественный</span></div>
+              </div>
+            </li>
+
+            <li class="subtask subtask-sub">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Анализ поведения в воронке — от точки входа до заявки: где теряются, что работает</div>
+                <div class="subtask-meta"><span class="pill pill-idea">качественный</span></div>
+              </div>
+            </li>
+
+            <li class="subtask subtask-sub">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Создать лид-магнит под актуальные боли ЦА (чеклист / гайд / калькулятор)</div>
+                <div class="subtask-meta"><span class="pill pill-idea">результат анализа</span></div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Сайт: разработка динамического прототипа главной страницы (Тильда или Figma)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p1">P1</span>
+                  <span class="pill pill-week">эта неделя</span>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+      </div>
+
+
+      <!-- Партнёрства -->
+      <div class="section" id="s-partner">
+        <div class="section-header">
+          <div class="section-icon icon-partner">🤝</div>
+          <div class="section-label">Партнёрства</div>
+          <span class="section-tag tag-partner">Развитие каналов</span>
+        </div>
+
+        <div class="task-group" data-color="amber">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи · Партнёрства с банками</div>
+            <span class="task-group-count">2/3</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Составить шаблон письма для партнёрских банков</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p1">P1</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Создать КП и опубликовать на <a href="https://kp.delegator24.biz" target="_blank">kp.delegator24.biz</a></div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p1">P1</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Передать материалы Елене и запустить рассылку</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p1">P1</span>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- Контент -->
+      <div class="section" id="s-content">
+        <div class="section-header">
+          <div class="section-icon icon-content">📝</div>
+          <div class="section-label">Контент-маркетинг</div>
+          <span class="section-tag tag-content">Прогрев и охват</span>
+        </div>
+
+        <div class="task-group" data-color="purple">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи · Настройка</div>
+            <span class="task-group-count">0/4</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">LiveDune: подключить интеграции со всеми соцсетями (pro.livedune.com)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p2">P2</span>
+                  <span class="pill pill-week">эта неделя</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">YouTube — создать и оформить аккаунт Д24, загрузить имеющийся контент, шапка + ссылки</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p2">P2</span>
+                  <span class="pill pill-week">эта неделя</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Отключить Maxgate от канала в Max</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-p2">P2</span>
+                  <span class="pill pill-week">эта неделя</span>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+        <!-- Мини-виджет недельного плана контента -->
+        <div class="cw-wrap">
+          <div class="cw-header">
+            <span class="cw-title">📅 Контент этой недели</span>
+            <span class="cw-week" id="cw-week-label"></span>
+            <a class="cw-link" href="#" onclick="showSprint('content-hub');return false;">Полная карта →</a>
+          </div>
+          <div id="cw-grid"></div>
+        </div>
+
+      </div>
+
+
+      <!-- ИИ-агенты -->
+      <div class="section" id="s-ai">
+        <div class="section-header">
+          <div class="section-icon icon-ai">🤖</div>
+          <div class="section-label">ИИ-агенты · Обучение и сборка</div>
+          <span class="section-tag tag-ai">AI-система</span>
+        </div>
+
+        <div class="task-group task-group-bare" data-color="sky">
+          <ul class="subtask-list">
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Пройти уроки 2 и 3</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-done">выполнено 27.06</span>
+                  <span class="pill pill-ai">обучение</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Создать чат-бота (практика по курсу) — Аргус работает в Telegram на подписке Claude</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-done">выполнено 27.06</span>
+                  <span class="pill pill-ai">практика</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Перенести бота на VPS-сервер (урок 4 · 30.06) — для работы 24/7</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-ai">практика</span>
+                  <span class="pill pill-week">эта неделя</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Подключить Telegram Personal API (api_id + api_hash) — чтобы Аргус мог читать чаты и писать от имени аккаунта. Telegram не даёт создать приложение, попробовать позже или с другого устройства</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-ai">интеграция</span>
+                  <span class="pill" style="background:#fff8eb;color:#b45309;border:1px solid #fde68a;">заблокировано Telegram</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Дозагрузить информацию и обучить (ChatGPT-экспорты, TG-канал, лиды, 4 презентации, чат с РОП → 14 wiki-статей)</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено 23.06</span></div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Полный аудит AI-инфраструктуры: 123 скилла проверено, TEAM.md → v2.1, создан /finance-advisor, добавлены /toc-analyzer + 6 SEO-подтипов, исправлен призрак /partnerships</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-done">выполнено 27.06</span>
+                  <span class="pill pill-ai">инфраструктура</span>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- Регулярная отчётность -->
+      <div class="section" id="s-reporting">
+        <div class="section-header">
+          <div class="section-icon" style="background:#edfaf3;">📊</div>
+          <div class="section-label">Регулярная отчётность</div>
+          <span class="section-tag" style="background:#edfaf3;color:#22a06b;">Регулярное</span>
+        </div>
+
+        <!-- Разовые задачи -->
+        <div class="task-group" data-color="teal">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи · настройка</div>
+            <span class="task-group-count">✓ 2/2</span>
+          </div>
+          <ul class="subtask-list">
+
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Автоматизация отчётности — выбрать решение</div>
+                <div class="subtask-meta">
+                  <span class="pill" style="background:#d1fae5;color:#065f46">✓ выбрали HTML + CSV-выгрузка</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Собрать дашборд аналитики лидов из amoCRM</div>
+                <div class="subtask-meta">
+                  <span class="pill" style="background:#d1fae5;color:#065f46">✓ готово</span>
+                  <a href="dashboard.html" target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#059669;text-decoration:none;border:1px solid #6ee7b7;border-radius:6px;padding:2px 8px;font-weight:600;">↗ дашборд</a>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+
+        <!-- Еженедельные — сворачиваемый -->
+        <div class="task-group" data-color="teal">
+          <div class="task-group-header">
+            <div class="task-group-title">Еженедельные задачи</div>
+            <span class="task-group-count">0/3</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Ежедневно: заполнять таблицу по метрикам прошлого дня для Романа</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">ежедневно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?pli=1&gid=726020795#gid=726020795"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox in-progress"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Еженедельные показатели по основным метрикам</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">еженедельно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?pli=1&gid=241894299#gid=241894299"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                  <a href="dashboard.html" target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#059669;text-decoration:none;border:1px solid #6ee7b7;border-radius:6px;padding:2px 8px;font-weight:600;">↗ дашборд</a>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox in-progress"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Еженедельный отчёт по OKR — стратегические цели и задачи (апдейт еженедельно, цели на месяц)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">еженедельно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1N-lpKRgmQ_1803Zs-Fwb6_Mi2_qHbltTQ3trgBfnxos/edit?pli=1&gid=1675440595#gid=1675440595"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+        <!-- Ежемесячные — сворачиваемый -->
+        <div class="task-group" data-color="teal">
+          <div class="task-group-header">
+            <div class="task-group-title">Ежемесячные задачи</div>
+            <span class="task-group-count">0/6</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Заявки на оплату по регулярным платежам</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <span class="pill" style="background:#f0f4ff;color:#4361ee">в первых числах</span>
+                  <a href="https://workspace.delegator24.ru/task/442717"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ задача</a>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox in-progress"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Ежемесячные показатели по основным метрикам</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?pli=1&gid=1700449446#gid=1700449446"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                  <a href="dashboard.html" target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#059669;text-decoration:none;border:1px solid #6ee7b7;border-radius:6px;padding:2px 8px;font-weight:600;">↗ дашборд</a>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox in-progress"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Отчёт по каналам привлечения</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <span class="pill" style="background:#d1fae5;color:#065f46">✓ автоматизировано</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1wxwS2Cn-D80f14GygrP4u2jws3Q4-dh36B-eJpp5zK8/edit?gid=649283860#gid=649283860"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                  <a href="dashboard.html" target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#059669;text-decoration:none;border:1px solid #6ee7b7;border-radius:6px;padding:2px 8px;font-weight:600;">↗ дашборд</a>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Планирование бюджета на следующий месяц</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <span class="pill pill-p1">до 26 числа</span>
+                  <a href="https://docs.google.com/spreadsheets/d/16WFJrZTOzzLT6F32B4OYqZlk3fnHhFPaSlpWFIDK9Fo/edit?gid=0#gid=0"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                </div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox in-progress"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Отчёты по эффективности каналов привлечения (разные срезы)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/16_43HAnjHeCsENXGg-VFKK9SxkmZtbtXSD5aKbOwMQk/edit?gid=1239880610#gid=1239880610"
+                     target="_blank" onclick="event.stopPropagation()"
+                     style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+      </div>
+
+
+      <hr class="divider">
+
+
+      <!-- Бэклог -->
+      <div class="section" id="s-backlog">
+        <div class="section-header">
+          <div class="section-icon icon-backlog">📦</div>
+          <div class="section-label">Бэклог</div>
+          <span class="section-tag tag-backlog">Идеи и отложенное</span>
+        </div>
+
+        <div class="task-group task-group-bare" data-color="gray">
+          <div class="backlog-list">
+
+        <div class="backlog-item" data-backlog-id="wazzap" style="background:#fff8eb;border:2px solid #fbbf24;">
+          <div class="backlog-dot" style="border-color:#f59e0b;"></div>
+          <div class="backlog-content">
+            <div class="backlog-title" style="color:#92400e;">⏰ Wazzap: переключить интеграцию из Планфикс в amoCRM</div>
+            <div class="backlog-desc">Подключить Telegram и Max как дополнительные каналы. Бюджет согласован с директором — 12 000 ₽/мес.</div>
+            <div class="backlog-meta">
+              <span class="pill" style="background:#fef3c7;color:#92400e;border:1px solid #fbbf24;font-weight:700;">▶ внести в план с 01.07</span>
+            </div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'wazzap','Wazzap: переключить интеграцию из Планфикс в amoCRM')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="email-funnel" style="background:#f0f0ff;border:2px solid #4361ee;">
+          <div class="backlog-dot" style="border-color:#4361ee;background:#4361ee;"></div>
+          <div class="backlog-content">
+            <div class="backlog-title" style="color:#1e2235;font-size:15px;font-weight:700;">✉️ Email-воронка: автоматическая цепочка догревающих писем</div>
+            <div class="backlog-desc">Как только лид оставляет заявку с email — попадает в автоматическую цепочку. Нужно: создать цепочку писем + согласовать с Михаилом → технические настройки (подключение, триггеры, автоматизация).</div>
+            <div class="backlog-meta">
+              <span class="pill" style="background:#4361ee;color:#fff;font-weight:700;">▶ следующая неделя</span>
+              <span class="pill" style="background:#eef0ff;color:#4361ee;">контент-маркетинг</span>
+              <span class="pill" style="background:#eef0ff;color:#4361ee;">согласование с Михаилом</span>
+            </div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'email-funnel','Email-воронка: автоматическая цепочка догревающих писем')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="seo-article-swap" style="background:#f0fff8;border:2px solid #10b981;">
+          <div class="backlog-dot" style="border-color:#10b981;background:#10b981;"></div>
+          <div class="backlog-content">
+            <div class="backlog-title" style="color:#1e2235;font-size:15px;font-weight:700;">🔗 SEO: обмен статьями с сервисом нарезки видео на шорты</div>
+            <div class="backlog-desc">Aleron Milenkin предложил обмен статьями — каждый пишет про сервис друг друга, +1 обратная ссылка для SEO. Их сервис про делегирование нарезки длинных видео на шорты хорошо вписывается в блог.</div>
+            <div class="backlog-meta">
+              <span class="pill" style="background:#10b981;color:#fff;font-weight:700;">▶ следующая неделя</span>
+              <span class="pill" style="background:#ecfdf5;color:#065f46;">SEO · контент</span>
+              <span class="pill" style="background:#ecfdf5;color:#065f46;">обмен ссылками</span>
+            </div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'seo-article-swap','SEO: обмен статьями с сервисом нарезки видео на шорты')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="transcribe">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">amoCRM: виджет оценки качества звонков и транскрибация</div>
+            <div class="backlog-desc">Все виджеты только платные — отложено до решения по бюджету.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">платные виджеты · отложено</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'transcribe','amoCRM: виджет оценки качества звонков и транскрибация')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="insta-ai">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Инста + Threads: автоматизировать комментинг через ИИ-агента</div>
+            <div class="backlog-desc">Заменить ручной комментинг на агента по заданным критериям аудитории.</div>
+            <ul class="plan-steps">
+              <li>Критерии: какие аккаунты, посты, тон комментариев</li>
+              <li>Инструменты: n8n + Instagram API / Make</li>
+              <li>Агент: парсинг постов ЦА → генерация → публикация</li>
+            </ul>
+            <div class="backlog-meta"><span class="pill pill-idea">идея · автоматизация</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'insta-ai','Инста + Threads: автоматизировать комментинг через ИИ-агента')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="lead-magnets">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Лид-магниты: новые форматы + SEO ТЗ</div>
+            <div class="backlog-desc">Расширить библиотеку лид-магнитов, подготовить ТЗ под новые страницы.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">в очереди</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'lead-magnets','Лид-магниты: новые форматы + SEO ТЗ')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="direct-offers">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Яндекс Директ: новые офферы и креативы</div>
+            <div class="backlog-desc">Текущие офферы устарели — CPA деградирует с 534 ₽ (янв) до 961 ₽ (июн). Обновить рекламные объявления и посадочные под новое позиционирование и язык ЦА. Делать после завершения ЦА-анализа и нового позиционирования.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">после ЦА-анализа · Директ · офферы</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'direct-offers','Яндекс Директ: новые офферы и креативы')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="salebot-amocrm-bridge">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Пересборка бота + интеграция с amoCRM</div>
+            <div class="backlog-desc">Полная пересборка воронки бота. Требования: (1) новые месседжи под позиционирование «операционный партнёр» на основе CustDev и ЦА-анализа; (2) сбор телефона внутри бота — после первого лид-магнита, не первым шагом; (3) скрипт-интеграция: Salebot callback → поиск сделки в amoCRM по телефону → обновление тегов/примечаний; (4) логика тегов — какие действия в боте что помечают. Делать после завершения ЦА-анализа и финализации лендинга на Тильде.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">после ЦА-анализа и лендинга · Salebot · amoCRM</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'salebot-amocrm-bridge','Salebot → amoCRM: связать бот с карточкой сделки')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="ai-calls">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">ИИ-ассистент на созвонах — авто-фиксация задач и решений</div>
+            <div class="backlog-desc">Аргус присутствует на созвонах, фиксирует задачи. После созвона — готовый список.</div>
+            <ul class="plan-steps">
+              <li><b>Сейчас:</b> записать созвон → загрузить транскрипт → Аргус анализирует</li>
+              <li><b>Следующий шаг:</b> Fireflies.ai или Otter.ai — бот сам заходит, пишет транскрипт</li>
+              <li><b>Интеграция:</b> транскрипт → Аргус → задачи → amoCRM или Telegram</li>
+            </ul>
+            <div class="backlog-meta"><span class="pill pill-idea">идея</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'ai-calls','ИИ-ассистент на созвонах — авто-фиксация задач и решений')">→ В спринт</button>
+          </div>
+        </div>
+
+          </div><!-- /backlog-list -->
+        </div><!-- /task-group -->
+
+      </div>
+
+    </div><!-- /sprint-22-jun -->
+
+
+    <!-- ====== АРХИВ: СПРИНТ 15–21 ИЮНЯ ====== -->
+    <div class="sprint-panel" id="sprint-15-jun" data-archived="true">
+
+      <header>
+        <div class="badge">Delegator24 · Маркетинг <span class="archive-header-badge">архив</span></div>
+        <h1>Неделя 15–21 июня</h1>
+        <p class="subtitle">Юлия Кочевная · Директор по маркетингу</p>
+        <div class="progress-wrap">
+          <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar-sprint-15-jun"></div></div>
+          <div class="progress-label" id="progress-label-sprint-15-jun"></div>
+        </div>
+      </header>
+
+
+      <!-- Second Brain: Настройка -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon" style="background:#e8f6ff;">🧠</div>
+          <div class="section-label">Second Brain · Настройка системы</div>
+          <span class="section-tag" style="background:#e8f6ff;color:#0284c7;">Система</span>
+        </div>
+        <div class="task-group">
+          <div class="task-group-header">
+            <div class="task-group-title">Базовая архитектура Second Brain</div>
+            <span class="task-group-count">0/7</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Провести интервью основателя — 6 блоков: личность, бизнес, история, цели, тактика, агент</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Создать CLAUDE.md — ядро Second Brain с профилем Юлии, бизнесом, фокусом и принципами</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Создать агента Аргус — AI-директор по развитию и системному мышлению, SKILL.md создан</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Добавить GPT-историю — ChatGPT Export → conversations.json (ожидали экспорт)</div>
+                <div class="subtask-meta"><span class="pill pill-week">перенесено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Загрузить 6 источников контекста в raw/ — GPT-история, TG-канал, презентации, звонки, переписки, заметки</div>
+                <div class="subtask-meta"><span class="pill pill-week">перенесено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Обработать источники → Karpathy Wiki — структурированные статьи в memory/wiki/</div>
+                <div class="subtask-meta"><span class="pill pill-week">перенесено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Провести первый утренний брифинг с Аргусом</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено</span></div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- CRM и Лидогенерация -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon icon-crm">🔧</div>
+          <div class="section-label">CRM и Лидогенерация</div>
+          <span class="section-tag tag-crm">Приоритет · дедлайн 19.06</span>
+        </div>
+        <div class="task-group">
+          <div class="task-group-header">
+            <div class="task-group-title">Высокий приоритет недели</div>
+            <span class="task-group-count">0/3</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">amoCRM: карточка контакта → сделки за июнь → воронка → задачи для МОП</div>
+                <div class="subtask-meta"><span class="pill pill-week">перенесено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Анализ ЦА потенциальных: мониторинг TG-чатов — ~2 часа, цитаты → триггеры и боли ФОП</div>
+                <div class="subtask-meta"><span class="pill pill-week">перенесено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Партнёрка с банками: отправить письма (Tier 1: Точка, Т-Банк, Модульбанк, Альфа)</div>
+                <div class="subtask-meta"><span class="pill pill-week">перенесено</span></div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- Контент -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon icon-content">📝</div>
+          <div class="section-label">Контент</div>
+          <span class="section-tag tag-content">Если есть время</span>
+        </div>
+        <div class="task-group">
+          <div class="task-group-header">
+            <div class="task-group-title">Контент-задачи недели</div>
+            <span class="task-group-count">0/3</span>
+          </div>
+          <ul class="subtask-list">
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Согласование контента: Telegram, Тредс, блог — только если контент от сотрудника готов</div>
+                <div class="subtask-meta"><span class="pill pill-week">не выполнено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">YouTube: переоформление аккаунта Д24 — оценить сложность, делать если складывается по времени</div>
+                <div class="subtask-meta"><span class="pill pill-week">не выполнено</span></div>
+              </div>
+            </li>
+
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Дзен: публикация статьи — только если есть готовый материал</div>
+                <div class="subtask-meta"><span class="pill pill-week">не выполнено</span></div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+
+      <hr class="divider">
+
+
+      <!-- Отложено -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon icon-backlog">📦</div>
+          <div class="section-label">Сдвинуто на следующую неделю</div>
+          <span class="section-tag tag-backlog">Перенесено</span>
+        </div>
+
+        <div class="backlog-item">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Инста: съёмка рилс с Романом и сотрудниками</div>
+            <div class="backlog-desc">Нереально за 3 дня — нужен отдельный слот на следующей неделе.</div>
+            <div class="backlog-meta"><span class="pill pill-week">сдвинуто</span></div>
+          </div>
+        </div>
+
+        <div class="backlog-item">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Сайт: прототип главной страницы</div>
+            <div class="backlog-desc">Ждали анализа ЦА. Начать после получения данных.</div>
+            <div class="backlog-meta"><span class="pill pill-week">ждёт данных ЦА</span></div>
+          </div>
+        </div>
+
+        <div class="backlog-item">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Лид-магниты, SEO ТЗ</div>
+            <div class="backlog-desc">Без жёсткого срока.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">без срока</span></div>
+          </div>
+        </div>
+
+        <div class="backlog-item">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Видео-контент: сценарии и контроль съёмки</div>
+            <div class="backlog-desc">⛔ Заблокировано: ждут согласования бюджета. Срок неизвестен до решения.</div>
+            <div class="backlog-meta"><span class="pill pill-p1">заблокировано · бюджет</span></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /sprint-15-jun -->
+
+    <!-- ====== КОНТЕНТ-МАРКЕТИНГ ====== -->
+    <div class="sprint-panel" id="content-hub" style="margin:-32px -28px;">
+      <iframe src="content_hub.html" style="width:100%;height:100vh;border:none;display:block;"></iframe>
+    </div>
+
+  </main>
+
+
+<script>
+  const STORAGE_KEY = 'delegator24_tasks_v2';
+
+  var FIREBASE_CONFIG = {
+    apiKey:            "AIzaSyDeGmw8aQPJXdZOmG4Y_1Lyv3h0nAzPzPM",
+    authDomain:        "delegator24-55500.firebaseapp.com",
+    databaseURL:       "https://delegator24-55500-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:         "delegator24-55500",
+    storageBucket:     "delegator24-55500.firebasestorage.app",
+    messagingSenderId: "749886002183",
+    appId:             "1:749886002183:web:4e4dc29c5660a2a810c6a2"
+  };
+  var fbDb = null;
+  try {
+    if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    fbDb = firebase.database();
+  } catch(e) { fbDb = null; }
+
+  var _taskStateCache = null;
+
+  function loadState() {
+    if (_taskStateCache !== null) return _taskStateCache;
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+  function saveState(state) {
+    _taskStateCache = state;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (fbDb) try { fbDb.ref('tasks/state').set(state); } catch(e) {}
+  }
+
+  function getSubtaskId(el) {
+    return el.querySelector('.subtask-title')?.textContent?.trim().slice(0, 60) || '';
+  }
+
+  function applyDone(subtask, isDone) {
+    const cb = subtask.querySelector('.sub-checkbox');
+    if (isDone) {
+      subtask.classList.add('done');
+      cb.classList.add('checked');
+      cb.classList.remove('in-progress');
+    } else {
+      subtask.classList.remove('done');
+      cb.classList.remove('checked');
+    }
+  }
+
+  function updateSectionCount(section) {
+    if (!section) return;
+    const countEl = section.querySelector('.section-header .section-count');
+    if (!countEl) return;
+    const all = Array.from(section.querySelectorAll('.subtask')).filter(st => st.style.display !== 'none');
+    const done = all.filter(st => st.classList.contains('done')).length;
+    countEl.textContent = done + '/' + all.length;
+    if (done === all.length && all.length > 0) {
+      countEl.style.cssText = 'background:#d1fae5;border-color:#a7f3d0;color:#15803d;';
+    } else {
+      countEl.style.cssText = '';
+    }
+  }
+
+  function updateBacklogCount() {
+    const section = document.getElementById('s-backlog');
+    if (!section) return;
+    const countEl = section.querySelector('.section-header .section-count');
+    if (!countEl) return;
+    const total = Array.from(section.querySelectorAll('.backlog-item')).filter(el =>
+      !el.classList.contains('moved') && el.style.display !== 'none'
+    ).length;
+    countEl.textContent = total;
+    countEl.style.cssText = '';
+  }
+
+  function updateAllSectionCounts() {
+    document.querySelectorAll('.sprint-panel.active .section').forEach(section => {
+      if (section.id === 's-backlog') updateBacklogCount();
+      else updateSectionCount(section);
+    });
+  }
+
+  function updateGroupCount(group) {
+    const all = group.querySelectorAll('.subtask');
+    const done = group.querySelectorAll('.subtask.done').length;
+    const countEl = group.querySelector('.task-group-count');
+    if (countEl) countEl.textContent = done + '/' + all.length;
+    if (done === all.length && all.length > 0) group.classList.add('all-done');
+    else group.classList.remove('all-done');
+  }
+
+  function updateProgress(sprintId) {
+    const panel = document.getElementById(sprintId);
+    if (!panel) return;
+    const all = panel.querySelectorAll('.subtask');
+    const done = panel.querySelectorAll('.subtask.done').length;
+    const pct = all.length ? Math.round(done / all.length * 100) : 0;
+    const bar = document.getElementById('progress-bar-' + sprintId);
+    const label = document.getElementById('progress-label-' + sprintId);
+    const sidebarLabel = document.getElementById('sidebar-progress-' + sprintId);
+    if (bar) bar.style.width = pct + '%';
+    if (label) label.textContent = done + ' из ' + all.length + ' подзадач · ' + pct + '%';
+    if (sidebarLabel) sidebarLabel.textContent = done + '/' + all.length + ' выполнено';
+  }
+
+  // ===================== MOVE TO SPRINT =====================
+  const MOVES_KEY = 'delegator24_moves_v1';
+  function loadMoves() { try { return JSON.parse(localStorage.getItem(MOVES_KEY)) || {}; } catch { return {}; } }
+  function saveMoves(m) { localStorage.setItem(MOVES_KEY, JSON.stringify(m)); }
+
+  const SECTIONS = [
+    { id: 's-new',       icon: '📥', label: 'Новое · Входящие' },
+    { id: 's-today',     icon: '🔥', label: 'На сегодня' },
+    { id: 's-crm',       icon: '🔧', label: 'Аналитика и CRM' },
+    { id: 's-leads',     icon: '🎯', label: 'Лидогенерация' },
+    { id: 's-partner',   icon: '🤝', label: 'Партнёрства' },
+    { id: 's-content',   icon: '📝', label: 'Контент' },
+    { id: 's-ai',        icon: '🤖', label: 'ИИ-агенты' },
+    { id: 's-reporting', icon: '📊', label: 'Регулярная отчётность' },
+  ];
+
+  function openMovePopup(e, backlogId, title, callback) {
+    e.stopPropagation();
+    closeMovePopup();
+    const popup = document.createElement('div');
+    popup.className = 'move-popup';
+    popup.id = 'move-popup';
+    const hdr = document.createElement('div');
+    hdr.className = 'move-popup-header';
+    hdr.textContent = 'Добавить в секцию:';
+    popup.appendChild(hdr);
+    SECTIONS.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'move-popup-item';
+      item.innerHTML = `<span class="move-popup-icon">${s.icon}</span>${s.label}`;
+      item.onclick = (ev) => {
+        ev.stopPropagation();
+        if (callback) { closeMovePopup(); callback(s.id); }
+        else confirmMove(backlogId, title, s.id);
+      };
+      popup.appendChild(item);
+    });
+    document.body.appendChild(popup);
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const popupH = Math.min(SECTIONS.length * 42 + 36, 320);
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < popupH) {
+      popup.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+    } else {
+      popup.style.top = (rect.bottom + 6) + 'px';
+    }
+    const left = Math.min(rect.left, window.innerWidth - 260);
+    popup.style.left = Math.max(4, left) + 'px';
+    setTimeout(() => document.addEventListener('click', closeMovePopup, { once: true }), 0);
+  }
+
+  function closeMovePopup() {
+    const p = document.getElementById('move-popup');
+    if (p) p.remove();
+  }
+
+  function getOrCreateMovedZone(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return null;
+    let zone = section.querySelector('.moved-zone');
+    if (!zone) {
+      zone = document.createElement('div');
+      zone.className = 'task-group moved-zone';
+      zone.innerHTML = `
+        <div class="task-group-header">
+          <div class="task-group-title">Из бэклога</div>
+          <span class="task-group-count">0/0</span>
+        </div>
+        <ul class="subtask-list"></ul>`;
+      section.appendChild(zone);
+    }
+    return zone;
+  }
+
+  function addSubtaskToZone(zone, backlogId, title, isDone) {
+    const list = zone.querySelector('.subtask-list');
+    const li = document.createElement('li');
+    li.className = 'subtask' + (isDone ? ' done' : '');
+    li.dataset.backlogRef = backlogId;
+    li.innerHTML = `
+      <div class="sub-checkbox${isDone ? ' checked' : ''}"></div>
+      <div class="subtask-body">
+        <div class="subtask-title">${title}</div>
+        <div class="subtask-meta"><span class="pill pill-idea">из бэклога</span></div>
+      </div>`;
+    li.addEventListener('click', () => {
+      const done = li.classList.contains('done');
+      applyDone(li, !done);
+      const st = loadState();
+      st['backlog:' + backlogId] = !done;
+      saveState(st);
+      updateGroupCount(zone);
+      updateSectionCount(li.closest('.section'));
+      const sp = li.closest('.sprint-panel');
+      if (sp) updateProgress(sp.id);
+    });
+    addSubtaskActions(li);
+    list.appendChild(li);
+    return li;
+  }
+
+  function markBacklogMoved(backlogId) {
+    const item = document.querySelector(`[data-backlog-id="${backlogId}"]`);
+    if (!item) return;
+    item.classList.add('moved');
+    const btn = item.querySelector('.backlog-move-btn');
+    if (btn) btn.remove();
+    const meta = item.querySelector('.backlog-meta');
+    if (meta && !meta.querySelector('.moved-pill')) {
+      const lbl = document.createElement('span');
+      lbl.className = 'pill pill-done moved-pill';
+      lbl.style.marginTop = '8px';
+      lbl.textContent = '✓ добавлено в спринт';
+      meta.appendChild(lbl);
+    }
+    updateBacklogCount();
+  }
+
+  function confirmMove(backlogId, title, sectionId) {
+    closeMovePopup();
+    const zone = getOrCreateMovedZone(sectionId);
+    if (!zone) return;
+    if (zone.querySelector(`[data-backlog-ref="${backlogId}"]`)) return;
+    const isDone = loadState()['backlog:' + backlogId] === true;
+    addSubtaskToZone(zone, backlogId, title, isDone);
+    updateGroupCount(zone);
+    const sp = zone.closest('.sprint-panel');
+    if (sp) updateProgress(sp.id);
+    markBacklogMoved(backlogId);
+    const moves = loadMoves();
+    moves[backlogId] = { sectionId, title };
+    saveMoves(moves);
+  }
+
+  function restoreMoves() {
+    const moves = loadMoves();
+    const state = loadState();
+    Object.entries(moves).forEach(([backlogId, { sectionId, title }]) => {
+      const zone = getOrCreateMovedZone(sectionId);
+      if (!zone) return;
+      if (zone.querySelector(`[data-backlog-ref="${backlogId}"]`)) return;
+      const isDone = state['backlog:' + backlogId] === true;
+      addSubtaskToZone(zone, backlogId, title, isDone);
+      updateGroupCount(zone);
+      markBacklogMoved(backlogId);
+    });
+    document.querySelectorAll('.sprint-panel').forEach(p => updateProgress(p.id));
+  }
+  // ===================== END MOVE =====================
+
+  // ===================== SPRINT → BACKLOG =====================
+  const S2B_KEY = 'delegator24_s2b_v1';
+  function loadS2B() { try { return JSON.parse(localStorage.getItem(S2B_KEY)) || {}; } catch { return {}; } }
+  function saveS2B(d) { localStorage.setItem(S2B_KEY, JSON.stringify(d)); }
+
+  const DELETED_KEY = 'delegator24_deleted_v1';
+  function loadDeleted() { try { return JSON.parse(localStorage.getItem(DELETED_KEY)) || {}; } catch { return {}; } }
+  function saveDeleted(d) { localStorage.setItem(DELETED_KEY, JSON.stringify(d)); }
+
+  const BACKLOG_DELETED_KEY = 'delegator24_backlog_deleted_v1';
+  function loadBacklogDeleted() { try { return JSON.parse(localStorage.getItem(BACKLOG_DELETED_KEY)) || {}; } catch { return {}; } }
+  function saveBacklogDeleted(d) { localStorage.setItem(BACKLOG_DELETED_KEY, JSON.stringify(d)); }
+
+  function deleteBacklogItem(item) {
+    const backlogId = item.dataset.backlogId;
+    if (backlogId) {
+      const deleted = loadBacklogDeleted();
+      deleted[backlogId] = true;
+      saveBacklogDeleted(deleted);
+      const moves = loadMoves();
+      if (moves[backlogId]) { delete moves[backlogId]; saveMoves(moves); }
+    }
+    const s2bKey = item.dataset.s2bKey;
+    if (s2bKey) {
+      const s2b = loadS2B(); delete s2b[s2bKey]; saveS2B(s2b);
+      const del = loadDeleted(); del[s2bKey] = true; saveDeleted(del);
+    }
+    item.remove();
+    updateBacklogCount();
+  }
+
+  function addBacklogDeleteBtn(item) {
+    const btn = document.createElement('button');
+    btn.className = 'backlog-del-btn';
+    btn.textContent = '✕';
+    btn.title = 'Удалить';
+    btn.addEventListener('click', (e) => { e.stopPropagation(); deleteBacklogItem(item); });
+    item.appendChild(btn);
+  }
+
+  function deleteSubtask(subtask) {
+    const customId = subtask.dataset.customId;
+    if (customId) {
+      const ct = loadCustomTasks();
+      Object.keys(ct).forEach(k => {
+        ct[k] = ct[k].filter(t => t.id !== customId);
+        if (!ct[k].length) delete ct[k];
+      });
+      saveCustomTasks(ct);
+    }
+    const taskKey = getSubtaskId(subtask);
+    const backlogRef = subtask.dataset.backlogRef;
+
+    if (backlogRef) {
+      const moves = loadMoves(); delete moves[backlogRef]; saveMoves(moves);
+      const dm = loadDraftMoves(); if (dm[backlogRef]) { delete dm[backlogRef]; saveDraftMoves(dm); }
+    } else {
+      const del = loadDeleted(); del[taskKey] = true; saveDeleted(del);
+    }
+
+    const st = loadState(); delete st[taskKey]; delete st['backlog:' + (backlogRef || taskKey)]; saveState(st);
+
+    const group = subtask.closest('.task-group');
+    const section = subtask.closest('.section');
+    subtask.remove();
+
+    if (group) {
+      updateGroupCount(group);
+      if (!group.querySelectorAll('.subtask').length &&
+          (group.classList.contains('draft-zone') || group.classList.contains('moved-zone'))) {
+        group.remove();
+        if (section?.id === 's-new' && !section.querySelectorAll('.task-group').length)
+          section.style.display = 'none';
+      }
+    }
+    updateSectionCount(section);
+    const sp = document.querySelector('.sprint-panel.active');
+    if (sp) updateProgress(sp.id);
+  }
+
+  function addSubtaskActions(subtask) {
+    const wrap = document.createElement('div');
+    wrap.className = 'subtask-actions';
+
+    const backlogBtn = document.createElement('button');
+    backlogBtn.className = 'subtask-action-btn';
+    backlogBtn.textContent = '↙ бэклог';
+    backlogBtn.addEventListener('click', (e) => { e.stopPropagation(); moveSubtaskToBacklog(subtask); });
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'subtask-action-btn del';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Удалить задачу';
+    delBtn.addEventListener('click', (e) => { e.stopPropagation(); deleteSubtask(subtask); });
+
+    wrap.appendChild(backlogBtn);
+    wrap.appendChild(delBtn);
+    subtask.appendChild(wrap);
+  }
+
+  function getOrCreateS2BZone() {
+    const backlogSection = document.getElementById('s-backlog');
+    if (!backlogSection) return null;
+    let zone = backlogSection.querySelector('.s2b-zone');
+    if (!zone) {
+      zone = document.createElement('div');
+      zone.className = 's2b-zone';
+      const taskGroup = backlogSection.querySelector('.task-group');
+      if (taskGroup) backlogSection.insertBefore(zone, taskGroup);
+      else backlogSection.appendChild(zone);
+    }
+    return zone;
+  }
+
+  function addS2BBacklogItem(zone, taskKey, title) {
+    for (const el of zone.querySelectorAll('[data-s2b-key]')) {
+      if (el.dataset.s2bKey === taskKey) return;
+    }
+    const item = document.createElement('div');
+    item.className = 'backlog-item';
+    item.dataset.s2bKey = taskKey;
+
+    const dot = document.createElement('div');
+    dot.className = 'backlog-dot';
+    dot.style.borderColor = '#4361ee';
+
+    const content = document.createElement('div');
+    content.className = 'backlog-content';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'backlog-title';
+    titleEl.textContent = title;
+
+    const meta = document.createElement('div');
+    meta.className = 'backlog-meta';
+    const pill = document.createElement('span');
+    pill.className = 'pill pill-active';
+    pill.textContent = 'из спринта';
+    meta.appendChild(pill);
+
+    const btn = document.createElement('button');
+    btn.className = 'backlog-move-btn';
+    btn.textContent = '↩ Вернуть в спринт';
+    btn.addEventListener('click', (e) => { e.stopPropagation(); returnToSprint(taskKey); });
+
+    content.appendChild(titleEl);
+    content.appendChild(meta);
+    content.appendChild(btn);
+    item.appendChild(dot);
+    item.appendChild(content);
+    addBacklogDeleteBtn(item);
+    zone.appendChild(item);
+  }
+
+  function moveSubtaskToBacklog(subtask) {
+    // Case 1: subtask was moved from backlog → reverse that move
+    const backlogRef = subtask.dataset.backlogRef;
+    if (backlogRef) {
+      const dm = loadDraftMoves();
+      if (dm[backlogRef]) { delete dm[backlogRef]; saveDraftMoves(dm); }
+      const sprintPanel = subtask.closest('.sprint-panel');
+      const zone = subtask.closest('.moved-zone') || subtask.closest('.draft-zone');
+      subtask.remove();
+      if (zone) {
+        if (!zone.querySelectorAll('.subtask').length) zone.remove();
+        else updateGroupCount(zone);
+      }
+      if (sprintPanel) updateProgress(sprintPanel.id);
+      const moves = loadMoves();
+      delete moves[backlogRef];
+      saveMoves(moves);
+      // Restore original backlog item
+      const backlogItem = document.querySelector(`[data-backlog-id="${backlogRef}"]`);
+      if (backlogItem) {
+        backlogItem.classList.remove('moved');
+        const movedPill = backlogItem.querySelector('.moved-pill');
+        if (movedPill) movedPill.remove();
+        if (!backlogItem.querySelector('.backlog-move-btn')) {
+          const origTitle = backlogItem.querySelector('.backlog-title')?.textContent?.trim() || '';
+          const btn = document.createElement('button');
+          btn.className = 'backlog-move-btn';
+          btn.textContent = '→ В спринт';
+          btn.addEventListener('click', (e) => openMovePopup(e, backlogRef, origTitle));
+          backlogItem.querySelector('.backlog-content').appendChild(btn);
+        }
+      }
+      return;
+    }
+
+    // Case 2: regular sprint task → send to backlog
+    const taskKey = getSubtaskId(subtask);
+    const title = subtask.querySelector('.subtask-title')?.textContent?.trim() || '';
+    subtask.style.display = 'none';
+    const group = subtask.closest('.task-group');
+    if (group) updateGroupCount(group);
+    const sp = subtask.closest('.sprint-panel');
+    if (sp) updateProgress(sp.id);
+    const zone = getOrCreateS2BZone();
+    if (zone) addS2BBacklogItem(zone, taskKey, title);
+    const s2b = loadS2B();
+    s2b[taskKey] = { title };
+    saveS2B(s2b);
+    updateBacklogCount();
+  }
+
+  function returnToSprint(taskKey) {
+    // Show original subtask
+    document.querySelectorAll('.subtask').forEach(st => {
+      if (getSubtaskId(st) === taskKey) {
+        st.style.display = '';
+        const group = st.closest('.task-group');
+        if (group) updateGroupCount(group);
+        const sp = st.closest('.sprint-panel');
+        if (sp) updateProgress(sp.id);
+      }
+    });
+    // Remove s2b backlog item
+    document.querySelectorAll(`[data-s2b-key]`).forEach(el => {
+      if (el.dataset.s2bKey === taskKey) {
+        const zone = el.closest('.s2b-zone');
+        el.remove();
+        if (zone && !zone.children.length) zone.remove();
+      }
+    });
+    const s2b = loadS2B();
+    delete s2b[taskKey];
+    saveS2B(s2b);
+    updateBacklogCount();
+  }
+
+  function restoreS2B() {
+    const s2b = loadS2B();
+    if (!Object.keys(s2b).length) return;
+    const zone = getOrCreateS2BZone();
+    if (!zone) return;
+    Object.entries(s2b).forEach(([taskKey, { title }]) => {
+      document.querySelectorAll('.subtask').forEach(st => {
+        if (getSubtaskId(st) === taskKey) st.style.display = 'none';
+      });
+      addS2BBacklogItem(zone, taskKey, title);
+    });
+    document.querySelectorAll('.task-group').forEach(updateGroupCount);
+    document.querySelectorAll('.sprint-panel').forEach(p => updateProgress(p.id));
+  }
+  // ===================== END S2B =====================
+
+  // ===================== DRAFTS =====================
+  const DRAFTS_KEY = 'delegator24_drafts_v1';
+  function loadDrafts() { try { return JSON.parse(localStorage.getItem(DRAFTS_KEY)) || []; } catch { return []; } }
+  function saveDrafts(d) { localStorage.setItem(DRAFTS_KEY, JSON.stringify(d)); }
+
+  function toggleDraftsPanel() {
+    const panel = document.getElementById('drafts-panel');
+    const overlay = document.getElementById('drafts-overlay');
+    const isOpen = panel.classList.toggle('open');
+    overlay.classList.toggle('open', isOpen);
+    if (isOpen) setTimeout(() => document.getElementById('drafts-textarea').focus(), 50);
+  }
+
+  function saveDraftFromInput() {
+    const ta = document.getElementById('drafts-textarea');
+    const text = ta.value.trim();
+    if (!text) return;
+    const drafts = loadDrafts();
+    drafts.unshift({ id: Date.now(), text, ts: Date.now() });
+    saveDrafts(drafts);
+    ta.value = '';
+    renderDrafts();
+    updateDraftsCount();
+  }
+
+  function deleteDraft(id) {
+    saveDrafts(loadDrafts().filter(d => d.id !== id));
+    renderDrafts();
+    updateDraftsCount();
+  }
+
+  function formatDraftTime(ts) {
+    const d = new Date(ts);
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60000) return 'только что';
+    if (diff < 3600000) return Math.floor(diff / 60000) + ' мин назад';
+    if (d.toDateString() === now.toDateString())
+      return d.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('ru', { day: 'numeric', month: 'short' });
+  }
+
+  function addDraftToSection(sectionId, text) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    section.style.display = '';
+    let zone = section.querySelector('.draft-zone');
+    if (!zone) {
+      zone = document.createElement('div');
+      zone.className = 'task-group draft-zone';
+      zone.innerHTML = `
+        <div class="task-group-header">
+          <div class="task-group-title">Из черновиков</div>
+          <span class="task-group-count">0/0</span>
+        </div>
+        <ul class="subtask-list"></ul>`;
+      section.appendChild(zone);
+    }
+    const uid = 'draft-' + Date.now();
+    addSubtaskToZone(zone, uid, text, false);
+    updateGroupCount(zone);
+    const sp = zone.closest('.sprint-panel');
+    if (sp) updateProgress(sp.id);
+    const dm = loadDraftMoves();
+    dm[uid] = { sectionId, text };
+    saveDraftMoves(dm);
+  }
+
+  function editDraft(draftItem, id, currentText) {
+    const body = draftItem.querySelector('.draft-item-body');
+    const textEl = draftItem.querySelector('.draft-item-text');
+    const timeEl = draftItem.querySelector('.draft-item-time');
+    const actions = draftItem.querySelector('.draft-item-actions');
+
+    const ta = document.createElement('textarea');
+    ta.className = 'drafts-textarea';
+    ta.style.minHeight = '58px';
+    ta.style.marginBottom = '6px';
+    ta.value = currentText;
+    textEl.replaceWith(ta);
+    if (timeEl) timeEl.style.display = 'none';
+    actions.style.display = 'none';
+
+    const btnWrap = document.createElement('div');
+    btnWrap.style.cssText = 'display:flex;gap:6px;margin-top:4px;';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'drafts-save-btn';
+    saveBtn.style.cssText = 'font-size:11px;padding:5px 10px;';
+    saveBtn.textContent = 'Сохранить';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'draft-action-btn';
+    cancelBtn.textContent = 'Отмена';
+
+    btnWrap.appendChild(saveBtn);
+    btnWrap.appendChild(cancelBtn);
+    body.appendChild(btnWrap);
+
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+
+    function save() {
+      const newText = ta.value.trim();
+      if (!newText) return;
+      const drafts = loadDrafts();
+      const d = drafts.find(d => d.id === id);
+      if (d) d.text = newText;
+      saveDrafts(drafts);
+      renderDrafts();
+    }
+
+    saveBtn.addEventListener('click', save);
+    cancelBtn.addEventListener('click', renderDrafts);
+    ta.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); save(); }
+      if (e.key === 'Escape') renderDrafts();
+    });
+  }
+
+  function renderDrafts() {
+    const list = document.getElementById('drafts-list');
+    if (!list) return;
+    const drafts = loadDrafts();
+    if (!drafts.length) {
+      list.innerHTML = '<div class="drafts-empty">Черновиков нет</div>';
+      return;
+    }
+    list.innerHTML = '';
+    drafts.forEach(d => {
+      const item = document.createElement('div');
+      item.className = 'draft-item';
+
+      const body = document.createElement('div');
+      body.className = 'draft-item-body';
+      const textEl = document.createElement('div');
+      textEl.className = 'draft-item-text';
+      textEl.textContent = d.text;
+      const timeEl = document.createElement('div');
+      timeEl.className = 'draft-item-time';
+      timeEl.textContent = formatDraftTime(d.ts);
+      body.appendChild(textEl);
+      body.appendChild(timeEl);
+
+      const actions = document.createElement('div');
+      actions.className = 'draft-item-actions';
+
+      const editBtn = document.createElement('button');
+      editBtn.className = 'draft-action-btn edit';
+      editBtn.textContent = '✎';
+      editBtn.title = 'Редактировать';
+      editBtn.addEventListener('click', (e) => { e.stopPropagation(); editDraft(item, d.id, d.text); });
+
+      const moveBtn = document.createElement('button');
+      moveBtn.className = 'draft-action-btn move';
+      moveBtn.textContent = '→';
+      moveBtn.title = 'В спринт';
+      moveBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openMovePopup(e, null, d.text, (sectionId) => {
+          addDraftToSection(sectionId, d.text);
+          deleteDraft(d.id);
+        });
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'draft-action-btn del';
+      delBtn.textContent = '✕';
+      delBtn.title = 'Удалить';
+      delBtn.addEventListener('click', () => deleteDraft(d.id));
+
+      actions.appendChild(editBtn);
+      actions.appendChild(moveBtn);
+      actions.appendChild(delBtn);
+      item.appendChild(body);
+      item.appendChild(actions);
+      list.appendChild(item);
+    });
+  }
+
+  function updateDraftsCount() {
+    const el = document.getElementById('drafts-count');
+    if (!el) return;
+    const n = loadDrafts().length;
+    el.textContent = n;
+    el.style.display = n > 0 ? 'flex' : 'none';
+  }
+  const DRAFT_MOVES_KEY = 'delegator24_draft_moves_v1';
+  function loadDraftMoves() { try { return JSON.parse(localStorage.getItem(DRAFT_MOVES_KEY)) || {}; } catch { return {}; } }
+  function saveDraftMoves(d) { localStorage.setItem(DRAFT_MOVES_KEY, JSON.stringify(d)); }
+
+  function restoreDraftMoves() {
+    const draftMoves = loadDraftMoves();
+    if (!Object.keys(draftMoves).length) return;
+    const state = loadState();
+    Object.entries(draftMoves).forEach(([uid, { sectionId, text }]) => {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+      section.style.display = '';
+      let zone = section.querySelector('.draft-zone');
+      if (!zone) {
+        zone = document.createElement('div');
+        zone.className = 'task-group draft-zone';
+        zone.innerHTML = `
+          <div class="task-group-header">
+            <div class="task-group-title">Из черновиков</div>
+            <span class="task-group-count">0/0</span>
+          </div>
+          <ul class="subtask-list"></ul>`;
+        section.appendChild(zone);
+      }
+      if (zone.querySelector(`[data-backlog-ref="${uid}"]`)) return;
+      const isDone = state['backlog:' + uid] === true;
+      addSubtaskToZone(zone, uid, text, isDone);
+      updateGroupCount(zone);
+    });
+    document.querySelectorAll('.sprint-panel').forEach(p => updateProgress(p.id));
+  }
+  // ===================== END DRAFTS =====================
+
+  const COLLAPSE_KEY = 'delegator24_collapse_v1';
+  function loadCollapseState() { try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY)) || {}; } catch { return {}; } }
+  function saveCollapseState(d) { localStorage.setItem(COLLAPSE_KEY, JSON.stringify(d)); }
+
+  // ===================== EXPORT =====================
+  function exportTasks() {
+    const panel = document.querySelector('.sprint-panel.active');
+    if (!panel) return '';
+    const h1 = panel.querySelector('h1')?.textContent?.trim() || 'Спринт';
+    const lines = [`# ${h1}`, ''];
+    panel.querySelectorAll('.section').forEach(section => {
+      if (section.id === 's-new' || section.id === 's-backlog') return;
+      if (section.style.display === 'none') return;
+      const visibleTasks = Array.from(section.querySelectorAll('.subtask'))
+        .filter(t => t.style.display !== 'none');
+      if (!visibleTasks.length) return;
+      const label = section.querySelector('.section-label')?.textContent?.trim() || '';
+      const icon = section.querySelector('.section-icon')?.textContent?.trim() || '';
+      const count = section.querySelector('.section-count')?.textContent?.trim() || '';
+      lines.push(`### ${icon} ${label}${count ? ` (${count})` : ''}`);
+      lines.push('');
+      section.querySelectorAll('.task-group').forEach(group => {
+        const groupTitle = group.querySelector('.task-group-title')?.textContent?.trim();
+        const groupTasks = Array.from(group.querySelectorAll('.subtask'))
+          .filter(t => t.style.display !== 'none');
+        if (!groupTasks.length) return;
+        if (groupTitle) lines.push(`**${groupTitle}**`);
+        groupTasks.forEach(task => {
+          const title = task.querySelector('.subtask-title')?.textContent?.trim() || '';
+          const isDone = task.classList.contains('done');
+          const isSubSub = task.classList.contains('subtask-sub');
+          const indent = isSubSub ? '  ' : '';
+          lines.push(`${indent}- [${isDone ? 'x' : ' '}] ${title}`);
+        });
+        lines.push('');
+      });
+    });
+    return lines.join('\n');
+  }
+
+  function showExport() {
+    const text = exportTasks();
+    if (!text) return;
+    const overlay = document.createElement('div');
+    overlay.className = 'export-overlay';
+    overlay.id = 'export-overlay';
+    const modal = document.createElement('div');
+    modal.className = 'export-modal';
+    const header = document.createElement('div');
+    header.className = 'export-modal-header';
+    const titleEl = document.createElement('div');
+    titleEl.className = 'export-modal-title';
+    titleEl.textContent = 'Экспорт задач';
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'export-modal-close';
+    closeBtn.textContent = '×';
+    closeBtn.onclick = closeExport;
+    header.appendChild(titleEl);
+    header.appendChild(closeBtn);
+    const ta = document.createElement('textarea');
+    ta.className = 'export-textarea';
+    ta.value = text;
+    ta.readOnly = true;
+    const footer = document.createElement('div');
+    footer.className = 'export-modal-footer';
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'export-copy-btn';
+    copyBtn.textContent = 'Скопировать';
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = '✓ Скопировано!';
+        setTimeout(() => { copyBtn.textContent = 'Скопировать'; }, 2000);
+      });
+    };
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'toolbar-btn';
+    cancelBtn.style.cssText = 'font-size:13px;padding:8px 14px;';
+    cancelBtn.textContent = 'Закрыть';
+    cancelBtn.onclick = closeExport;
+    footer.appendChild(copyBtn);
+    footer.appendChild(cancelBtn);
+    modal.appendChild(header);
+    modal.appendChild(ta);
+    modal.appendChild(footer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExport(); });
+    setTimeout(() => ta.select(), 50);
+  }
+
+  function closeExport() {
+    const el = document.getElementById('export-overlay');
+    if (el) el.remove();
+  }
+  // ===================== END EXPORT =====================
+
+  // ===================== TOOLBAR ACTIONS =====================
+  const HIDE_DONE_KEY = 'delegator24_hide_done_v1';
+
+  function collapseAll() {
+    const panel = document.querySelector('.sprint-panel.active');
+    if (!panel) return;
+    const cs = loadCollapseState();
+    panel.querySelectorAll('.section').forEach(section => {
+      if (!section.querySelector('.section-header')) return;
+      section.classList.add('collapsed');
+      cs['section:' + (section.id || '')] = true;
+    });
+    panel.querySelectorAll('.task-group').forEach(group => {
+      const h = group.querySelector('.task-group-header');
+      if (!h) return;
+      group.classList.add('collapsed');
+      const sId = group.closest('.section')?.id || '';
+      const title = h.querySelector('.task-group-title')?.textContent?.trim() || '';
+      cs['group:' + sId + ':' + title] = true;
+    });
+    saveCollapseState(cs);
+  }
+
+  function expandAll() {
+    const panel = document.querySelector('.sprint-panel.active');
+    if (!panel) return;
+    const cs = loadCollapseState();
+    panel.querySelectorAll('.section').forEach(section => {
+      section.classList.remove('collapsed');
+      cs['section:' + (section.id || '')] = false;
+    });
+    panel.querySelectorAll('.task-group').forEach(group => {
+      const h = group.querySelector('.task-group-header');
+      if (!h) return;
+      group.classList.remove('collapsed');
+      const sId = group.closest('.section')?.id || '';
+      const title = h.querySelector('.task-group-title')?.textContent?.trim() || '';
+      cs['group:' + sId + ':' + title] = false;
+    });
+    saveCollapseState(cs);
+  }
+
+  function toggleHideDone() {
+    const panel = document.querySelector('.sprint-panel.active');
+    if (!panel) return;
+    const isHiding = panel.classList.toggle('hide-done');
+    localStorage.setItem(HIDE_DONE_KEY, isHiding ? '1' : '0');
+    document.querySelectorAll('.task-group').forEach(updateGroupCount);
+    updateAllSectionCounts();
+    const btn = document.getElementById('hide-done-btn');
+    if (btn) { btn.textContent = isHiding ? '👁 Показать выполненные' : '✓ Скрыть выполненные'; btn.classList.toggle('active', isHiding); }
+  }
+
+  // ===================== QUICK ADD =====================
+  const CUSTOM_TASKS_KEY = 'delegator24_custom_v1';
+  function loadCustomTasks() { try { return JSON.parse(localStorage.getItem(CUSTOM_TASKS_KEY)) || {}; } catch { return {}; } }
+  function saveCustomTasks(d) { localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(d)); }
+
+  function createCustomTaskLi(taskId, text) {
+    const li = document.createElement('li');
+    li.className = 'subtask';
+    li.dataset.customId = taskId;
+    const cb = document.createElement('div'); cb.className = 'sub-checkbox';
+    const body = document.createElement('div'); body.className = 'subtask-body';
+    const titleEl = document.createElement('div'); titleEl.className = 'subtask-title'; titleEl.textContent = text;
+    const meta = document.createElement('div'); meta.className = 'subtask-meta';
+    body.appendChild(titleEl); body.appendChild(meta);
+    li.appendChild(cb); li.appendChild(body);
+    const stateKey = text.trim().slice(0, 60);
+    if (loadState()[stateKey] === true) applyDone(li, true);
+    li.addEventListener('click', () => {
+      const isDone = li.classList.contains('done');
+      applyDone(li, !isDone);
+      const s = loadState(); s[stateKey] = !isDone; saveState(s);
+      updateGroupCount(li.closest('.task-group'));
+      updateSectionCount(li.closest('.section'));
+      const sp = li.closest('.sprint-panel');
+      if (sp) updateProgress(sp.id);
+    });
+    addSubtaskActions(li);
+    return li;
+  }
+
+  function addQuickAddRow(list, groupKey) {
+    const row = document.createElement('li');
+    row.className = 'add-task-row';
+    renderAddBtn(row, list, groupKey);
+    list.appendChild(row);
+  }
+
+  function renderAddBtn(row, list, groupKey) {
+    row.innerHTML = '';
+    const btn = document.createElement('span');
+    btn.className = 'add-task-btn';
+    btn.textContent = '+ добавить задачу';
+    btn.addEventListener('click', (e) => { e.stopPropagation(); showQuickAddInput(row, list, groupKey); });
+    row.appendChild(btn);
+  }
+
+  function showQuickAddInput(row, list, groupKey) {
+    row.innerHTML = '';
+    const wrap = document.createElement('div'); wrap.className = 'quick-add-wrap';
+    const input = document.createElement('input');
+    input.type = 'text'; input.className = 'quick-add-input'; input.placeholder = 'Название задачи...';
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = 'Добавить'; saveBtn.className = 'quick-add-save';
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Отмена'; cancelBtn.className = 'quick-add-cancel';
+    wrap.appendChild(input); wrap.appendChild(saveBtn); wrap.appendChild(cancelBtn);
+    row.appendChild(wrap);
+    setTimeout(() => input.focus(), 0);
+    function save() {
+      const text = input.value.trim();
+      if (text) addCustomTask(groupKey, list, text);
+      renderAddBtn(row, list, groupKey);
+    }
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); save(); }
+      if (e.key === 'Escape') renderAddBtn(row, list, groupKey);
+    });
+    saveBtn.addEventListener('click', (e) => { e.stopPropagation(); save(); });
+    cancelBtn.addEventListener('click', (e) => { e.stopPropagation(); renderAddBtn(row, list, groupKey); });
+  }
+
+  function addCustomTask(groupKey, list, text) {
+    const ct = loadCustomTasks();
+    if (!ct[groupKey]) ct[groupKey] = [];
+    const taskId = 'custom-' + Date.now();
+    ct[groupKey].push({ id: taskId, text });
+    saveCustomTasks(ct);
+    const li = createCustomTaskLi(taskId, text);
+    const addRow = list.querySelector('.add-task-row');
+    if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
+    updateGroupCount(li.closest('.task-group'));
+    updateSectionCount(li.closest('.section'));
+    const sp = li.closest('.sprint-panel');
+    if (sp) updateProgress(sp.id);
+  }
+
+  function restoreCustomTasks() {
+    const ct = loadCustomTasks();
+    if (!Object.keys(ct).length) return;
+    document.querySelector('.sprint-panel.active')?.querySelectorAll('.section').forEach(section => {
+      const sectionId = section.id || '';
+      section.querySelectorAll('.task-group').forEach((group, gIdx) => {
+        const headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+        const groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
+        const tasks = ct[groupKey];
+        if (!tasks?.length) return;
+        const list = group.querySelector('.subtask-list');
+        if (!list) return;
+        const addRow = list.querySelector('.add-task-row');
+        tasks.forEach(({ id, text }) => {
+          const li = createCustomTaskLi(id, text);
+          if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
+        });
+        updateGroupCount(group);
+      });
+    });
+    updateAllSectionCounts();
+  }
+  // ===================== END QUICK ADD =====================
+
+  function toggleMonth(monthId) {
+    const group = document.getElementById(monthId);
+    if (group) group.classList.toggle('open');
+  }
+
+  function cwPostToHub(msg) {
+    const iframe = document.querySelector('#content-hub iframe');
+    if (iframe && iframe.contentWindow) iframe.contentWindow.postMessage(msg, '*');
+  }
+
+  function showSprint(sprintId) {
+    document.querySelectorAll('.sprint-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sprint-item').forEach(i => i.classList.remove('active'));
+    const panel = document.getElementById(sprintId);
+    if (panel) panel.classList.add('active');
+    const navItem = document.querySelector('[data-sprint="' + sprintId + '"]');
+    if (navItem) navItem.classList.add('active');
+    if (sprintId === 'content-hub') cwPostToHub({type:'d24_open_plan'});
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const state = loadState();
+    let _stateChanged = false;
+    document.querySelectorAll('.subtask').forEach(subtask => {
+      const id = getSubtaskId(subtask);
+      const htmlDone = subtask.classList.contains('done');
+      if (state[id] === true) applyDone(subtask, true);
+      else if (state[id] === false && htmlDone) {
+        // HTML explicitly marks done → override stale localStorage
+        applyDone(subtask, true); state[id] = true; _stateChanged = true;
+      }
+      else if (state[id] === false) applyDone(subtask, false);
+      else if (htmlDone) applyDone(subtask, true);
+
+      subtask.addEventListener('click', () => {
+        if (subtask.closest('.sprint-panel[data-archived]')) return;
+        const isDone = subtask.classList.contains('done');
+        applyDone(subtask, !isDone);
+        const s = loadState();
+        s[id] = !isDone;
+        saveState(s);
+        updateGroupCount(subtask.closest('.task-group'));
+        updateSectionCount(subtask.closest('.section'));
+        const sprintPanel = subtask.closest('.sprint-panel');
+        if (sprintPanel) updateProgress(sprintPanel.id);
+      });
+
+      if (!subtask.closest('.sprint-panel[data-archived]')) addSubtaskActions(subtask);
+    });
+    if (_stateChanged) saveState(state);
+
+    const deleted = loadDeleted();
+    document.querySelectorAll('.subtask').forEach(st => {
+      if (deleted[getSubtaskId(st)]) st.style.display = 'none';
+    });
+    document.querySelectorAll('.task-group').forEach(updateGroupCount);
+
+    // Collapsible sections + task groups — with localStorage persistence
+    const collapseState = loadCollapseState();
+
+    const isMobile = window.innerWidth <= 768;
+
+    document.querySelectorAll('.section').forEach(section => {
+      const header = section.querySelector('.section-header');
+      if (!header) return;
+      const sKey = 'section:' + (section.id || '');
+      const sState = collapseState[sKey];
+      if (sState === true || (isMobile && sState === undefined)) section.classList.add('collapsed');
+      const countBadge = document.createElement('span');
+      countBadge.className = 'section-count';
+      countBadge.textContent = '·';
+      header.appendChild(countBadge);
+      const arrow = document.createElement('div');
+      arrow.className = 'section-toggle';
+      arrow.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      header.appendChild(arrow);
+      header.addEventListener('click', () => {
+        section.classList.toggle('collapsed');
+        const cs = loadCollapseState();
+        const nowCollapsed = section.classList.contains('collapsed');
+        if (!nowCollapsed && window.innerWidth <= 768) cs[sKey] = false;
+        else if (nowCollapsed) cs[sKey] = true;
+        else delete cs[sKey];
+        saveCollapseState(cs);
+      });
+    });
+
+    document.querySelectorAll('.task-group').forEach(group => {
+      const header = group.querySelector('.task-group-header');
+      if (!header) return;
+      const sectionId = group.closest('.section')?.id || '';
+      const title = header.querySelector('.task-group-title')?.textContent?.trim() || '';
+      const gKey = 'group:' + sectionId + ':' + title;
+      const gState = collapseState[gKey];
+      if (gState === true || (isMobile && gState === undefined)) group.classList.add('collapsed');
+      const arrow = document.createElement('div');
+      arrow.className = 'task-group-toggle';
+      arrow.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      header.appendChild(arrow);
+      header.addEventListener('click', () => {
+        group.classList.toggle('collapsed');
+        const cs = loadCollapseState();
+        const nowCollapsed = group.classList.contains('collapsed');
+        if (!nowCollapsed && window.innerWidth <= 768) cs[gKey] = false;
+        else if (nowCollapsed) cs[gKey] = true;
+        else delete cs[gKey];
+        saveCollapseState(cs);
+      });
+    });
+
+    restoreMoves();
+    restoreS2B();
+    restoreDraftMoves();
+
+    // Add delete buttons to static backlog items + hide deleted
+    const backlogDeleted = loadBacklogDeleted();
+    document.querySelectorAll('.backlog-item[data-backlog-id]').forEach(item => {
+      if (backlogDeleted[item.dataset.backlogId]) item.style.display = 'none';
+      else addBacklogDeleteBtn(item);
+    });
+
+    updateAllSectionCounts();
+
+    // Quick-add rows
+    document.querySelector('.sprint-panel.active')?.querySelectorAll('.section:not(#s-new)').forEach(section => {
+      const sectionId = section.id || '';
+      section.querySelectorAll('.task-group').forEach((group, gIdx) => {
+        const headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+        const groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
+        const list = group.querySelector('.subtask-list');
+        if (list) addQuickAddRow(list, groupKey);
+      });
+    });
+    restoreCustomTasks();
+
+    // Restore hide-done state
+    if (localStorage.getItem(HIDE_DONE_KEY) === '1') {
+      const panel = document.querySelector('.sprint-panel.active');
+      if (panel) panel.classList.add('hide-done');
+      const btn = document.getElementById('hide-done-btn');
+      if (btn) { btn.textContent = '👁 Показать выполненные'; btn.classList.add('active'); }
+    }
+
+    renderDrafts();
+    updateDraftsCount();
+
+    // After local init: pull Firebase state and reconcile
+    if (fbDb) {
+      fbDb.ref('tasks/state').once('value', function(snap) {
+        var fbState = snap.val() || {};
+        var local = loadState();
+        var merged = Object.assign({}, local, fbState);
+        _taskStateCache = merged;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        document.querySelectorAll('.subtask').forEach(function(subtask) {
+          var id = getSubtaskId(subtask);
+          if (!id) return;
+          var shouldBeDone = merged[id] === true;
+          var isDone = subtask.classList.contains('done');
+          if (shouldBeDone !== isDone) applyDone(subtask, shouldBeDone);
+        });
+        document.querySelectorAll('.task-group').forEach(updateGroupCount);
+        updateAllSectionCounts();
+      }, function() {});
+    }
+
+  });
+
+  // ── Контент-виджет ──────────────────────────────────────────
+  // Структура rows[] ТОЧНО совпадает с CHANNELS в content_hub.html
+  // Chip ID = ch.id + '_t' + rowIndex + '_d' + dayIndex → один localStorage с хабом
+  (function() {
+    var CW_DAYS = ['Пн','Вт','Ср','Чт','Пт'];
+
+    // rows: массив task-строк × 7 дней (0=Пн … 6=Вс), виджет берёт только 0–4
+    var CW_CH = [
+      { id:'tg', name:'Telegram',   url:'https://t.me/delegator24',                    cls:'cw-tg', rows:[
+          [{l:'Пост'},{l:'Пост'},{l:'Пост'},{l:'Пост'},{l:'Пост'},null,null]
+      ]},
+      { id:'ig', name:'Instagram',  url:'https://www.instagram.com/delegator24.ru/',   cls:'cw-ig', rows:[
+          [{l:'Мем-видео'},null,null,null,{l:'Мем-видео'},null,null],
+          [null,{l:'Карусель'},{l:'Карусель'},{l:'Карусель'},null,null,null],
+          [{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},null,null]
+      ]},
+      { id:'fb', name:'Facebook',   url:'https://www.facebook.com/delegator24',        cls:'cw-fb', rows:[
+          [{l:'Репост IG'},null,null,null,{l:'Репост IG'},null,null],
+          [null,{l:'Репост IG'},{l:'Репост IG'},{l:'Репост IG'},null,null,null]
+      ]},
+      { id:'vk', name:'ВКонтакте', url:'https://vk.com/delegator24',                  cls:'cw-vk', rows:[
+          [{l:'Репост TG'},null,{l:'Репост TG'},null,{l:'Репост TG'},null,null],
+          [{l:'Репост видео'},null,null,null,{l:'Репост видео'},null,null]
+      ]},
+      { id:'mx', name:'MAX',        url:'https://max.ru/id2634102694_biz',             cls:'cw-mx', rows:[
+          [{l:'Репост TG'},{l:'Репост TG'},{l:'Репост TG'},{l:'Репост TG'},{l:'Репост TG'},null,null]
+      ]},
+      { id:'dz', name:'Дзен',       url:'https://dzen.ru/delegator24',                 cls:'cw-dz', rows:[
+          [null,{l:'Статья'},null,{l:'Статья'},null,null,null],
+          [{l:'Видео'},null,null,null,{l:'Видео'},null,null]
+      ]},
+      { id:'bl', name:'Блог',       url:'https://delegator24.ru/blog',                 cls:'cw-bl', rows:[
+          [null,null,null,{l:'Кейс-статья'},null,null,null],
+          [{l:'SEO-статья'},null,null,null,null,null,null]
+      ]},
+      { id:'th', name:'Threads',    url:'https://www.threads.com/@delegator24.ru',     cls:'cw-th', rows:[
+          [{l:'Пост'},{l:'Пост'},{l:'Пост'},{l:'Пост'},{l:'Пост'},null,null],
+          [{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},null,null]
+      ]},
+      { id:'yt', name:'YouTube',    url:'https://www.youtube.com/@Delegator24',        cls:'cw-yt', rows:[
+          [{l:'Мем-видео'},null,null,null,{l:'Мем-видео'},null,null]
+      ]}
+    ];
+
+    function cwGetWeek() {
+      var now = new Date(), dow = now.getDay();
+      var mon = new Date(now);
+      mon.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1));
+      return Array.from({length:5}, function(_,i) {
+        var d = new Date(mon); d.setDate(mon.getDate()+i); return d;
+      });
+    }
+
+    function cwWeekKey(dates) { return 'd24_plan_' + dates[0].toISOString().slice(0,10); }
+    function cwLoad(k) { try { return JSON.parse(localStorage.getItem(k)||'{}'); } catch(e) { return {}; } }
+    function cwSave(k,s) {
+      try { localStorage.setItem(k,JSON.stringify(s)); } catch(e) {}
+      if (fbDb) try { fbDb.ref('content_hub/' + k).set(s); } catch(e) {}
+    }
+
+    var _cwFbListener = null;
+    var _cwCurrentWk = null;
+
+    function cwRender() {
+      var grid = document.getElementById('cw-grid');
+      var lbl  = document.getElementById('cw-week-label');
+      if (!grid) return;
+      var dates = cwGetWeek();
+      var wk = cwWeekKey(dates);
+      // Render immediately from localStorage
+      var state = cwLoad(wk);
+      cwRenderUI(grid, lbl, dates, wk, state);
+      // Subscribe to Firebase for live updates
+      if (fbDb) {
+        if (_cwFbListener && _cwCurrentWk) fbDb.ref('content_hub/' + _cwCurrentWk).off('value', _cwFbListener);
+        _cwCurrentWk = wk;
+        _cwFbListener = fbDb.ref('content_hub/' + wk).on('value', function(snap) {
+          var fbState = snap.val() || {};
+          try { localStorage.setItem(wk, JSON.stringify(fbState)); } catch(e) {}
+          cwRenderUI(grid, lbl, dates, wk, fbState);
+        }, function() {});
+      }
+    }
+
+    function cwRenderUI(grid, lbl, dates, wk, state) {
+      var today = new Date();
+      var fmt = function(d){ return d.getDate()+'.'+String(d.getMonth()+1).padStart(2,'0'); };
+
+      if (lbl) lbl.textContent = fmt(dates[0]) + ' – ' + fmt(dates[4]);
+
+      var html = '<div class="cw-grid">';
+      html += '<div class="cw-day-hd"></div>';
+      dates.forEach(function(d,i) {
+        var isTd = d.toDateString()===today.toDateString();
+        html += '<div class="cw-day-hd'+(isTd?' cw-today':'')+'">'+CW_DAYS[i]+'<span class="cw-date">'+fmt(d)+'</span></div>';
+      });
+
+      CW_CH.forEach(function(ch) {
+        var hasAny = ch.rows.some(function(row){ return row.slice(0,5).some(Boolean); });
+        if (!hasAny) return;
+        var cwChLabel = ch.url ? '<a href="'+ch.url+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">'+ch.name+'</a>' : ch.name;
+        html += '<div class="cw-ch">'+cwChLabel+'</div>';
+        for (var di=0; di<5; di++) {
+          html += '<div class="cw-cell">';
+          ch.rows.forEach(function(row, ri) {
+            var task = row[di];
+            if (!task) return;
+            var cid = ch.id+'_t'+ri+'_d'+di;  // совпадает с chipId() в content_hub.html
+            var done = !!state[cid];
+            html += '<div class="cw-chip '+ch.cls+(done?' done':'')+'" onclick="cwToggle(this,\''+wk+'\',\''+cid+'\')">'
+              +'<span class="cw-chk"></span>'+task.l+'</div>';
+          });
+          html += '</div>';
+        }
+      });
+      html += '</div>';
+      grid.innerHTML = html;
+    }
+
+    window.cwToggle = function(el, wk, cid) {
+      var state = cwLoad(wk);
+      var done = el.classList.contains('done');
+      if (done) { delete state[cid]; el.classList.remove('done'); }
+      else { state[cid]=true; el.classList.add('done'); }
+      cwSave(wk, state);
+      cwPostToHub({type:'d24_plan_update'});
+    };
+
+    document.addEventListener('DOMContentLoaded', cwRender);
+
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'd24_plan_update') cwRender();
+    });
+  })();
+</script>
+</body>
+</html>
