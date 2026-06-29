@@ -2339,7 +2339,11 @@
   // ===================== MOVE TO SPRINT =====================
   const MOVES_KEY = 'delegator24_moves_v1';
   function loadMoves() { try { return JSON.parse(localStorage.getItem(MOVES_KEY)) || {}; } catch { return {}; } }
-  function saveMoves(m) { localStorage.setItem(MOVES_KEY, JSON.stringify(m)); }
+  var _skipMovesListener = false;
+  function saveMoves(m) {
+    localStorage.setItem(MOVES_KEY, JSON.stringify(m));
+    if (fbDb) { _skipMovesListener = true; try { fbDb.ref('tasks/moves_json').set(JSON.stringify(m)); } catch(e) {} }
+  }
 
   const SECTIONS = [
     { id: 's-new',       icon: '📥', label: 'Новое · Входящие' },
@@ -2490,7 +2494,11 @@
   // ===================== SPRINT → BACKLOG =====================
   const S2B_KEY = 'delegator24_s2b_v1';
   function loadS2B() { try { return JSON.parse(localStorage.getItem(S2B_KEY)) || {}; } catch { return {}; } }
-  function saveS2B(d) { localStorage.setItem(S2B_KEY, JSON.stringify(d)); }
+  var _skipS2BListener = false;
+  function saveS2B(d) {
+    localStorage.setItem(S2B_KEY, JSON.stringify(d));
+    if (fbDb) { _skipS2BListener = true; try { fbDb.ref('tasks/s2b_json').set(JSON.stringify(d)); } catch(e) {} }
+  }
 
   const DELETED_KEY = 'delegator24_deleted_v1';
   function loadDeleted() { try { return JSON.parse(localStorage.getItem(DELETED_KEY)) || {}; } catch { return {}; } }
@@ -3415,6 +3423,59 @@
             updateGroupCount(group);
           });
         });
+        updateAllSectionCounts();
+      }, function() {});
+
+      // Backlog → Sprint moves
+      fbDb.ref('tasks/moves_json').on('value', function(snap) {
+        if (_skipMovesListener) { _skipMovesListener = false; return; }
+        var raw = snap.val();
+        if (raw === null) {
+          var local = loadMoves();
+          if (Object.keys(local).length) { _skipMovesListener = true; fbDb.ref('tasks/moves_json').set(JSON.stringify(local)); }
+          return;
+        }
+        var moves = {};
+        try { moves = JSON.parse(raw); } catch(e) {}
+        localStorage.setItem(MOVES_KEY, JSON.stringify(moves));
+        // Add missing moved tasks to DOM
+        Object.entries(moves).forEach(function([backlogId, info]) {
+          var zone = getOrCreateMovedZone(info.sectionId);
+          if (!zone) return;
+          if (zone.querySelector('[data-backlog-ref="' + backlogId + '"]')) return;
+          var isDone = (loadState())['backlog:' + backlogId] === true;
+          addSubtaskToZone(zone, backlogId, info.title, isDone);
+          updateGroupCount(zone);
+          markBacklogMoved(backlogId);
+        });
+        // Remove tasks that are no longer moved
+        document.querySelectorAll('[data-backlog-ref]').forEach(function(el) {
+          if (!moves[el.dataset.backlogRef]) el.remove();
+        });
+        document.querySelectorAll('.task-group').forEach(updateGroupCount);
+        updateAllSectionCounts();
+        document.querySelectorAll('.sprint-panel').forEach(function(p) { updateProgress(p.id); });
+      }, function() {});
+
+      // Sprint → Backlog moves
+      fbDb.ref('tasks/s2b_json').on('value', function(snap) {
+        if (_skipS2BListener) { _skipS2BListener = false; return; }
+        var raw = snap.val();
+        if (raw === null) {
+          var local = loadS2B();
+          if (Object.keys(local).length) { _skipS2BListener = true; fbDb.ref('tasks/s2b_json').set(JSON.stringify(local)); }
+          return;
+        }
+        var s2b = {};
+        try { s2b = JSON.parse(raw); } catch(e) {}
+        localStorage.setItem(S2B_KEY, JSON.stringify(s2b));
+        // Hide sprint tasks that moved to backlog
+        Object.keys(s2b).forEach(function(taskKey) {
+          document.querySelectorAll('.subtask').forEach(function(st) {
+            if (getSubtaskId(st) === taskKey) st.style.display = 'none';
+          });
+        });
+        document.querySelectorAll('.task-group').forEach(updateGroupCount);
         updateAllSectionCounts();
       }, function() {});
 
