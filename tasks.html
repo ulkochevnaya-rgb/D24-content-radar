@@ -3064,7 +3064,32 @@
   }
 
   function getSubtaskId(el) {
-    return el.querySelector('.subtask-title')?.textContent?.trim().slice(0, 60) || '';
+    const sprintId = el.closest('.sprint-panel')?.id || '';
+    const title = el.querySelector('.subtask-title')?.textContent?.trim().slice(0, 60) || '';
+    return sprintId ? sprintId + ':' + title : title;
+  }
+
+  function migrateStateToSprintKeys() {
+    var raw;
+    try { raw = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) { raw = null; }
+    if (!raw) return false;
+    var keys = Object.keys(raw);
+    if (!keys.length) return false;
+    if (keys.some(function(k) { return k.startsWith('sprint-'); })) return false;
+    // Old format: rebuild sprint state from HTML checked classes (source of truth)
+    var newState = {};
+    ['sprint-22-jun', 'sprint-15-jun'].forEach(function(sid) {
+      document.querySelectorAll('#' + sid + ' .subtask').forEach(function(subtask) {
+        var cb = subtask.querySelector('.sub-checkbox');
+        if (cb && cb.classList.contains('checked')) {
+          var title = subtask.querySelector('.subtask-title')?.textContent?.trim().slice(0, 60) || '';
+          if (title) newState[sid + ':' + title] = true;
+        }
+      });
+    });
+    // sprint-30-jun starts fresh (all unchecked)
+    saveState(newState);
+    return true;
   }
 
   function applyDone(subtask, isDone) {
@@ -4125,6 +4150,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    migrateStateToSprintKeys();
     const state = loadState();
     let _stateChanged = false;
     document.querySelectorAll('.subtask').forEach(subtask => {
@@ -4256,6 +4282,12 @@
       fbDb.ref('tasks/state_json').on('value', function(snap) {
         var fbState = {};
         try { fbState = JSON.parse(snap.val() || '{}'); } catch(e) {}
+        // If Firebase still has old format (no sprint prefix) — run migration, which will re-trigger this listener
+        var fbKeys = Object.keys(fbState);
+        if (fbKeys.length && !fbKeys.some(function(k) { return k.startsWith('sprint-'); })) {
+          migrateStateToSprintKeys();
+          return;
+        }
         _taskStateCache = fbState;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(fbState));
         document.querySelectorAll('.subtask').forEach(function(subtask) {
