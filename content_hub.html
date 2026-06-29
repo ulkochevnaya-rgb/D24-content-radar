@@ -978,7 +978,8 @@ function toggleChip(el, wk, cid) {
   if (isDone) { el.classList.remove('done'); } else { el.classList.add('done'); }
   if (!stateCache[wk]) stateCache[wk] = {};
   if (isDone) { delete stateCache[wk][cid]; } else { stateCache[wk][cid] = true; }
-  if (fbDb) { fbRef(wk).set(stateCache[wk]); } else { lsSave(wk, stateCache[wk]); }
+  lsSave(wk, stateCache[wk]);
+  if (fbDb) fbRef(wk).set(stateCache[wk]);
   var d = document.querySelectorAll('.task-chip.done').length;
   var t = document.querySelectorAll('.task-chip').length;
   document.getElementById('week-progress').textContent = d + ' / ' + t + ' выполнено';
