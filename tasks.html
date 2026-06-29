@@ -3080,12 +3080,13 @@
   }
 
   function migrateStateToSprintKeys() {
+    if (localStorage.getItem('d24_migrated_v2')) return false; // already migrated on this device
     var raw;
     try { raw = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) { raw = null; }
-    if (!raw) return false;
-    var keys = Object.keys(raw);
-    if (!keys.length) return false;
-    if (keys.some(function(k) { return k.startsWith('sprint-'); })) return false;
+    if (!raw || !Object.keys(raw).length || Object.keys(raw).some(function(k) { return k.startsWith('sprint-'); })) {
+      localStorage.setItem('d24_migrated_v2', '1');
+      return false;
+    }
     // Old format: rebuild sprint state from HTML checked classes (source of truth)
     var newState = {};
     ['sprint-22-jun', 'sprint-15-jun'].forEach(function(sid) {
@@ -3097,8 +3098,8 @@
         }
       });
     });
-    // sprint-30-jun starts fresh (all unchecked)
     saveState(newState);
+    localStorage.setItem('d24_migrated_v2', '1');
     return true;
   }
 
@@ -4157,6 +4158,12 @@
     const navItem = document.querySelector('[data-sprint="' + sprintId + '"]');
     if (navItem) navItem.classList.add('active');
     if (sprintId === 'content-hub') cwPostToHub({type:'d24_open_plan'});
+    // Recalculate counts for the newly shown panel
+    if (panel && sprintId !== 'content-hub') {
+      panel.querySelectorAll('.task-group').forEach(updateGroupCount);
+      updateAllSectionCounts();
+      updateProgress(sprintId);
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -4292,10 +4299,9 @@
       fbDb.ref('tasks/state_json').on('value', function(snap) {
         var fbState = {};
         try { fbState = JSON.parse(snap.val() || '{}'); } catch(e) {}
-        // If Firebase still has old format (no sprint prefix) — run migration, which will re-trigger this listener
+        // If Firebase still has old format (no sprint prefix) — skip, migration already ran at DOMContentLoaded
         var fbKeys = Object.keys(fbState);
         if (fbKeys.length && !fbKeys.some(function(k) { return k.startsWith('sprint-'); })) {
-          migrateStateToSprintKeys();
           return;
         }
         _taskStateCache = fbState;
