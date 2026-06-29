@@ -90,6 +90,12 @@
 
     .sprint-item.active .sprint-item-dates { color: #fff; }
 
+    .sprint-item.new-sprint-btn .sprint-item-dates {
+      color: rgba(255,255,255,0.35);
+      font-style: italic;
+    }
+    .sprint-item.new-sprint-btn:hover .sprint-item-dates { color: rgba(255,255,255,0.65); }
+
     .sprint-now-badge {
       font-size: 8px;
       font-weight: 700;
@@ -956,6 +962,30 @@
     }
     .quick-add-cancel:hover { border-color: #c0c4d8; color: #4a5070; }
 
+    /* ===================== AUTH TOAST ===================== */
+    #auth-toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1a1d2e;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 2000;
+      white-space: nowrap;
+    }
+    #auth-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* ===================== EXPORT MODAL ===================== */
     .export-overlay {
       position: fixed;
@@ -1063,6 +1093,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body>
+  <div id="auth-toast">🔐 Войдите для редактирования</div>
 
   <!-- ===================== SIDEBAR ===================== -->
   <aside class="sidebar">
@@ -1087,7 +1118,7 @@
       <div class="month-header" onclick="toggleMonth('month-jun-2026')">
         <div>
           <div class="month-name">Июнь</div>
-          <div class="month-meta">2 спринта</div>
+          <div class="month-meta" id="month-meta-jun-2026">2 спринта</div>
         </div>
         <div class="month-arrow">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -1102,12 +1133,16 @@
         </div>
         <div class="sprint-item" data-sprint="sprint-15-jun" onclick="showSprint('sprint-15-jun')">
           <div class="sprint-item-dates">15–21 июня <span class="sprint-archive-badge">закрыт</span></div>
-          <div class="sprint-item-progress">4 / 13 выполнено</div>
+          <div class="sprint-item-progress" id="sidebar-progress-sprint-15-jun">загрузка...</div>
+        </div>
+        <div class="sprint-item new-sprint-btn" onclick="openNewSprintModal()">
+          <div class="sprint-item-dates">+ Новый спринт</div>
         </div>
       </div>
     </div>
 
-    <!-- Будущие месяцы добавятся сюда -->
+    <!-- Динамические месяцы добавятся сюда -->
+    <div id="dynamic-months"></div>
   </aside>
 
   <!-- ===================== MAIN ===================== -->
@@ -2252,6 +2287,16 @@
     }
   }
 
+  var _authToastTimer = null;
+  function showAuthToast(msg) {
+    var el = document.getElementById('auth-toast');
+    if (!el) return;
+    el.textContent = msg || '🔐 Войдите для редактирования';
+    el.classList.add('show');
+    clearTimeout(_authToastTimer);
+    _authToastTimer = setTimeout(function() { el.classList.remove('show'); }, 2500);
+  }
+
   var _taskStateCache = null;
 
   function loadState() {
@@ -2346,8 +2391,7 @@
   }
 
   const SECTIONS = [
-    { id: 's-new',       icon: '📥', label: 'Новое · Входящие' },
-    { id: 's-today',     icon: '🔥', label: 'На сегодня' },
+    { id: 's-today',     icon: '🔥', label: 'Разовые задачи' },
     { id: 's-crm',       icon: '🔧', label: 'Аналитика и CRM' },
     { id: 's-leads',     icon: '🎯', label: 'Лидогенерация' },
     { id: 's-partner',   icon: '🤝', label: 'Партнёрства' },
@@ -2509,7 +2553,8 @@
 
   const BACKLOG_DELETED_KEY = 'delegator24_backlog_deleted_v1';
   function loadBacklogDeleted() { try { return JSON.parse(localStorage.getItem(BACKLOG_DELETED_KEY)) || {}; } catch { return {}; } }
-  function saveBacklogDeleted(d) { localStorage.setItem(BACKLOG_DELETED_KEY, JSON.stringify(d)); }
+  var _skipBacklogDeletedListener = false;
+  function saveBacklogDeleted(d) { localStorage.setItem(BACKLOG_DELETED_KEY, JSON.stringify(d)); if (fbDb) { _skipBacklogDeletedListener = true; try { fbDb.ref('tasks/backlog_deleted_json').set(JSON.stringify(d)); } catch(e) {} } }
 
   function deleteBacklogItem(item) {
     const backlogId = item.dataset.backlogId;
@@ -2747,7 +2792,8 @@
   // ===================== DRAFTS =====================
   const DRAFTS_KEY = 'delegator24_drafts_v1';
   function loadDrafts() { try { return JSON.parse(localStorage.getItem(DRAFTS_KEY)) || []; } catch { return []; } }
-  function saveDrafts(d) { localStorage.setItem(DRAFTS_KEY, JSON.stringify(d)); }
+  var _skipDraftsListener = false;
+  function saveDrafts(d) { localStorage.setItem(DRAFTS_KEY, JSON.stringify(d)); if (fbDb) { _skipDraftsListener = true; try { fbDb.ref('tasks/drafts_json').set(JSON.stringify(d)); } catch(e) {} } }
 
   function toggleDraftsPanel() {
     const panel = document.getElementById('drafts-panel');
@@ -2933,7 +2979,8 @@
   }
   const DRAFT_MOVES_KEY = 'delegator24_draft_moves_v1';
   function loadDraftMoves() { try { return JSON.parse(localStorage.getItem(DRAFT_MOVES_KEY)) || {}; } catch { return {}; } }
-  function saveDraftMoves(d) { localStorage.setItem(DRAFT_MOVES_KEY, JSON.stringify(d)); }
+  var _skipDraftMovesListener = false;
+  function saveDraftMoves(d) { localStorage.setItem(DRAFT_MOVES_KEY, JSON.stringify(d)); if (fbDb) { _skipDraftMovesListener = true; try { fbDb.ref('tasks/draft_moves_json').set(JSON.stringify(d)); } catch(e) {} } }
 
   function restoreDraftMoves() {
     const draftMoves = loadDraftMoves();
@@ -3162,7 +3209,7 @@
     const btn = document.createElement('span');
     btn.className = 'add-task-btn';
     btn.textContent = '+ добавить задачу';
-    btn.addEventListener('click', (e) => { e.stopPropagation(); if (!currentUser) return; showQuickAddInput(row, list, groupKey); });
+    btn.addEventListener('click', (e) => { e.stopPropagation(); if (!currentUser) { showAuthToast(); return; } showQuickAddInput(row, list, groupKey); });
     row.appendChild(btn);
   }
 
@@ -3209,21 +3256,24 @@
   function restoreCustomTasks(ct) {
     ct = ct || loadCustomTasks();
     if (!Object.keys(ct).length) return;
-    document.querySelector('.sprint-panel.active')?.querySelectorAll('.section').forEach(section => {
-      const sectionId = section.id || '';
-      section.querySelectorAll('.task-group').forEach((group, gIdx) => {
-        const headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
-        const groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
-        const tasks = ct[groupKey];
-        if (!tasks?.length) return;
-        const list = group.querySelector('.subtask-list');
-        if (!list) return;
-        const addRow = list.querySelector('.add-task-row');
-        tasks.forEach(({ id, text }) => {
-          const li = createCustomTaskLi(id, text);
-          if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
+    document.querySelectorAll('.sprint-panel.active, .sprint-panel[data-dynamic]').forEach(panel => {
+      panel.querySelectorAll('.section').forEach(section => {
+        const sectionId = section.id || '';
+        section.querySelectorAll('.task-group').forEach((group, gIdx) => {
+          const headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+          const groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
+          const tasks = ct[groupKey];
+          if (!tasks?.length) return;
+          const list = group.querySelector('.subtask-list');
+          if (!list) return;
+          const addRow = list.querySelector('.add-task-row');
+          tasks.forEach(({ id, text }) => {
+            if (list.querySelector('[data-custom-id="' + id + '"]')) return;
+            const li = createCustomTaskLi(id, text);
+            if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
+          });
+          updateGroupCount(group);
         });
-        updateGroupCount(group);
       });
     });
     updateAllSectionCounts();
@@ -3400,27 +3450,29 @@
         var fbCustom = {};
         try { fbCustom = JSON.parse(snap.val() || '{}'); } catch(e) {}
         localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(fbCustom));
-        // For colleagues and cross-device: full reconcile
-        document.querySelector('.sprint-panel.active')?.querySelectorAll('.section').forEach(function(section) {
-          var sectionId = section.id || '';
-          section.querySelectorAll('.task-group').forEach(function(group, gIdx) {
-            var headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
-            var groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
-            var tasks = fbCustom[groupKey] || [];
-            var list = group.querySelector('.subtask-list');
-            if (!list) return;
-            list.querySelectorAll('[data-custom-id]').forEach(function(el) {
-              if (!tasks.find(function(t) { return t.id === el.dataset.customId; })) el.remove();
+        // For colleagues and cross-device: full reconcile (active + dynamic panels)
+        document.querySelectorAll('.sprint-panel.active, .sprint-panel[data-dynamic]').forEach(function(panel) {
+          panel.querySelectorAll('.section').forEach(function(section) {
+            var sectionId = section.id || '';
+            section.querySelectorAll('.task-group').forEach(function(group, gIdx) {
+              var headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+              var groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
+              var tasks = fbCustom[groupKey] || [];
+              var list = group.querySelector('.subtask-list');
+              if (!list) return;
+              list.querySelectorAll('[data-custom-id]').forEach(function(el) {
+                if (!tasks.find(function(t) { return t.id === el.dataset.customId; })) el.remove();
+              });
+              var addRow = list.querySelector('.add-task-row');
+              var deleted = loadDeleted();
+              tasks.forEach(function(t) {
+                if (list.querySelector('[data-custom-id="' + t.id + '"]')) return;
+                if (deleted[t.text.trim().slice(0, 60)]) return;
+                var li = createCustomTaskLi(t.id, t.text);
+                if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
+              });
+              updateGroupCount(group);
             });
-            var addRow = list.querySelector('.add-task-row');
-            var deleted = loadDeleted();
-            tasks.forEach(function(t) {
-              if (list.querySelector('[data-custom-id="' + t.id + '"]')) return;
-              if (deleted[t.text.trim().slice(0, 60)]) return; // skip already deleted
-              var li = createCustomTaskLi(t.id, t.text);
-              if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
-            });
-            updateGroupCount(group);
           });
         });
         updateAllSectionCounts();
@@ -3494,6 +3546,54 @@
         localStorage.setItem(DELETED_KEY, JSON.stringify(fbDeleted));
         document.querySelectorAll('.subtask').forEach(function(st) {
           if (fbDeleted[getSubtaskId(st)]) st.style.display = 'none';
+        });
+      }, function() {});
+
+      // Drafts sync
+      fbDb.ref('tasks/drafts_json').on('value', function(snap) {
+        if (_skipDraftsListener) { _skipDraftsListener = false; return; }
+        var raw = snap.val();
+        if (raw === null) {
+          var local = loadDrafts();
+          if (local.length) { _skipDraftsListener = true; fbDb.ref('tasks/drafts_json').set(JSON.stringify(local)); }
+          return;
+        }
+        var arr = [];
+        try { arr = JSON.parse(raw); } catch(e) {}
+        localStorage.setItem(DRAFTS_KEY, JSON.stringify(arr));
+        renderDrafts();
+        updateDraftsCount();
+      }, function() {});
+
+      // Draft moves sync
+      fbDb.ref('tasks/draft_moves_json').on('value', function(snap) {
+        if (_skipDraftMovesListener) { _skipDraftMovesListener = false; return; }
+        var raw = snap.val();
+        if (raw === null) {
+          var local = loadDraftMoves();
+          if (Object.keys(local).length) { _skipDraftMovesListener = true; fbDb.ref('tasks/draft_moves_json').set(JSON.stringify(local)); }
+          return;
+        }
+        var dm = {};
+        try { dm = JSON.parse(raw); } catch(e) {}
+        localStorage.setItem(DRAFT_MOVES_KEY, JSON.stringify(dm));
+        restoreDraftMoves();
+      }, function() {});
+
+      // Backlog deleted sync
+      fbDb.ref('tasks/backlog_deleted_json').on('value', function(snap) {
+        if (_skipBacklogDeletedListener) { _skipBacklogDeletedListener = false; return; }
+        var raw = snap.val();
+        if (raw === null) {
+          var local = loadBacklogDeleted();
+          if (Object.keys(local).length) { _skipBacklogDeletedListener = true; fbDb.ref('tasks/backlog_deleted_json').set(JSON.stringify(local)); }
+          return;
+        }
+        var bd = {};
+        try { bd = JSON.parse(raw); } catch(e) {}
+        localStorage.setItem(BACKLOG_DELETED_KEY, JSON.stringify(bd));
+        document.querySelectorAll('.backlog-item[data-backlog-id]').forEach(function(item) {
+          item.style.display = bd[item.dataset.backlogId] ? 'none' : '';
         });
       }, function() {});
     }
@@ -3643,6 +3743,291 @@
       if (e.data && e.data.type === 'd24_plan_update') cwRender();
     });
   })();
+
+  // ===================== NEW SPRINT UI =====================
+  var DYNAMIC_SPRINTS_KEY = 'delegator24_dynamic_sprints_v1';
+  var _skipDynamicSprintsListener = false;
+
+  function loadDynamicSprints() { try { return JSON.parse(localStorage.getItem(DYNAMIC_SPRINTS_KEY)) || []; } catch { return []; } }
+  function saveDynamicSprints(arr) {
+    localStorage.setItem(DYNAMIC_SPRINTS_KEY, JSON.stringify(arr));
+    if (fbDb) { _skipDynamicSprintsListener = true; try { fbDb.ref('tasks/dynamic_sprints').set(JSON.stringify(arr)); } catch(e) {} }
+  }
+
+  function openNewSprintModal() {
+    if (!currentUser) { showAuthToast('🔐 Войдите чтобы создать спринт'); return; }
+    document.getElementById('new-sprint-overlay').style.display = 'flex';
+    document.getElementById('new-sprint-modal').style.display = 'block';
+    var d = new Date(), day = d.getDay();
+    var daysToMon = day === 0 ? 1 : day === 1 ? 7 : 8 - day;
+    var nextMon = new Date(d.getTime() + daysToMon * 86400000);
+    document.getElementById('new-sprint-start').value = nextMon.toISOString().slice(0, 10);
+    updateNewSprintPreview();
+  }
+
+  function closeNewSprintModal() {
+    document.getElementById('new-sprint-overlay').style.display = 'none';
+    document.getElementById('new-sprint-modal').style.display = 'none';
+  }
+
+  function updateNewSprintPreview() {
+    var val = document.getElementById('new-sprint-start').value;
+    if (!val) { document.getElementById('new-sprint-preview').textContent = ''; return; }
+    var start = new Date(val + 'T12:00:00');
+    var end = new Date(start.getTime() + 6 * 86400000);
+    var months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    document.getElementById('new-sprint-preview').innerHTML =
+      '<strong>Спринт:</strong> ' + start.getDate() + ' ' + months[start.getMonth()] + ' — ' + end.getDate() + ' ' + months[end.getMonth()];
+  }
+
+  function createNewSprint() {
+    if (!currentUser) return;
+    var val = document.getElementById('new-sprint-start').value;
+    if (!val) return;
+    var start = new Date(val + 'T12:00:00');
+    var end = new Date(start.getTime() + 6 * 86400000);
+    var id = 'sprint-dyn-' + val.replace(/-/g, '');
+    if (document.getElementById(id)) { showAuthToast('Этот спринт уже существует'); return; }
+
+    var monthsShort = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+    var label = start.getDate() + '–' + end.getDate() + ' ' + monthsShort[start.getMonth()];
+    var monthName = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'][start.getMonth()];
+    var monthKey = 'month-dyn-' + start.getFullYear() + '-' + (start.getMonth() + 1);
+
+    // Build panel DOM
+    var panel = buildDynamicSprintPanel(id, val, label);
+    var main = document.querySelector('.main');
+    var firstPanel = main.querySelector('.sprint-panel');
+    if (firstPanel) main.insertBefore(panel, firstPanel); else main.appendChild(panel);
+
+    // Init quick-add on the new panel
+    initQuickAddOnPanel(panel);
+    restoreCustomTasksOnPanel(panel);
+    updateProgress(id);
+
+    // Add to sidebar
+    addSprintToSidebar(id, label, monthKey, monthName, start.getFullYear(), val);
+
+    // Collapsible sections for new panel
+    panel.querySelectorAll('.section-header').forEach(function(hdr) {
+      hdr.addEventListener('click', function() {
+        var section = hdr.closest('.section');
+        section.classList.toggle('collapsed');
+        var arr = hdr.querySelector('.section-toggle');
+        if (arr) arr.style.transform = section.classList.contains('collapsed') ? 'rotate(-90deg)' : '';
+      });
+    });
+    panel.querySelectorAll('.task-group-header').forEach(function(hdr) {
+      hdr.addEventListener('click', function() {
+        hdr.closest('.task-group').classList.toggle('group-collapsed');
+      });
+    });
+
+    // Persist
+    var arr = loadDynamicSprints();
+    arr.push({ id: id, startDate: val, label: label, monthKey: monthKey, monthName: monthName, year: start.getFullYear() });
+    saveDynamicSprints(arr);
+
+    closeNewSprintModal();
+    showSprint(id);
+  }
+
+  function buildDynamicSprintPanel(id, startDate, label) {
+    var panel = document.createElement('div');
+    panel.className = 'sprint-panel';
+    panel.id = id;
+    panel.setAttribute('data-week-start', startDate);
+    panel.setAttribute('data-dynamic', 'true');
+
+    var sectionsHtml = SECTIONS.map(function(s) {
+      var dynId = id + '-' + s.id;
+      return '<div class="section" id="' + dynId + '">' +
+        '<div class="section-header">' +
+          '<div class="section-icon" style="background:#f4f5ff;">' + s.icon + '</div>' +
+          '<div class="section-label">' + s.label + '</div>' +
+          '<span class="section-count" style="display:none"></span>' +
+          '<svg class="section-toggle" width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-left:auto;transition:transform 0.2s;flex-shrink:0;"><path d="M3 5l4 4 4-4" stroke="#c0c4d8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</div>' +
+        '<div class="task-group" data-color="blue">' +
+          '<div class="task-group-header">' +
+            '<div class="task-group-title">Задачи</div>' +
+            '<span class="task-group-count">0/0</span>' +
+          '</div>' +
+          '<ul class="subtask-list"></ul>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    panel.innerHTML =
+      '<header>' +
+        '<div class="badge">Delegator24 · Маркетинг</div>' +
+        '<h1>Неделя ' + label + '</h1>' +
+        '<p class="subtitle">Юлия Кочевная · Директор по маркетингу</p>' +
+        '<div class="progress-wrap">' +
+          '<div class="progress-bar-bg"><div class="progress-bar" id="progress-bar-' + id + '"></div></div>' +
+          '<div class="progress-label" id="progress-label-' + id + '">0 из 0 подзадач · 0%</div>' +
+        '</div>' +
+        '<div class="header-toolbar">' +
+          '<button class="toolbar-btn" onclick="collapseAll()">↑ Свернуть всё</button>' +
+          '<button class="toolbar-btn" onclick="expandAll()">↓ Развернуть всё</button>' +
+          '<button class="toolbar-btn" onclick="toggleHideDone()">✓ Скрыть выполненные</button>' +
+        '</div>' +
+      '</header>' +
+      sectionsHtml;
+
+    return panel;
+  }
+
+  function initQuickAddOnPanel(panel) {
+    panel.querySelectorAll('.section').forEach(function(section) {
+      if (section.id === 's-new') return;
+      var sectionId = section.id || '';
+      section.querySelectorAll('.task-group').forEach(function(group, gIdx) {
+        var headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+        var groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
+        var list = group.querySelector('.subtask-list');
+        if (list && !list.querySelector('.add-task-row')) addQuickAddRow(list, groupKey);
+      });
+    });
+  }
+
+  function restoreCustomTasksOnPanel(panel) {
+    var ct = loadCustomTasks();
+    if (!Object.keys(ct).length) return;
+    panel.querySelectorAll('.section').forEach(function(section) {
+      var sectionId = section.id || '';
+      section.querySelectorAll('.task-group').forEach(function(group, gIdx) {
+        var headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+        var groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g' + gIdx);
+        var tasks = ct[groupKey];
+        if (!tasks?.length) return;
+        var list = group.querySelector('.subtask-list');
+        if (!list) return;
+        var addRow = list.querySelector('.add-task-row');
+        tasks.forEach(function(t) {
+          var li = createCustomTaskLi(t.id, t.text);
+          if (addRow) list.insertBefore(li, addRow); else list.appendChild(li);
+        });
+        updateGroupCount(group);
+      });
+    });
+  }
+
+  function addSprintToSidebar(id, label, monthKey, monthName, year, startDate) {
+    var existing = document.getElementById(monthKey);
+    if (!existing) {
+      var grp = document.createElement('div');
+      grp.className = 'month-group open';
+      grp.id = monthKey;
+      grp.innerHTML =
+        '<div class="month-header" onclick="toggleMonth(\'' + monthKey + '\')">' +
+          '<div>' +
+            '<div class="month-name">' + monthName + '</div>' +
+            '<div class="month-meta" id="meta-' + monthKey + '">0 спринтов</div>' +
+          '</div>' +
+          '<div class="month-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+        '</div>' +
+        '<div class="month-sprints" id="sprints-' + monthKey + '"></div>';
+      document.getElementById('dynamic-months').appendChild(grp);
+    }
+    var sprintsContainer = document.getElementById('sprints-' + monthKey);
+    if (!sprintsContainer) return;
+
+    var item = document.createElement('div');
+    item.className = 'sprint-item';
+    item.setAttribute('data-sprint', id);
+    item.onclick = function() { showSprint(id); };
+    item.innerHTML =
+      '<div class="sprint-item-dates">' + label + '</div>' +
+      '<div class="sprint-item-progress" id="sidebar-progress-' + id + '">0/0 выполнено</div>';
+
+    // Insert before the "new sprint" button if it's in the same group
+    var addBtn = sprintsContainer.querySelector('.new-sprint-btn');
+    if (addBtn) sprintsContainer.insertBefore(item, addBtn);
+    else sprintsContainer.appendChild(item);
+
+    updateMonthMeta(monthKey);
+  }
+
+  function updateMonthMeta(monthKey) {
+    var container = document.getElementById('sprints-' + monthKey);
+    var metaEl = document.getElementById('meta-' + monthKey);
+    if (!container || !metaEl) return;
+    var n = container.querySelectorAll('.sprint-item:not(.new-sprint-btn)').length;
+    metaEl.textContent = n + ' ' + (n === 1 ? 'спринт' : n < 5 ? 'спринта' : 'спринтов');
+  }
+
+  // Restore dynamic sprints from Firebase or localStorage on page load
+  function restoreDynamicSprints(arr) {
+    arr = arr || loadDynamicSprints();
+    arr.forEach(function(cfg) {
+      if (document.getElementById(cfg.id)) return; // already exists (hardcoded)
+      var panel = buildDynamicSprintPanel(cfg.id, cfg.startDate, cfg.label);
+      var main = document.querySelector('.main');
+      var firstPanel = main.querySelector('.sprint-panel');
+      if (firstPanel) main.insertBefore(panel, firstPanel); else main.appendChild(panel);
+      initQuickAddOnPanel(panel);
+      restoreCustomTasksOnPanel(panel);
+      updateProgress(cfg.id);
+      addSprintToSidebar(cfg.id, cfg.label, cfg.monthKey, cfg.monthName, cfg.year, cfg.startDate);
+      panel.querySelectorAll('.section-header').forEach(function(hdr) {
+        hdr.addEventListener('click', function() {
+          var section = hdr.closest('.section');
+          section.classList.toggle('collapsed');
+          var arr2 = hdr.querySelector('.section-toggle');
+          if (arr2) arr2.style.transform = section.classList.contains('collapsed') ? 'rotate(-90deg)' : '';
+        });
+      });
+      panel.querySelectorAll('.task-group-header').forEach(function(hdr) {
+        hdr.addEventListener('click', function() { hdr.closest('.task-group').classList.toggle('group-collapsed'); });
+      });
+    });
+    // Update June meta count (hardcoded sprints)
+    var junMeta = document.getElementById('month-meta-jun-2026');
+    if (junMeta) {
+      var n = document.querySelectorAll('#month-jun-2026 .sprint-item:not(.new-sprint-btn)').length;
+      junMeta.textContent = n + ' ' + (n === 1 ? 'спринт' : n < 5 ? 'спринта' : 'спринтов');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    restoreDynamicSprints();
+    // Firebase listener for dynamic sprints
+    if (fbDb) {
+      fbDb.ref('tasks/dynamic_sprints').on('value', function(snap) {
+        if (_skipDynamicSprintsListener) { _skipDynamicSprintsListener = false; return; }
+        var raw = snap.val();
+        if (raw === null) {
+          var local = loadDynamicSprints();
+          if (local.length) { _skipDynamicSprintsListener = true; fbDb.ref('tasks/dynamic_sprints').set(JSON.stringify(local)); }
+          return;
+        }
+        var arr = [];
+        try { arr = JSON.parse(raw); } catch(e) {}
+        localStorage.setItem(DYNAMIC_SPRINTS_KEY, JSON.stringify(arr));
+        restoreDynamicSprints(arr);
+      }, function() {});
+    }
+  });
+  // ===================== END NEW SPRINT UI =====================
 </script>
+
+<!-- ===================== NEW SPRINT MODAL ===================== -->
+<div id="new-sprint-overlay" style="display:none;position:fixed;inset:0;background:rgba(26,29,46,0.4);z-index:1000;display:none;align-items:center;justify-content:center;" onclick="closeNewSprintModal()"></div>
+<div id="new-sprint-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:0;width:360px;box-shadow:0 8px 40px rgba(30,40,100,0.2);z-index:1001;overflow:hidden;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid #eef0f8;">
+    <div style="font-size:15px;font-weight:700;color:#1a1d2e;">Новый спринт</div>
+    <button onclick="closeNewSprintModal()" style="background:none;border:none;font-size:20px;color:#9096b0;cursor:pointer;line-height:1;padding:0 2px;">✕</button>
+  </div>
+  <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+    <div>
+      <label style="display:block;font-size:12px;font-weight:600;color:#9096b0;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em;">Дата начала (понедельник)</label>
+      <input type="date" id="new-sprint-start" oninput="updateNewSprintPreview()" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #c7ceff;border-radius:8px;font-size:14px;color:#1a1d2e;outline:none;">
+    </div>
+    <div id="new-sprint-preview" style="font-size:13px;color:#4a5070;background:#f4f5ff;border-radius:8px;padding:10px 14px;min-height:36px;"></div>
+    <button onclick="createNewSprint()" style="background:#4361ee;color:#fff;border:none;border-radius:10px;padding:11px 0;font-size:14px;font-weight:700;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#3451de'" onmouseout="this.style.background='#4361ee'">Создать спринт</button>
+  </div>
+</div>
+
 </body>
 </html>
