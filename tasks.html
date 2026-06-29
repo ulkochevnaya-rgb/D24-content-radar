@@ -3086,9 +3086,13 @@
   // ===================== QUICK ADD =====================
   const CUSTOM_TASKS_KEY = 'delegator24_custom_v1';
   function loadCustomTasks() { try { return JSON.parse(localStorage.getItem(CUSTOM_TASKS_KEY)) || {}; } catch { return {}; } }
+  var _skipCustomListener = false;
   function saveCustomTasks(d) {
     localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(d));
-    if (fbDb) try { fbDb.ref('tasks/custom_json').set(JSON.stringify(d)); } catch(e) {}
+    if (fbDb) {
+      _skipCustomListener = true;
+      try { fbDb.ref('tasks/custom_json').set(JSON.stringify(d)); } catch(e) {}
+    }
   }
 
   function createCustomTaskLi(taskId, text) {
@@ -3361,10 +3365,12 @@
       }, function() {});
 
       fbDb.ref('tasks/custom_json').on('value', function(snap) {
+        // Skip our own writes — DOM is already correct from addCustomTask
+        if (_skipCustomListener) { _skipCustomListener = false; return; }
         var fbCustom = {};
         try { fbCustom = JSON.parse(snap.val() || '{}'); } catch(e) {}
         localStorage.setItem(CUSTOM_TASKS_KEY, JSON.stringify(fbCustom));
-        // Smart reconcile: add missing, remove deleted — no full re-render to avoid duplicates
+        // For colleagues and cross-device: full reconcile
         document.querySelector('.sprint-panel.active')?.querySelectorAll('.section').forEach(function(section) {
           var sectionId = section.id || '';
           section.querySelectorAll('.task-group').forEach(function(group, gIdx) {
@@ -3373,11 +3379,9 @@
             var tasks = fbCustom[groupKey] || [];
             var list = group.querySelector('.subtask-list');
             if (!list) return;
-            // Remove tasks deleted in Firebase
             list.querySelectorAll('[data-custom-id]').forEach(function(el) {
               if (!tasks.find(function(t) { return t.id === el.dataset.customId; })) el.remove();
             });
-            // Add tasks not yet in DOM
             var addRow = list.querySelector('.add-task-row');
             tasks.forEach(function(t) {
               if (list.querySelector('[data-custom-id="' + t.id + '"]')) return;
@@ -3391,11 +3395,20 @@
       }, function() {});
 
       fbDb.ref('tasks/deleted_json').on('value', function(snap) {
+        var raw = snap.val();
+        if (raw === null) {
+          // First run after migration — write localStorage deleted data to Firebase
+          var localDel = loadDeleted();
+          if (Object.keys(localDel).length) {
+            fbDb.ref('tasks/deleted_json').set(JSON.stringify(localDel));
+          }
+          return; // keep DOM as-is (localStorage already applied correctly)
+        }
         var fbDeleted = {};
-        try { fbDeleted = JSON.parse(snap.val() || '{}'); } catch(e) {}
+        try { fbDeleted = JSON.parse(raw); } catch(e) {}
         localStorage.setItem(DELETED_KEY, JSON.stringify(fbDeleted));
         document.querySelectorAll('.subtask').forEach(function(st) {
-          st.style.display = fbDeleted[getSubtaskId(st)] ? 'none' : '';
+          if (fbDeleted[getSubtaskId(st)]) st.style.display = 'none';
         });
       }, function() {});
     }
