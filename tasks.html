@@ -1543,44 +1543,6 @@
         </div>
       </div>
 
-      <!-- Партнёрства -->
-      <div class="section" id="s-partner">
-        <div class="section-header">
-          <div class="section-icon icon-partner">🤝</div>
-          <div class="section-label">Партнёрства</div>
-          <span class="section-tag tag-partner">Развитие каналов</span>
-        </div>
-        <div class="task-group" data-color="amber">
-          <div class="task-group-header">
-            <div class="task-group-title">Разовые задачи · Партнёрства с банками</div>
-            <span class="task-group-count">0/3</span>
-          </div>
-          <ul class="subtask-list">
-            <li class="subtask">
-              <div class="sub-checkbox"></div>
-              <div class="subtask-body">
-                <div class="subtask-title">Составить шаблон письма для партнёрских банков</div>
-                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
-              </div>
-            </li>
-            <li class="subtask">
-              <div class="sub-checkbox"></div>
-              <div class="subtask-body">
-                <div class="subtask-title">Создать КП и опубликовать на <a href="https://kp.delegator24.biz" target="_blank">kp.delegator24.biz</a></div>
-                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
-              </div>
-            </li>
-            <li class="subtask">
-              <div class="sub-checkbox"></div>
-              <div class="subtask-body">
-                <div class="subtask-title">Передать материалы Елене и запустить рассылку</div>
-                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-
       <!-- Контент -->
       <div class="section" id="s-content">
         <div class="section-header">
@@ -4295,6 +4257,7 @@
       });
     });
     restoreCustomTasks();
+    document.querySelectorAll('.sprint-panel').forEach(function(p) { updateProgress(p.id); });
 
     // Restore hide-done state
     if (localStorage.getItem(HIDE_DONE_KEY) === '1') {
