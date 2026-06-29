@@ -4112,9 +4112,12 @@
   }
 
   function createNewSprint() {
-    if (!currentUser) return;
+    try { _createNewSprintImpl(); } catch(err) { showAuthToast('Ошибка: ' + err.message); console.error(err); }
+  }
+  function _createNewSprintImpl() {
+    if (!currentUser) { showAuthToast('нет авторизации'); return; }
     var val = document.getElementById('new-sprint-start').value;
-    if (!val) return;
+    if (!val) { showAuthToast('нет даты'); return; }
     var start = new Date(val + 'T12:00:00');
     var end = new Date(start.getTime() + 6 * 86400000);
     var id = 'sprint-dyn-' + val.replace(/-/g, '');
