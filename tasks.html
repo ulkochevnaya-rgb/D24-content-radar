@@ -280,6 +280,13 @@
 
     .section-label { font-size: 15px; font-weight: 700; color: #1a1d2e; flex: 1; }
 
+    .section-tmpl-btn {
+      background: none; border: 1px solid #c8bcf0; border-radius: 6px;
+      color: #7c3aed; font-size: 11px; font-weight: 700;
+      padding: 3px 8px; cursor: pointer; transition: all 0.12s; white-space: nowrap; flex-shrink: 0;
+    }
+    .section-tmpl-btn:hover { background: #ece6ff; }
+
     .section-tag {
       font-size: 10px;
       font-weight: 700;
@@ -1954,6 +1961,7 @@
           <div class="section-icon icon-backlog">📦</div>
           <div class="section-label">Бэклог</div>
           <span class="section-tag tag-backlog">Идеи и отложенное</span>
+          <button class="section-tmpl-btn" onclick="saveBacklogAsTemplates(event)" title="Сохранить весь бэклог как шаблоны для нового спринта">↻ в шаблон</button>
         </div>
 
         <div class="task-group task-group-bare" data-color="gray">
@@ -2592,18 +2600,29 @@
 
   function confirmMove(backlogId, title, sectionId) {
     closeMovePopup();
-    const zone = getOrCreateMovedZone(sectionId);
-    if (!zone) return;
-    if (zone.querySelector(`[data-backlog-ref="${backlogId}"]`)) return;
-    const isDone = loadState()['backlog:' + backlogId] === true;
-    addSubtaskToZone(zone, backlogId, title, isDone);
-    updateGroupCount(zone);
-    const sp = zone.closest('.sprint-panel');
-    if (sp) updateProgress(sp.id);
-    markBacklogMoved(backlogId);
-    const moves = loadMoves();
-    moves[backlogId] = { sectionId, title };
-    saveMoves(moves);
+    if (!currentUser) { showAuthToast(); return; }
+
+    // Find visible sprint panel (backlog lives inside active sprint)
+    const panel = document.querySelector('.sprint-panel.active') || document.querySelector('.sprint-panel');
+    if (!panel) return;
+
+    const section = panel.querySelector('#' + sectionId);
+    if (!section) return;
+
+    const group = section.querySelector('.task-group');
+    if (!group) return;
+
+    const list = group.querySelector('.subtask-list');
+    if (!list) return;
+
+    const headerTitle = group.querySelector('.task-group-title')?.textContent?.trim() || '';
+    const groupKey = 'group:' + sectionId + ':' + (headerTitle || 'g0');
+
+    addCustomTask(groupKey, list, title);
+
+    // Remove from backlog entirely
+    const backlogItem = document.querySelector('[data-backlog-id="' + backlogId + '"]');
+    if (backlogItem) deleteBacklogItem(backlogItem);
   }
 
   function restoreMoves() {
@@ -2648,6 +2667,27 @@
   function saveTemplates(arr) {
     localStorage.setItem(TEMPLATES_KEY, JSON.stringify(arr));
     if (fbDb) { _skipTemplatesListener = true; try { fbDb.ref('tasks/templates_json').set(JSON.stringify(arr)); } catch(e) {} }
+  }
+
+  function saveBacklogAsTemplates(e) {
+    if (e) e.stopPropagation();
+    if (!currentUser) { showAuthToast(); return; }
+    var items = document.querySelectorAll('#s-backlog .backlog-item');
+    var templates = loadTemplates();
+    var added = 0;
+    items.forEach(function(item) {
+      if (item.style.display === 'none') return;
+      var titleEl = item.querySelector('.backlog-title');
+      if (!titleEl) return;
+      var text = titleEl.textContent.trim();
+      if (!text) return;
+      if (templates.some(function(t) { return t.text === text; })) return;
+      templates.push({ id: Date.now() + added, text: text, sectionId: 's-today', sectionLabel: 'Разовые задачи' });
+      added++;
+    });
+    if (!added) { showAuthToast('Всё уже в шаблонах ↻'); return; }
+    saveTemplates(templates);
+    showAuthToast('Добавлено в шаблоны: ' + added + ' задач ↻');
   }
 
   function saveSubtaskAsTemplate(subtask) {
