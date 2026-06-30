@@ -1,0 +1,2476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Аудитория Delegator24 — Анализ 2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #4F8EF7;
+      --blue-dark: #2B5FD9;
+      --bg-dark: #06102A;
+      --bg-card: #0C1A3A;
+      --text: #1A2035;
+      --text-muted: #5A6A8A;
+      --border: #DDE6F5;
+      --seg1: #4F8EF7;
+      --seg2: #2BC48A;
+      --seg3: #9B5EF5;
+      --seg4: #F59E0B;
+      --red: #EF4444;
+      --orange: #F59E0B;
+      --green: #10B981;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #F4F7FD;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      background: var(--bg-dark);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header-logo span { color: var(--blue); }
+    .header-meta {
+      color: #6080B0;
+      font-size: 13px;
+    }
+
+    /* ─── TABS ─── */
+    .tabs-nav {
+      background: var(--bg-card);
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #1E3060;
+    }
+    .tab-btn {
+      padding: 14px 32px;
+      color: #6080B0;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+      letter-spacing: 0.1px;
+    }
+    .tab-btn:hover { color: #8AAAE0; }
+    .tab-btn.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    /* ─── LAYOUT ─── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .page { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ─── SECTION ─── */
+    .section { margin-bottom: 48px; }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title .num {
+      background: var(--blue);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ─── HERO BLOCK ─── */
+    .hero-block {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0C1A3A 100%);
+      border-radius: 16px;
+      padding: 36px 40px;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+    .hero-block .label {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .hero-block h1 {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+    .hero-block h1 em {
+      color: var(--blue);
+      font-style: normal;
+    }
+    .hero-block .sub {
+      color: #8AAAE0;
+      font-size: 16px;
+      max-width: 640px;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .meta-chip {
+      background: rgba(79,142,247,0.15);
+      color: #8AAAE0;
+      border: 1px solid rgba(79,142,247,0.25);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+    .meta-chip strong { color: #C5D8F8; }
+
+    /* ─── PORTRAIT GRID ─── */
+    .portrait-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .portrait-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+    }
+    .portrait-card .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .portrait-card .card-val {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .portrait-card.jtbd {
+      grid-column: 1 / -1;
+      background: #EEF4FF;
+      border-color: #C5D8F8;
+    }
+    .portrait-card.jtbd .card-val {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--blue-dark);
+      font-style: italic;
+    }
+
+    /* ─── SEGMENTS ─── */
+    .segments-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .seg-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .seg-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .seg-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .seg-card.s1 .seg-tag { background: rgba(79,142,247,0.12); color: var(--seg1); }
+    .seg-card.s2 .seg-tag { background: rgba(43,196,138,0.12); color: var(--seg2); }
+    .seg-card.s3 .seg-tag { background: rgba(155,94,245,0.12); color: var(--seg3); }
+    .seg-card.s1 { border-top: 3px solid var(--seg1); }
+    .seg-card.s2 { border-top: 3px solid var(--seg2); }
+    .seg-card.s3 { border-top: 3px solid var(--seg3); }
+    .seg-card.s4 .seg-tag { background: rgba(245,158,11,0.12); color: var(--seg4); }
+    .seg-card.s4 { border-top: 3px solid var(--seg4); }
+    .seg-card.s4 .seg-message { color: #92400E; background: #FFF8EC; }
+
+    .seg-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .seg-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .seg-body { padding: 16px 20px; }
+    .seg-row { margin-bottom: 12px; }
+    .seg-row:last-child { margin-bottom: 0; }
+    .seg-row-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .seg-row-val {
+      font-size: 13.5px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .seg-message {
+      background: #F4F7FD;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue-dark);
+      margin-top: 12px;
+      text-align: center;
+    }
+    .seg-card.s2 .seg-message { color: #0D7A52; background: #EDFAF4; }
+    .seg-card.s3 .seg-message { color: #5E2EC4; background: #F3EEFF; }
+
+    /* ─── INLINE LIST ─── */
+    .content-block {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+    }
+    .content-block + .content-block { margin-top: 16px; }
+    .content-block h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    .item-list { list-style: none; }
+    .item-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #F0F4FB;
+      font-size: 14.5px;
+    }
+    .item-list li:last-child { border-bottom: none; }
+    .item-list li .ico {
+      font-size: 16px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+    .item-list li .txt { line-height: 1.5; }
+    .item-list li .txt strong { color: var(--text); }
+    .item-list li .txt span { color: var(--text-muted); font-size: 13px; }
+
+    /* ─── TWO COLUMNS ─── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ─── CUSTDEV TABLE ─── */
+    .custdev-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .custdev-table th {
+      background: #F0F4FB;
+      padding: 10px 16px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+    }
+    .custdev-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .custdev-table tr:last-child td { border-bottom: none; }
+    .custdev-table .metric-name { font-weight: 600; color: var(--text); }
+    .custdev-table .expect { color: var(--blue-dark); font-weight: 700; }
+    .custdev-table .fact { color: var(--text-muted); font-weight: 600; }
+    .custdev-table .gap-ok { color: var(--green); font-weight: 700; }
+    .custdev-table .gap-warn { color: var(--orange); font-weight: 700; }
+    .custdev-table .gap-crit { color: var(--red); font-weight: 700; }
+
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar {
+      height: 6px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .bar-expect { background: var(--blue); }
+    .bar-fact { background: #C5D8F8; }
+
+    /* ─── INSIGHT BOX ─── */
+    .insight {
+      background: #EEF4FF;
+      border: 1px solid #C5D8F8;
+      border-left: 4px solid var(--blue);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 16px;
+      font-size: 14.5px;
+      color: var(--blue-dark);
+      line-height: 1.6;
+    }
+    .insight strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .insight.warn {
+      background: #FFF8EC;
+      border-color: #F59E0B;
+      border-left-color: var(--orange);
+      color: #92400E;
+    }
+    .insight.crit {
+      background: #FEF2F2;
+      border-color: #FECACA;
+      border-left-color: var(--red);
+      color: #991B1B;
+    }
+    .insight.green {
+      background: #ECFDF5;
+      border-color: #A7F3D0;
+      border-left-color: var(--green);
+      color: #065F46;
+    }
+
+    /* ─── FEAR GRID ─── */
+    .fear-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+    .fear-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 18px;
+    }
+    .fear-card .fear-ico {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .fear-card .fear-type {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .fear-card .fear-list { list-style: none; }
+    .fear-card .fear-list li {
+      font-size: 13px;
+      color: var(--text);
+      padding: 5px 0;
+      border-bottom: 1px dashed #EEF2FB;
+      line-height: 1.45;
+    }
+    .fear-card .fear-list li:last-child { border-bottom: none; }
+    .fear-card .fear-list li::before {
+      content: "→ ";
+      color: var(--text-muted);
+    }
+
+    /* ─── TAB 2: MARKETING ─── */
+    .pos-block {
+      background: linear-gradient(135deg, #06102A 0%, #0E1D4A 100%);
+      border-radius: 16px;
+      padding: 36px 40px;
+      color: #fff;
+      margin-bottom: 32px;
+    }
+    .pos-block .label {
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .pos-statement {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.45;
+      color: #fff;
+      margin-bottom: 20px;
+      letter-spacing: -0.3px;
+    }
+    .pos-statement em { color: var(--blue); font-style: normal; }
+    .pos-vs {
+      background: rgba(79,142,247,0.12);
+      border: 1px solid rgba(79,142,247,0.25);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 15px;
+      color: #8AAAE0;
+    }
+    .pos-vs strong { color: #C5D8F8; }
+
+    .offer-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .offer-tab {
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all .15s;
+    }
+    .offer-tab.t1 { background: rgba(79,142,247,0.1); color: var(--seg1); border-color: rgba(79,142,247,0.2); }
+    .offer-tab.t2 { background: rgba(43,196,138,0.1); color: var(--seg2); border-color: rgba(43,196,138,0.2); }
+    .offer-tab.t3 { background: rgba(155,94,245,0.1); color: var(--seg3); border-color: rgba(155,94,245,0.2); }
+    .offer-tab.t4 { background: rgba(245,158,11,0.1); color: var(--seg4); border-color: rgba(245,158,11,0.2); }
+
+    .offer-group { display: none; }
+    .offer-group.active { display: block; }
+    .offer-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .offer-card .tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .tag-pain { background: #FEF2F2; color: #B91C1C; }
+    .tag-econ { background: #ECFDF5; color: #065F46; }
+    .tag-cta  { background: #EEF4FF; color: #1E40AF; }
+    .tag-trig { background: #FFF8EC; color: #92400E; }
+
+    /* ─── LM ─── */
+    .lm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .lm-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      position: relative;
+    }
+    .lm-priority {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .p-high { background: #FEF2F2; color: #B91C1C; }
+    .p-mid  { background: #FFF8EC; color: #92400E; }
+    .p-low  { background: #F0F4FB; color: var(--text-muted); }
+    .lm-card .lm-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      padding-right: 64px;
+    }
+    .lm-card .lm-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .lm-card .lm-closes {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue-dark);
+    }
+    .lm-card .lm-closes::before { content: "↳ Закрывает: "; color: var(--text-muted); font-weight: 400; }
+    .lm-card.existing { border-left: 4px solid var(--green); }
+    .lm-card.new      { border-left: 4px solid var(--blue); }
+
+    /* ─── SITE STRUCTURE ─── */
+    .site-blocks { display: flex; flex-direction: column; gap: 10px; }
+    .site-block {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .sb-num {
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sb-body { flex: 1; }
+    .sb-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .sb-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .sb-goal {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue-dark);
+      margin-top: 6px;
+    }
+    .sb-goal::before { content: "Цель: "; color: var(--text-muted); font-weight: 400; }
+
+    /* ─── UTILS ─── */
+    .tag-exists {
+      background: #ECFDF5;
+      color: #065F46;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+
+    @media(max-width: 720px) {
+      .segments-grid { grid-template-columns: 1fr; }
+      .portrait-grid { grid-template-columns: 1fr; }
+      .portrait-card.jtbd { grid-column: 1; }
+      .two-col { grid-template-columns: 1fr; }
+      .fear-grid { grid-template-columns: 1fr; }
+      .lm-grid { grid-template-columns: 1fr; }
+      .page { padding: 24px 16px 60px; }
+      .hero-block { padding: 24px 20px; }
+      .header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo"><span>D24</span> Аудитория — Стратегический анализ</div>
+  <div class="header-meta">Июнь 2026 · CustDev 2025 + ICP + Соцмедиа-сбор 30.06.2026</div>
+</div>
+
+<div class="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('audience', this)">1. Анализ аудитории</button>
+  <button class="tab-btn" onclick="switchTab('wordstat', this)">2. Поиск — Вордстат</button>
+  <button class="tab-btn" onclick="switchTab('marketing', this)">3. Маркетинговые выводы</button>
+  <button class="tab-btn" onclick="switchTab('content', this)">4. Контент-стратегия</button>
+</div>
+
+<!-- ════════════════════════════════════════ TAB 1 ════════════════════════════════════════ -->
+<div class="tab-content active" id="tab-audience">
+<div class="page">
+
+  <div class="hero-block">
+    <div class="label">Базис анализа</div>
+    <h1>CustDev 2025 + ICP дали ответ:<br>клиент покупает <em>не задачи — спокойствие</em></h1>
+    <div class="sub">
+      30–31 активный клиент в опросе. Интервью + таблица + анализ ICP.
+      Продукт соответствует потребностям ЦА на ≈60–65%. Главный разрыв — глубокое погружение в бизнес.
+    </div>
+    <div class="meta-row">
+      <div class="meta-chip">База: <strong>CustDev 2025 + ICP + Соцмедиа-сбор</strong></div>
+      <div class="meta-chip">Обновлено: <strong>30 июня 2026</strong></div>
+      <div class="meta-chip">Автор: <strong>Юлия Кочевная</strong></div>
+    </div>
+  </div>
+
+  <!-- 1. Портрет ЦА -->
+  <div class="section">
+    <div class="section-title"><span class="num">01</span> Сводный портрет ЦА</div>
+    <div class="portrait-grid">
+      <div class="portrait-card">
+        <div class="card-label">Кто</div>
+        <div class="card-val">Собственник / CEO / операционный руководитель зрелого бизнеса. Принимает решение об оплате (ЛПР или ЛВПР).</div>
+      </div>
+      <div class="portrait-card">
+        <div class="card-label">Бизнес</div>
+        <div class="card-val">Оборот 30–150M руб/год. Команда 5–30 человек. Есть операционка и регулярные процессы.</div>
+      </div>
+      <div class="portrait-card">
+        <div class="card-label">Демография</div>
+        <div class="card-val">Преимущественно мужчины 30–50 лет. Крупные города РФ. Комфортен график МСК.</div>
+      </div>
+      <div class="portrait-card">
+        <div class="card-label">Ключевые отрасли</div>
+        <div class="card-val">МУП — 12%, IT — 11%, маркетинг/digital — 8%, розница — 8%. Также: торговля, агентства, консалтинг, производство.</div>
+      </div>
+      <div class="portrait-card">
+        <div class="card-label">Состояние при покупке</div>
+        <div class="card-val">Перегружен операционкой. Уже пробовал штат и/или фрилансеров — разочарован. Хочет управляемость без расширения штата.</div>
+      </div>
+      <div class="portrait-card">
+        <div class="card-label">Не наш клиент</div>
+        <div class="card-val">«Спасите бизнес, денег нет» · Нужны клиенты с нуля · Нет команды и процессов · Покупает «дешёвые руки» · Самозанятые с выручкой 30–50K/мес</div>
+      </div>
+      <div class="portrait-card jtbd">
+        <div class="card-label">JTBD — главная работа, которую «нанимают» нас делать</div>
+        <div class="card-val">«Снять с меня операционную нагрузку и контроль, сохранив управляемость бизнеса без найма лишних людей.»</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Сегменты -->
+  <div class="section">
+    <div class="section-title"><span class="num">02</span> Четыре сегмента ЦА</div>
+    <div class="segments-grid">
+
+      <div class="seg-card s1">
+        <div class="seg-header">
+          <div class="seg-tag">Сегмент 1 · Самый массовый</div>
+          <div class="seg-name">В капкане операционки</div>
+          <div class="seg-desc">Делает всё сам, потому что «быстрее показать, чем объяснить»</div>
+        </div>
+        <div class="seg-body">
+          <div class="seg-row">
+            <div class="seg-row-label">Профиль</div>
+            <div class="seg-row-val">Оборот 30–80M/год · 5–15 чел · Всё замкнуто на нём</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Боли</div>
+            <div class="seg-row-val">Нет времени на стратегию · Выгорание · Отпуск = работа из отпуска · «Ухожу в 9, прихожу в 23»</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Триггеры покупки</div>
+            <div class="seg-row-val">Выгорание достигло предела · Хочет масштабироваться но не может · Наконец прочитал о делегировании</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Что ищет</div>
+            <div class="seg-row-val">Кому доверить задачи и «забыть» · Без найма и долгих объяснений</div>
+          </div>
+          <div class="seg-message">«Верни своё время»</div>
+        </div>
+      </div>
+
+      <div class="seg-card s2">
+        <div class="seg-header">
+          <div class="seg-tag">Сегмент 2 · Экономический мотив</div>
+          <div class="seg-name">Оптимизатор ФОТ</div>
+          <div class="seg-desc">Видит, что штат дорожает — ищет выгодную альтернативу</div>
+        </div>
+        <div class="seg-body">
+          <div class="seg-row">
+            <div class="seg-row-label">Профиль</div>
+            <div class="seg-row-val">Оборот 50–150M/год · 10–30 чел · Считает экономику каждого сотрудника</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Боли</div>
+            <div class="seg-row-val">Постоянная текучка · Стоимость найма и онбординга · Балластные сотрудники · Давление на сокращение затрат (2026)</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Триггеры покупки</div>
+            <div class="seg-row-val">Уволился ключевой сотрудник · Пересмотр бюджета · Новый проект без расширения штата</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Что ищет</div>
+            <div class="seg-row-val">Дешевле и надёжнее штата · Команда без HR-рисков · Прозрачная экономика</div>
+          </div>
+          <div class="seg-message">«Команда выгоднее сотрудника»</div>
+        </div>
+      </div>
+
+      <div class="seg-card s3">
+        <div class="seg-header">
+          <div class="seg-tag">Сегмент 3 · Самый зрелый</div>
+          <div class="seg-name">Строитель системы</div>
+          <div class="seg-desc">Понимает делегирование, ищет партнёра — не сервис</div>
+        </div>
+        <div class="seg-body">
+          <div class="seg-row">
+            <div class="seg-row-label">Профиль</div>
+            <div class="seg-row-val">Оборот 80–200M/год · Несколько направлений · Есть COO или сам операционный руководитель</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Боли</div>
+            <div class="seg-row-val">Нет единого партнёра, понимающего бизнес · Запуск нового направления требует мгновенной команды · Хочет «чтобы делалось само»</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Триггеры покупки</div>
+            <div class="seg-row-val">Запуск нового продукта/направления · Масштабирование · Ищет системное решение</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Что ищет</div>
+            <div class="seg-row-val">Операционный партнёр, а не исполнитель · Глубокое понимание бизнеса · Предсказуемость и системность</div>
+          </div>
+          <div class="seg-message">«Партнёр в операционке»</div>
+        </div>
+      </div>
+
+      <div class="seg-card s4">
+        <div class="seg-header">
+          <div class="seg-tag">Сегмент 4 · Из соцмедиа</div>
+          <div class="seg-name">Топ без команды</div>
+          <div class="seg-desc">Есть полномочия и задачи — но нет рук под них</div>
+        </div>
+        <div class="seg-body">
+          <div class="seg-row">
+            <div class="seg-row-label">Профиль</div>
+            <div class="seg-row-val">Топ-менеджер / ведущий спец компании · Полномочия есть, команды нет · Не ЛПР, но влияет на решение</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Боли</div>
+            <div class="seg-row-val">Тонет в операционке сам · Некому делегировать внутри · Изоляция — «не с кем даже обсудить» · Хочет роста, но нет ресурса под задачи</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Триггеры покупки</div>
+            <div class="seg-row-val">Нужна команда под конкретный проект · Операционка растёт, штат не расширяют · Выгорание от «всё делаю сам»</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Что ищет</div>
+            <div class="seg-row-val">Ресурс под задачи без найма и согласований · «Правую руку» — не исполнителя, а человека который вникает</div>
+          </div>
+          <div class="seg-row">
+            <div class="seg-row-label">Ключевой инсайт</div>
+            <div class="seg-row-val">Для этого сегмента D24 — не «освободи время», а <strong>«получи команду без найма и начни расти»</strong>. Делегирование = рычаг роста, не комфорт.</div>
+          </div>
+          <div class="seg-message">«Команда без найма — рычаг роста»</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. Что на самом деле покупают -->
+  <div class="section">
+    <div class="section-title"><span class="num">03</span> Что клиенты покупают на самом деле</div>
+    <div class="insight green">
+      <strong>Ключевой инсайт CustDev 2025</strong>
+      Клиенты НЕ покупают делегирование как услугу. Они покупают снятие когнитивной нагрузки с собственника. Деньги платят не за задачи, а за то, что задачи перестают занимать место в голове.
+    </div>
+    <div class="two-col" style="margin-top: 16px;">
+      <div class="content-block">
+        <h3>Что покупают (подтверждено)</h3>
+        <ul class="item-list">
+          <li><span class="ico">⚡</span><div class="txt"><strong>Скорость и предсказуемость</strong><br><span>Уверенность, что задача будет сделана в срок</span></div></li>
+          <li><span class="ico">🛡️</span><div class="txt"><strong>Надёжность</strong><br><span>Ничего не теряется, дедлайны соблюдаются</span></div></li>
+          <li><span class="ico">🔕</span><div class="txt"><strong>Снижение вовлечённости и контроля</strong><br><span>Передал — больше не думаешь об этом</span></div></li>
+          <li><span class="ico">🤝</span><div class="txt"><strong>Ощущение, что бизнес понимают</strong><br><span>Не нужно каждый раз объяснять с нуля</span></div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Что НЕ покупают</h3>
+        <ul class="item-list">
+          <li><span class="ico">✗</span><div class="txt"><strong>«Задачи»</strong><br><span>Задачи — побочный продукт, не ценность</span></div></li>
+          <li><span class="ico">✗</span><div class="txt"><strong>«Часы»</strong><br><span>Непонятная единица, вызывает возражение «дорого»</span></div></li>
+          <li><span class="ico">✗</span><div class="txt"><strong>«Ассистента»</strong><br><span>Слово снижает воспринимаемую ценность</span></div></li>
+          <li><span class="ico">✗</span><div class="txt"><strong>«Сервис делегирования»</strong><br><span>Абстракция — непонятно что именно происходит</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Первичные и вторичные выгоды -->
+  <div class="section">
+    <div class="section-title"><span class="num">04</span> Первичные и вторичные выгоды</div>
+    <div class="two-col">
+      <div class="content-block">
+        <h3>Первичные — функциональные</h3>
+        <ul class="item-list">
+          <li><span class="ico">1️⃣</span><div class="txt"><strong>Освобождение времени и фокуса</strong><br><span>Делегировать и забыть. Голова свободна.</span></div></li>
+          <li><span class="ico">2️⃣</span><div class="txt"><strong>Надёжность исполнения</strong><br><span>Ничего не теряется, дедлайны держатся</span></div></li>
+          <li><span class="ico">3️⃣</span><div class="txt"><strong>Скорость реакции</strong><br><span>Задача принята и делается — без задержек</span></div></li>
+          <li><span class="ico">4️⃣</span><div class="txt"><strong>Экономия на найме</strong><br><span>Нет онбординга, замены, HR-рутины</span></div></li>
+          <li><span class="ico">5️⃣</span><div class="txt"><strong>Гибкость</strong><br><span>Подключить/отключить без рисков. Менять объём.</span></div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Вторичные — эмоциональные</h3>
+        <ul class="item-list">
+          <li><span class="ico">😌</span><div class="txt"><strong>Эмоциональное спокойствие</strong><br><span>«Голова не занята операционкой»</span></div></li>
+          <li><span class="ico">🤝</span><div class="txt"><strong>Ощущение партнёрства</strong><br><span>«Меня понимают без постоянных объяснений»</span></div></li>
+          <li><span class="ico">🎯</span><div class="txt"><strong>Доверие без микроменеджмента</strong><br><span>«Я верю, но могу проверить когда нужно»</span></div></li>
+          <li><span class="ico">🚀</span><div class="txt"><strong>Уверенность в росте</strong><br><span>«Масштабируюсь без рисков и стресса»</span></div></li>
+          <li><span class="ico">✨</span><div class="txt"><strong>Статус и имидж</strong><br><span>«У меня профессиональная команда под задачи»</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Драйверы -->
+  <div class="section">
+    <div class="section-title"><span class="num">05</span> Драйверы — что запускает поиск решения</div>
+    <div class="two-col">
+      <div class="content-block">
+        <h3>Ситуативные (острая боль → быстрое решение)</h3>
+        <ul class="item-list">
+          <li><span class="ico">🔥</span><div class="txt"><strong>Уволился / ушёл ключевой сотрудник</strong><br><span>Самый горячий триггер — задачи есть, рук нет</span></div></li>
+          <li><span class="ico">🚀</span><div class="txt"><strong>Запуск нового направления или продукта</strong><br><span>Нужна команда здесь и сейчас, без найма</span></div></li>
+          <li><span class="ico">😩</span><div class="txt"><strong>Выгорание достигло критической точки</strong><br><span>«Я больше не могу тянуть всё сам»</span></div></li>
+          <li><span class="ico">📅</span><div class="txt"><strong>Конец квартала / пересмотр бюджетов</strong><br><span>Думают как оптимизировать структуру затрат</span></div></li>
+          <li><span class="ico">💡</span><div class="txt"><strong>Прочитал о делегировании → «это про меня»</strong><br><span>Статья, пост, видео — узнал себя и начал искать</span></div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Экономические (2026) и рекомендательные</h3>
+        <ul class="item-list">
+          <li><span class="ico">💰</span><div class="txt"><strong>Давление на оптимизацию ФОТ</strong><br><span>Рынок 2026 — собственники режут расходы на персонал</span></div></li>
+          <li><span class="ico">📈</span><div class="txt"><strong>Рост стоимости найма</strong><br><span>Зарплаты выросли → аутсорс становится выгоднее</span></div></li>
+          <li><span class="ico">⭐</span><div class="txt"><strong>Рекомендация от коллеги / партнёра</strong><br><span>Самый сильный триггер по органике — 26% клиентов</span></div></li>
+          <li><span class="ico">📊</span><div class="txt"><strong>Видел конкретный кейс похожего бизнеса</strong><br><span>«Он работает по этой схеме, и у него получается»</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Страхи и барьеры -->
+  <div class="section">
+    <div class="section-title"><span class="num">06</span> Страхи и барьеры</div>
+    <div class="fear-grid">
+      <div class="fear-card">
+        <div class="fear-ico">🧠</div>
+        <div class="fear-type">Рациональные / Экономические</div>
+        <ul class="fear-list">
+          <li>«Дорого — не понимаю ROI»</li>
+          <li>«Часы сгорают — теряю деньги» <small style="color:#888">(D24 негатив)</small></li>
+          <li>«Объяснять дольше, чем сделать самому» <small style="color:#888">(132 лайка)</small></li>
+          <li>«Аутсорс должен быть дешевле штата — иначе зачем?» <small style="color:#888">(массовое убеждение рынка)</small></li>
+          <li>«Аутсорс закрывает только базовые задачи — не вникает в бизнес»</li>
+          <li>«Свой штатный ассистент дешевле сервиса» <small style="color:#888">(Habr, 2023)</small></li>
+          <li>«ИИ дешевле / сам справлюсь через ChatGPT» <small style="color:#888">⚠ новый 2026</small></li>
+        </ul>
+      </div>
+      <div class="fear-card">
+        <div class="fear-ico">😟</div>
+        <div class="fear-type">Психологические / Доверие</div>
+        <ul class="fear-list">
+          <li>«Они не поймут специфику моего бизнеса» <small style="color:#888">(CustDev: 46% vs 12%)</small></li>
+          <li>«Сменят исполнителя — начинай с нуля» <small style="color:#888">(D24 негатив)</small></li>
+          <li>«Никто не сделает с нужной энергией как я»</li>
+          <li>«Нет инициативы — надо всё разжёвывать» <small style="color:#888">(D24 негатив)</small></li>
+          <li>«Делегировал — потерял контроль — получил проблемы»</li>
+          <li>«Заплачу — получу формальный результат без реального эффекта»</li>
+        </ul>
+      </div>
+      <div class="fear-card">
+        <div class="fear-ico">🔄</div>
+        <div class="fear-type">Поведенческие / Опыт</div>
+        <ul class="fear-list">
+          <li>Инерция: «займусь этим потом»</li>
+          <li>Негативный опыт с фрилансерами / штатом</li>
+          <li>«Нашёл, обучил — ушёл или провалился» <small style="color:#888">(4 ассистента за год)</small></li>
+          <li>«Ищу ассистента, но не знаю кто мне нужен» — нанимают не того</li>
+          <li>Не понял чем мы лучше штата</li>
+          <li>Сложно выбрать между вариантами</li>
+        </ul>
+      </div>
+    </div>
+    <div class="insight warn" style="margin-top: 16px;">
+      <strong>⚠ Новый страх 2026 — ИИ как конкурент в голове ЦА</strong>
+      «Зачем живой человек-ассистент, если есть ChatGPT?» — эксперимент в соцмедиа подтвердил: ИИ заменяет почту, ресёрч, документы, но НЕ заменяет звонки, инициативу и контекст отношений. Оптимальная формула рынка: ИИ-стек 12к/мес + живая команда 20–30к/мес. D24 = «живой слой» в этой формуле.
+    </div>
+    <div class="insight warn" style="margin-top: 12px;">
+      <strong>Что усиливает барьеры — системная проблема</strong>
+      Когда продукт не даёт ощущения «меня понимают без объяснений» → клиент остаётся вовлечён → воспринимает сервис как «руки» → сравнивает с фрилансерами по цене → уходит через 2–4 месяца. Это цикл оттока.
+    </div>
+  </div>
+
+  <!-- 7. Разрыв CustDev -->
+  <div class="section">
+    <div class="section-title"><span class="num">07</span> Главный разрыв продукта — данные CustDev 2025</div>
+    <div class="content-block">
+      <h3>Ожидание vs Факт (30–31 активный клиент, множественный выбор)</h3>
+      <table class="custdev-table" style="margin-top: 12px;">
+        <thead>
+          <tr>
+            <th>Критерий</th>
+            <th>Ожидание</th>
+            <th>Реально получают</th>
+            <th>Разрыв</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric-name">Скорость реакции и выполнения</td>
+            <td><div class="bar-wrap"><div class="bar bar-expect" style="width:80px"></div><span class="expect">80%</span></div></td>
+            <td><div class="bar-wrap"><div class="bar bar-fact" style="width:54px"></div><span class="fact">54%</span></div></td>
+            <td class="gap-warn">⚠ −26%</td>
+          </tr>
+          <tr>
+            <td class="metric-name">Надёжность (дедлайны, ничего не теряется)</td>
+            <td><div class="bar-wrap"><div class="bar bar-expect" style="width:66px"></div><span class="expect">66%</span></div></td>
+            <td><div class="bar-wrap"><div class="bar bar-fact" style="width:54px"></div><span class="fact">54%</span></div></td>
+            <td class="gap-warn">⚠ −12%</td>
+          </tr>
+          <tr>
+            <td class="metric-name">Минимум моего контроля и вовлечения</td>
+            <td><div class="bar-wrap"><div class="bar bar-expect" style="width:63px"></div><span class="expect">63%</span></div></td>
+            <td><div class="bar-wrap"><div class="bar bar-fact" style="width:38px"></div><span class="fact">38%</span></div></td>
+            <td class="gap-crit">❗ −25%</td>
+          </tr>
+          <tr style="background: #FFF5F5;">
+            <td class="metric-name">Глубокое погружение в бизнес и контекст</td>
+            <td><div class="bar-wrap"><div class="bar bar-expect" style="width:46px"></div><span class="expect">46%</span></div></td>
+            <td><div class="bar-wrap"><div class="bar bar-fact" style="width:12px"></div><span class="fact">12%</span></div></td>
+            <td class="gap-crit">❌ −34% КРИТИЧНО</td>
+          </tr>
+          <tr>
+            <td class="metric-name">Прозрачность и понятная отчётность</td>
+            <td><div class="bar-wrap"><div class="bar bar-expect" style="width:36px"></div><span class="expect">36%</span></div></td>
+            <td><div class="bar-wrap"><div class="bar bar-fact" style="width:35px"></div><span class="fact">35%</span></div></td>
+            <td class="gap-ok">✓ −1%</td>
+          </tr>
+          <tr>
+            <td class="metric-name">Гибкость (менять задачи и приоритеты)</td>
+            <td><div class="bar-wrap"><div class="bar bar-expect" style="width:30px"></div><span class="expect">—</span></div></td>
+            <td><div class="bar-wrap"><div class="bar bar-fact" style="width:58px"></div><span class="fact">58%</span></div></td>
+            <td class="gap-ok">✓ Сильная сторона</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="insight crit" style="margin-top: 16px;">
+      <strong>Главный вывод</strong>
+      46% ожидают глубокого погружения в бизнес — только 12% ощущают, что получают это. Именно этот разрыв:
+      повышает нагрузку на клиента · снижает perceived value · создаёт ощущение «я всё равно вовлечён» · ведёт к оттоку и спорам о цене.
+      <br><br>
+      Продукт — сильный операционный сервис, но пока НЕ системный партнёр. Главная точка роста — не скорость, а глубина понимания бизнеса.
+    </div>
+  </div>
+
+  <!-- 8. Голос рынка -->
+  <div class="section">
+    <div class="section-title"><span class="num">08</span> Голос рынка — язык аудитории (соцмедиа 2025–2026)</div>
+    <div class="insight" style="margin-bottom: 16px;">
+      Реальные цитаты из постов предпринимателей. Использовать в заголовках, офферах, контенте — это язык ЦА, не наш.
+    </div>
+    <div class="two-col">
+      <div class="content-block">
+        <h3>Как описывают боль (своими словами)</h3>
+        <ul class="item-list">
+          <li><span class="ico">💬</span><div class="txt">«Чтобы нанять ассистента — нужен ассистент» <span>— парадокс найма, 125 лайков</span></div></li>
+          <li><span class="ico">💬</span><div class="txt">«Нанял первого сотрудника. Объяснял задачу 4 часа. Сделал сам» <span>— барьер делегирования, 132 лайка</span></div></li>
+          <li><span class="ico">💬</span><div class="txt">«Делегирование начинается с фразы: "Ладно, я сам быстрее"»</div></li>
+          <li><span class="ico">💬</span><div class="txt">«Думал, что я и директор, и бухгалтер, и маркетолог. Спойлер: выгорел»</div></li>
+          <li><span class="ico">💬</span><div class="txt">«Ненавижу созваниваться, а большинство хочет голосом. Слава богу есть Машуля»</div></li>
+          <li><span class="ico">💬</span><div class="txt">«Полное делегирование — это миф. Делегирование — это не уход, а смена роли»</div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Что говорят про ценность делегирования</h3>
+        <ul class="item-list">
+          <li><span class="ico">💬</span><div class="txt">«Самое честное решение перед X-кратным ростом? — Делегирование» <span>— 530 лайков</span></div></li>
+          <li><span class="ico">💬</span><div class="txt">«Стартапы передают на аутсорсинг всё, что не влияет напрямую на рост» <span>— 66 лайков</span></div></li>
+          <li><span class="ico">💬</span><div class="txt">«Делать всё самому — фатальная ошибка бизнеса» <span>— 88 лайков</span></div></li>
+          <li><span class="ico">💬</span><div class="txt">«Живому помощнику можно сказать "разберись с этим" — он додумает. ИИ требует точности»</div></li>
+          <li><span class="ico">💬</span><div class="txt">«hh мёртв: 500 откликов → 0 пришли на собеседование» <span>— 56 комментов</span></div></li>
+          <li><span class="ico">💬</span><div class="txt">«Почему нет сервиса как профи.ру для ассистентов? Думаю, был бы очень востребован» <span>— не знает что D24 существует!</span></div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top: 16px;">
+      <div class="content-block">
+        <h3>Что хотели бы делегировать первым делом</h3>
+        <ul class="item-list">
+          <li><span class="ico">📞</span><div class="txt">Звонки, переговоры с подрядчиками — <strong>главная боль</strong></div></li>
+          <li><span class="ico">📅</span><div class="txt">Календарь, согласование встреч, бронирование</div></li>
+          <li><span class="ico">📧</span><div class="txt">Переписки, первичное общение с клиентами</div></li>
+          <li><span class="ico">🔍</span><div class="txt">Аутрич и поиск подрядчиков / информации</div></li>
+          <li><span class="ico">📄</span><div class="txt">Документы, бухгалтерия («это боль»)</div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Ценовые ожидания рынка (2026)</h3>
+        <ul class="item-list">
+          <li><span class="ico">💰</span><div class="txt"><strong>Штатный ассистент full-time</strong> — от 70 000–120 000 руб/мес</div></li>
+          <li><span class="ico">💰</span><div class="txt"><strong>Ассистент part-time</strong> (10–15 ч/нед) — 20 000–40 000 руб/мес</div></li>
+          <li><span class="ico">🤖</span><div class="txt"><strong>ИИ-стек</strong> (ChatGPT + Claude + tools) — ~12 000 руб/мес</div></li>
+          <li><span class="ico">✅</span><div class="txt"><strong>Оптимум по рынку:</strong> ИИ 12к + живая команда 20–30к = 32–42к/мес</div></li>
+          <li><span class="ico">📌</span><div class="txt">D24 должен конкурировать с <strong>full-time</strong>, не с part-time и не с ИИ</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════ TAB 2 ════════════════════════════════════════ -->
+<div class="tab-content" id="tab-marketing">
+<div class="page">
+
+  <!-- 1. Позиционирование -->
+  <div class="section">
+    <div class="section-title"><span class="num">01</span> Позиционирование</div>
+
+    <div class="pos-block">
+      <div class="label">Главный тезис для всех коммуникаций</div>
+      <div class="pos-statement">
+        Мы не делаем задачи.<br>
+        Мы берём на себя <em>операционную ответственность</em>.
+      </div>
+      <div class="pos-vs">
+        <strong>Против конкурентов в голове клиента:</strong> Мы — не альтернатива ассистенту или фрилансеру. Мы альтернатива найму штатного сотрудника. Это важно зафиксировать в каждом оффере.
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="content-block">
+        <h3>Текущая проблема</h3>
+        <ul class="item-list">
+          <li><span class="ico">❌</span><div class="txt">Коммуницируем как «сервис ассистентов»</div></li>
+          <li><span class="ico">❌</span><div class="txt">Клиент воспринимает как «руки за деньги»</div></li>
+          <li><span class="ico">❌</span><div class="txt">Сравнивает с фрилансерами по цене</div></li>
+          <li><span class="ico">❌</span><div class="txt">Уходит через 2–4 мес из-за разрыва ожиданий</div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Цель позиционирования</h3>
+        <ul class="item-list">
+          <li><span class="ico">✓</span><div class="txt">«Операционный партнёр» — часть системы управления</div></li>
+          <li><span class="ico">✓</span><div class="txt">Клиент воспринимает нас как замену найму</div></li>
+          <li><span class="ico">✓</span><div class="txt">Готов платить регулярно и наращивать объём</div></li>
+          <li><span class="ico">✓</span><div class="txt">Долгосрочная подписка как норма, не исключение</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-block" style="margin-top: 16px;">
+      <h3>Формула позиционирования (полная)</h3>
+      <div class="insight green" style="margin-top: 12px; font-size: 16px;">
+        Для собственников малого и среднего бизнеса, которые тонут в операционке — мы <strong>готовая команда специалистов</strong>, которая берёт на себя блоки задач и отвечает за результат. Без найма, без онбординга, без ежедневного контроля.
+      </div>
+      <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+        <div style="background:#F4F7FD; border-radius:8px; padding:12px 14px;">
+          <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">ДЛЯ КОГО</div>
+          <div style="font-size:13px;">Собственники и CEO малого и среднего бизнеса (30–150M/год)</div>
+        </div>
+        <div style="background:#F4F7FD; border-radius:8px; padding:12px 14px;">
+          <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">ГЛАВНАЯ БОЛЬ</div>
+          <div style="font-size:13px;">Операционная перегрузка, невозможность масштабироваться без раздувания штата</div>
+        </div>
+        <div style="background:#F4F7FD; border-radius:8px; padding:12px 14px;">
+          <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">КЛЮЧЕВОЕ ОТЛИЧИЕ</div>
+          <div style="font-size:13px;">Команда, а не исполнитель. Ответственность за результат, а не за процесс.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Офферы для рекламы -->
+  <div class="section">
+    <div class="section-title"><span class="num">02</span> Офферы для рекламы</div>
+
+    <div class="offer-tabs">
+      <div class="offer-tab t1 active" onclick="switchOffers('o1', this)">Сег. 1: В капкане</div>
+      <div class="offer-tab t2" onclick="switchOffers('o2', this)">Сег. 2: Оптимизатор ФОТ</div>
+      <div class="offer-tab t3" onclick="switchOffers('o3', this)">Сег. 3: Строитель</div>
+      <div class="offer-tab t4" onclick="switchOffers('o4', this)">Сег. 4: Топ без команды</div>
+    </div>
+
+    <div class="offer-group active" id="offers-o1">
+      <div class="offer-card">
+        <span class="tag tag-pain">Боль</span>
+        <div>«Верните 20 часов в неделю — поручите операционку команде специалистов»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-pain">Боль</span>
+        <div>«Перестаньте быть бутылочным горлышком в своём бизнесе»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-cta">CTA</span>
+        <div>«Делегируйте — и больше не думайте об этом. Команда под задачи с первого дня.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-pain">Боль</span>
+        <div>«Ваш бизнес растёт, а вы работаете за всех. Есть выход без найма сотрудников.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-trig">Лид-магнит</span>
+        <div>«400 задач, которые можно и нужно поручить команде» — узнайте, что вы тянете зря</div>
+      </div>
+    </div>
+
+    <div class="offer-group" id="offers-o2">
+      <div class="offer-card">
+        <span class="tag tag-econ">Экономика</span>
+        <div>«Сотрудник с вашими задачами стоит от 80К в месяц. Наша команда — от 18К.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-trig">Триггер</span>
+        <div>«Уволился ключевой сотрудник? Команда специалистов готова завтра.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-econ">Экономика</span>
+        <div>«Оптимизируйте ФОТ без потери качества. Готовая команда вместо штатного сотрудника.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-pain">Боль</span>
+        <div>«Сократили штат? Задачи остались. Отдайте их команде без найма и онбординга.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-econ">Экономика</span>
+        <div>«Посчитайте: сколько стоит ваш сотрудник реально — с больничными, налогами, текучкой?»</div>
+      </div>
+    </div>
+
+    <div class="offer-group" id="offers-o3">
+      <div class="offer-card">
+        <span class="tag tag-cta">Партнёрство</span>
+        <div>«Команда специалистов под ваши процессы. Понимает бизнес. Готова завтра.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-cta">Партнёрство</span>
+        <div>«Делегируйте блоки задач, а не задачи. Мы отвечаем за результат.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-trig">Триггер</span>
+        <div>«Запускаете новое направление? Не нанимайте — подключите готовую команду.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-pain">Боль</span>
+        <div>«Устали объяснять одно и то же? Команда, которая вникает в ваш бизнес раз и навсегда.»</div>
+      </div>
+    </div>
+
+    <div class="offer-group" id="offers-o4">
+      <div class="offer-card">
+        <span class="tag tag-cta">Рост</span>
+        <div>«Полномочия есть — команды нет. Получите ресурс под задачи без найма и согласований.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-pain">Боль</span>
+        <div>«Хотите рост — но операционка съедает весь ресурс? Команда специалистов под ваши задачи.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-trig">Триггер</span>
+        <div>«Самое честное решение перед X-ростом — делегирование. Мы даём команду без найма.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-pain">Боль</span>
+        <div>«Некому делегировать внутри? Получите готовую команду — без HR, без онбординга, с первого дня.»</div>
+      </div>
+      <div class="offer-card">
+        <span class="tag tag-cta">Позиционирование</span>
+        <div>«Не ищите ассистента. Опишите задачу — мы поставим нужного специалиста.»</div>
+      </div>
+    </div>
+
+    <div class="insight" style="margin-top: 16px;">
+      <strong>Что работает по данным (сохранить)</strong>
+      80% результата дают офферы через лид-магниты. 20% — прямые офферы. Рабочие заголовки сейчас: «найм команды вместо штата», «увольнение сотрудников», «оптимизация через аутсорсинг». Всё это — фокус на Сегменте 2. Сегмент 1 (выгорание/время) и Сегмент 4 (топ без команды) — недоиспользованы.
+    </div>
+
+    <div class="insight warn" style="margin-top: 12px;">
+      <strong>⚠ Пробел: нет TOFU-офферов</strong>
+      Все офферы выше написаны для аудитории, которая уже думает «мне нужно делегировать / оптимизировать штат». Но Вордстат показал: точка входа — боль «нет времени», а не решение «аутсорс». Офферы под TOFU нужны отдельно — для контента, рекламы лид-магнитов, Telegram.
+    </div>
+
+    <div style="margin-top: 16px;">
+      <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #059669; margin-bottom: 12px;">TOFU-офферы — точка входа через боль (контент, реклама лид-магнитов)</div>
+      <div class="offer-group active" id="offers-tofu" style="display:grid !important;">
+        <div class="offer-card">
+          <span class="tag" style="background:#DCFCE7;color:#166534;">Время</span>
+          <div>«Посчитайте: сколько часов в неделю вы тратите не на своё?» — бесплатный тайм-аудит</div>
+        </div>
+        <div class="offer-card">
+          <span class="tag" style="background:#DCFCE7;color:#166634;">Боль</span>
+          <div>«Вы директор или операционист? Тест за 2 минуты покажет правду»</div>
+        </div>
+        <div class="offer-card">
+          <span class="tag" style="background:#DCFCE7;color:#166534;">Лид-магнит</span>
+          <div>«Шаблон тайм-аудита для собственника — скачайте, заполните, увидите картину за 5 дней»</div>
+        </div>
+        <div class="offer-card">
+          <span class="tag" style="background:#DCFCE7;color:#166534;">Инсайт</span>
+          <div>«Почему эффективные руководители работают меньше, а растут быстрее — разбираем механику»</div>
+        </div>
+        <div class="offer-card">
+          <span class="tag" style="background:#DCFCE7;color:#166534;">Триггер</span>
+          <div>«7 задач, которые вы делаете сами — и которые стоят дороже, чем вы думаете»</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2б. ИИ как конкурент -->
+  <div class="section">
+    <div class="section-title"><span class="num">02б</span> ИИ как конкурент — позиционирование 2026</div>
+    <div class="insight warn" style="margin-bottom: 16px;">
+      <strong>Новый конкурент в голове ЦА</strong>: «Зачем платить за команду, если ChatGPT справляется?» — возражение, которое нужно закрывать проактивно, не дожидаясь вопроса.
+    </div>
+    <div class="two-col">
+      <div class="content-block">
+        <h3>Что ИИ заменяет (уступаем)</h3>
+        <ul class="item-list">
+          <li><span class="ico">🤖</span><div class="txt">Почта и черновики ответов — 45 мин → 15 мин</div></li>
+          <li><span class="ico">🤖</span><div class="txt">Ресёрч и сбор информации перед встречей</div></li>
+          <li><span class="ico">🤖</span><div class="txt">Документы и презентации — 20 мин вместо 2–3 часов</div></li>
+          <li><span class="ico">🤖</span><div class="txt">Всё повторяющееся, текстовое, в любое время суток</div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Что ИИ не заменяет (наша зона)</h3>
+        <ul class="item-list">
+          <li><span class="ico">📞</span><div class="txt"><strong>Звонки и переговоры на русском</strong> — голосовые агенты пока не работают</div></li>
+          <li><span class="ico">💡</span><div class="txt"><strong>Инициатива</strong> — «ИИ делает что просят, не замечает что ты забыл»</div></li>
+          <li><span class="ico">🤝</span><div class="txt"><strong>Контекст отношений</strong> — дипломатия, чувство момента с подрядчиками</div></li>
+          <li><span class="ico">✅</span><div class="txt"><strong>Ответственность за результат</strong> — «разберись сам», а не «напиши промпт»</div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="content-block" style="margin-top: 16px;">
+      <h3>Как отвечать на возражение «у меня есть ИИ»</h3>
+      <div class="insight green" style="margin-top: 12px;">
+        D24 — не конкурент ИИ. Мы <strong>«живой слой» поверх него</strong>: команда, которая сама использует ИИ внутри и добавляет то, что ИИ не умеет — позвонить, договориться, проявить инициативу, взять ответственность. Оптимальная формула рынка: ИИ-стек (12к/мес) + D24 = всё покрыто.
+      </div>
+      <div style="margin-top: 12px;">
+        <strong>Тезис для коммуникаций:</strong> «ИИ пишет тексты. D24 звонит арендодателю, договаривается с подрядчиком и напоминает о дедлайне, который вы забыли.»
+      </div>
+    </div>
+  </div>
+
+  <!-- 02в. Ценовое восприятие -->
+  <div class="section">
+    <div class="section-title"><span class="num">02в</span> Ценовое восприятие — барьер и как его закрывать</div>
+
+    <div class="insight warn" style="margin-bottom: 16px;">
+      <strong>Массовое убеждение рынка:</strong> «Аутсорсинг должен быть дешевле штатного сотрудника — иначе зачем?» Это не редкое возражение, это базовая ментальная модель большинства ЦА. Игнорировать нельзя — нужно перестраивать фрейм.
+    </div>
+
+    <div class="two-col">
+      <div class="content-block">
+        <h3>Как ЦА считает (неправильно)</h3>
+        <ul class="item-list">
+          <li><span class="ico">❌</span><div class="txt">Сравнивает подписку D24 с <strong>зарплатой одного ассистента</strong> — и кажется дорого</div></li>
+          <li><span class="ico">❌</span><div class="txt">Считает только оклад, забывая налоги (+30%), больничные, отпуск, онбординг, текучку</div></li>
+          <li><span class="ico">❌</span><div class="txt">Сравнивает с ИИ-стеком (12к/мес) — и D24 проигрывает по цене</div></li>
+          <li><span class="ico">❌</span><div class="txt">Ожидает что аутсорс = «дёшево и базово» — такое убеждение уже зашито в слово</div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Как считать правильно (наш фрейм)</h3>
+        <ul class="item-list">
+          <li><span class="ico">✅</span><div class="txt">Сравнение не с одним ассистентом, а с <strong>командой специалистов</strong> — разных профилей</div></li>
+          <li><span class="ico">✅</span><div class="txt">Реальная стоимость штатного: оклад 70–80к + налоги 30% + риск текучки + время найма = <strong>110–150к/мес</strong></div></li>
+          <li><span class="ico">✅</span><div class="txt">D24 vs ИИ — не конкуренция, а дополнение: ИИ делает текст, D24 звонит и договаривается</div></li>
+          <li><span class="ico">✅</span><div class="txt">Главный аргумент — <strong>не цена, а управляемость без рисков найма</strong></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-block" style="margin-top: 16px;">
+      <h3>Ценовые якоря рынка 2026 (данные из соцмедиа)</h3>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px;">
+        <div style="background:#FFF5F5; border-radius:10px; padding:14px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; color:#888; text-transform:uppercase; margin-bottom:6px;">ИИ-стек</div>
+          <div style="font-size:22px; font-weight:800; color:#EF4444;">~12к</div>
+          <div style="font-size:12px; color:#888; margin-top:4px;">руб/мес</div>
+          <div style="font-size:11px; color:#EF4444; margin-top:6px;">Текст, ресёрч, документы. Без звонков и инициативы.</div>
+        </div>
+        <div style="background:#EEF4FF; border-radius:10px; padding:14px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; color:#888; text-transform:uppercase; margin-bottom:6px;">D24 подписка</div>
+          <div style="font-size:22px; font-weight:800; color:var(--blue);">18–60к</div>
+          <div style="font-size:12px; color:#888; margin-top:4px;">руб/мес</div>
+          <div style="font-size:11px; color:var(--blue-dark); margin-top:6px;">Команда специалистов. Звонки. Инициатива. Без найма.</div>
+        </div>
+        <div style="background:#ECFDF5; border-radius:10px; padding:14px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; color:#888; text-transform:uppercase; margin-bottom:6px;">Ассистент part-time</div>
+          <div style="font-size:22px; font-weight:800; color:#10B981;">25–40к</div>
+          <div style="font-size:12px; color:#888; margin-top:4px;">руб/мес</div>
+          <div style="font-size:11px; color:#065F46; margin-top:6px;">10–15 ч/нед. Один человек. Риск текучки.</div>
+        </div>
+        <div style="background:#F4F7FD; border-radius:10px; padding:14px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; color:#888; text-transform:uppercase; margin-bottom:6px;">Штатный full-time</div>
+          <div style="font-size:22px; font-weight:800; color:#5A6A8A;">70–150к</div>
+          <div style="font-size:12px; color:#888; margin-top:4px;">руб/мес с налогами</div>
+          <div style="font-size:11px; color:#5A6A8A; margin-top:6px;">Один человек. + найм, онбординг, больничные.</div>
+        </div>
+      </div>
+      <div class="insight green" style="margin-top: 14px;">
+        <strong>Вывод для коммуникаций:</strong> D24 конкурирует не с ИИ (12к) и не с part-time ассистентом (25–40к). Конкурент — штатный сотрудник (70–150к). Именно с этим якорем нужно строить сравнение на сайте, в офферах и в первом разговоре продаж.
+      </div>
+    </div>
+  </div>
+
+  <!-- 02г. Вордстат: выводы для каналов -->
+  <div class="section">
+    <div class="section-title"><span class="num">02г</span> Поисковый спрос — что нашли в Вордстате</div>
+
+    <div class="insight warn" style="margin-bottom: 20px;">
+      <strong>Главный вывод:</strong> ЦА не ищет «аутсорсинг» или «делегирование» как решение. Она ищет свою боль. Прямого спроса на D24 почти нет — есть огромный образовательный трафик вокруг боли управления и эффективности.
+    </div>
+
+    <div class="two-col" style="margin-bottom: 20px;">
+      <div class="content-block">
+        <h3>Что ищут — и это НЕ мы</h3>
+        <ul class="item-list">
+          <li><span class="ico">🔍</span><div class="txt">«делегировать» / «делегирование задач» — <strong>34к + 3.4к</strong> — образовательный запрос, не покупательный</div></li>
+          <li><span class="ico">🔍</span><div class="txt">«аутсорсинг» — <strong>91к</strong> — крупные игроки (бухгалтерия, IT, склад), нам не попасть</div></li>
+          <li><span class="ico">🔍</span><div class="txt">«бизнес аутсорсинг» — <strong>2.9к</strong> — есть конкуренция, размытый интент</div></li>
+          <li><span class="ico">🔍</span><div class="txt">«специалист удалённо», «удалённый юрист» — <strong>ловушки</strong>: ищут работу, не услугу</div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Где ЦА реально есть (боль)</h3>
+        <ul class="item-list">
+          <li><span class="ico" style="background:#DCFCE7;color:#166534;">TOFU</span><div class="txt">«управление временем» — <strong>50к/мес</strong></div></li>
+          <li><span class="ico" style="background:#DCFCE7;color:#166534;">TOFU</span><div class="txt">«тайм-менеджмент» — <strong>32к/мес</strong></div></li>
+          <li><span class="ico" style="background:#DCFCE7;color:#166534;">TOFU</span><div class="txt">«эффективность руководителя» — <strong>9к/мес</strong></div></li>
+          <li><span class="ico" style="background:#DBEAFE;color:#1E40AF;">MOFU</span><div class="txt">«оптимизация бизнеса» + «автоматизация» — <strong>17к/мес</strong></div></li>
+          <li><span class="ico" style="background:#F3E8FF;color:#6B21A8;">BOFU</span><div class="txt">«текучка кадров» + «сколько стоит сотрудник» — <strong>5к/мес</strong></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px;">
+      <div style="background:#FFF8EC; border-radius:10px; padding:16px; border-left:4px solid #F59E0B;">
+        <div style="font-size:11px; font-weight:700; color:#92400E; text-transform:uppercase; margin-bottom:8px;">Яндекс Директ</div>
+        <div style="font-size:13px; line-height:1.6; color:#44403C;">Прямой захват не работает — спроса нет. Рабочая схема: реклама лид-магнитов под TOFU-запросы (управление временем, тайм-менеджмент). Не «закажи D24», а «скачай шаблон тайм-аудита».</div>
+      </div>
+      <div style="background:#F0FFF7; border-radius:10px; padding:16px; border-left:4px solid #10B981;">
+        <div style="font-size:11px; font-weight:700; color:#065F46; text-transform:uppercase; margin-bottom:8px;">SEO / Дзен</div>
+        <div style="font-size:13px; line-height:1.6; color:#14532D;">Основной канал. 90к+/мес трафика под болевые запросы. Статьи → лид-магниты → email → D24. Инвестиция сейчас даёт трафик через 3–6 мес. Старт: 2 статьи под «управление временем».</div>
+      </div>
+      <div style="background:#EEF4FF; border-radius:10px; padding:16px; border-left:4px solid #4F8EF7;">
+        <div style="font-size:11px; font-weight:700; color:#1E3A8A; text-transform:uppercase; margin-bottom:8px;">ИИ-окно (6–12 мес)</div>
+        <div style="font-size:13px; line-height:1.6; color:#1E40AF;">«Нейросети для бизнеса» (2к) + «ИИ ассистент для бизнеса» (313) — растут, SEO-конкурентов нет. D24 может занять позицию «живой слой поверх ИИ» до прихода конкурентов.</div>
+      </div>
+    </div>
+
+    <div class="insight green">
+      <strong>Вывод для офферов:</strong> Точка входа — не «нужен аутсорс», а «тону в операционке» и «не хватает времени». Первый контакт должен помочь с болью (статья, шаблон), а не продавать услугу. Продажа происходит после того, как человек сам поставил себе диагноз.
+    </div>
+  </div>
+
+  <!-- 02д. Реферальный канал -->
+  <div class="section">
+    <div class="section-title"><span class="num">02д</span> Реферальный канал — самый конвертирующий, не используется</div>
+
+    <div class="insight crit" style="margin-bottom: 20px;">
+      <strong>26% клиентов приходят по рекомендации</strong> — это самый высококонвертирующий канал в D24. Но в стратегии привлечения он никак не управляется. Рекомендации происходят случайно, не системно.
+    </div>
+
+    <div class="two-col">
+      <div class="content-block">
+        <h3>Почему это важнее любого канала</h3>
+        <ul class="item-list">
+          <li><span class="ico">✓</span><div class="txt">Доверие уже есть до первого контакта — барьер входа минимален</div></li>
+          <li><span class="ico">✓</span><div class="txt">CAC близок к нулю — нет затрат на рекламу</div></li>
+          <li><span class="ico">✓</span><div class="txt">Качество лида выше — пришёл за конкретным решением, не за «посмотреть»</div></li>
+          <li><span class="ico">✓</span><div class="txt">LTV таких клиентов исторически выше — выше ожидания совпадают с реальностью</div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Что нужно сделать</h3>
+        <ul class="item-list">
+          <li><span class="ico">1</span><div class="txt"><strong>Проактивно просить рекомендацию</strong> — после 30 и 90 дней работы. Сейчас этого нет в онбординге.</div></li>
+          <li><span class="ico">2</span><div class="txt"><strong>Дать инструмент для рекомендации</strong> — конкретная фраза, ссылка, карточка «для друга». Чтобы клиент мог передать без усилий.</div></li>
+          <li><span class="ico">3</span><div class="txt"><strong>Кейсы — это реферальный контент</strong> — клиент показывает другу не сайт, а «смотри что мы сделали». Нет кейсов = нет виральности.</div></li>
+          <li><span class="ico">4</span><div class="txt"><strong>Партнёрская программа</strong> — вознаграждение за привлечённого клиента. Даже простая механика (месяц в подарок) кратно увеличивает конверсию из «хотел порекомендовать» в «порекомендовал».</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="insight green">
+      <strong>Вывод:</strong> Если 26% клиентов приходят случайно по рекомендации — сколько придёт, если сделать это системой? Это не контент-маркетинг и не реклама. Это работа с текущей базой. Минимум усилий, максимум отдачи.
+    </div>
+  </div>
+
+  <!-- 3. Лид-магниты -->
+  <div class="section">
+    <div class="section-title"><span class="num">03</span> Лид-магниты</div>
+
+    <div class="lm-grid">
+      <div class="lm-card existing">
+        <span class="lm-priority p-high">Оставить</span>
+        <div class="lm-name">«400 задач для делегирования» <span class="tag-exists">Работает</span></div>
+        <div class="lm-desc">Самый сильный конвертер. Снимает барьер «не знаю что поручить». 80% лидов идут через лид-магниты.</div>
+        <div class="lm-closes">страх «не знаю что им дать», квалификация лида</div>
+      </div>
+
+      <div class="lm-card existing">
+        <span class="lm-priority p-high">Оставить</span>
+        <div class="lm-name">«Главные ошибки делегирования» <span class="tag-exists">Работает</span></div>
+        <div class="lm-desc">Хорошо работает на аудиторию, которая уже пробовала делегировать и разочаровалась.</div>
+        <div class="lm-closes">негативный прошлый опыт, психологический барьер</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-high">Создать первым</span>
+        <div class="lm-name">Калькулятор потерь от операционки</div>
+        <div class="lm-desc">Считает: часы собственника × стоимость его часа + реальная стоимость сотрудника (налоги, больничные, текучка) → сравнивает с подпиской. Интерактив, персонализация, цифра «прямо сейчас».</div>
+        <div class="lm-closes">«дорого», «непонятно ROI», Сегмент 2 (экономика)</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-high">Создать вторым</span>
+        <div class="lm-name">Тест «Готов ли ваш бизнес к делегированию»</div>
+        <div class="lm-desc">10 вопросов → показывает «вы теряете X часов и Y руб на операционке». Квалифицирует лид до звонка в продажи — менеджер уже знает боли клиента.</div>
+        <div class="lm-closes">инерция, «не знаю нужно ли мне», скрытая квалификация</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-mid">Создать третьим</span>
+        <div class="lm-name">«Чеклист: как передать процесс, чтобы он работал без вас»</div>
+        <div class="lm-desc">Пошаговый гайд передачи задач и процессов. Убирает страх «объяснять дольше, чем сделать самому».</div>
+        <div class="lm-closes">страх потери контроля, психологический барьер делегирования</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-mid">Создать четвёртым</span>
+        <div class="lm-name">«Витрина возможностей D24» (база знаний)</div>
+        <div class="lm-desc">Категории задач с конкретными примерами. Что умеют специалисты. Убирает неопределённость «а что им вообще можно поручить» — особенно для новых пользователей.</div>
+        <div class="lm-closes">«не знаю что поручить», активация онбординга, апселл</div>
+      </div>
+
+      <!-- ─── разделитель: новые идеи ─── -->
+      <div style="grid-column: 1 / -1; border-top: 2px dashed #E2E8F0; padding-top: 20px; margin-top: 8px;">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);">Новые идеи — 30.06.2026 · приоритет в проработке</div>
+      </div>
+
+      <!-- Инструменты-зеркала -->
+      <div style="grid-column: 1 / -1;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--blue); margin: 4px 0 10px;">Инструменты-зеркала</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-low">Идея</span>
+        <div class="lm-name">«Аудит недели: куда уходит ваше время»</div>
+        <div class="lm-desc">Трекер на 5 дней: фиксируешь каждые 2 часа что делал → цветовая карта (красный — операционка, зелёный — стратегия). Большинство видят 70%+ красного. D24 упоминается один раз — в выводах. Человек сам ставит диагноз — не мы.</div>
+        <div class="lm-closes">инерция, «не знаю нужно ли мне», инсайт через личный опыт</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-low">Идея</span>
+        <div class="lm-name">«30 задач, которые должны делать только вы»</div>
+        <div class="lm-desc">Фильтр: что точно должен делать собственник сам, а всё остальное — кандидат на делегирование. Другой угол к «400 задачам»: не «что можно отдать», а «что точно нельзя». Заставляет переосмыслить свою роль.</div>
+        <div class="lm-closes">«не знаю что поручить», размытие роли собственника</div>
+      </div>
+
+      <!-- По сегментам -->
+      <div style="grid-column: 1 / -1;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--blue); margin: 16px 0 10px;">По сегментам</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-low">Идея</span>
+        <div class="lm-name">«Считаем стоимость вашего часа» <span style="font-size:11px;background:#F0F4FF;color:#4F8EF7;padding:2px 8px;border-radius:20px;margin-left:6px;font-weight:600;">Соло-эксперт</span></div>
+        <div class="lm-desc">Калькулятор: доход / рабочие часы → стоимость 1 часа → список задач дешевле этого часа. Шокирует: «я трачу 3 часа в неделю на задачи которые стоят 300 ₽/час». Вывод — эти задачи выгоднее аутсорсить.</div>
+        <div class="lm-closes">«дорого», «непонятно ROI», сегмент соло-эксперта</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-low">Идея</span>
+        <div class="lm-name">«Шаблон обоснования аутсорса для руководства» <span style="font-size:11px;background:#F5F0FF;color:#9B5EF5;padding:2px 8px;border-radius:20px;margin-left:6px;font-weight:600;">Топ без команды</span></div>
+        <div class="lm-desc">Готовый документ: задачи + оценка ФОТ штатного vs аутсорс vs текущие потери. Человеку надо согласовать бюджет наверх — D24 один из примеров в шаблоне. Снимает барьер «не могу без одобрения CEO/CFO».</div>
+        <div class="lm-closes">согласование с руководством, обоснование бюджета, сегмент топ-менеджера</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-low">Идея</span>
+        <div class="lm-name">«Архитектура команды без перегрева» <span style="font-size:11px;background:#F0FFF7;color:#2BC48A;padding:2px 8px;border-radius:20px;margin-left:6px;font-weight:600;">Предприниматель 5–30</span></div>
+        <div class="lm-desc">Схема: что должно быть in-house, что — аутсорс, что — ИИ. Практичная карта команды под бизнес 5–30 человек. Ценность: такого нет в готовом виде нигде. D24 — естественная часть блока «аутсорс».</div>
+        <div class="lm-closes">хаос в команде, перегруз ФОТ, сегмент предпринимателя с командой</div>
+      </div>
+
+      <!-- ИИ-угол -->
+      <div style="grid-column: 1 / -1;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--blue); margin: 16px 0 10px;">ИИ-угол (актуально 2026)</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-low">Идея</span>
+        <div class="lm-name">«ИИ + аутсорс + вы: гибридная схема работы»</div>
+        <div class="lm-desc">Что отдаёшь ChatGPT, что — живым людям, что оставляешь себе. Практичный гайд без воды. D24 появляется в блоке «живой слой» — звонки, инициатива, контекст. Позиционирование без давления. Уникально: конкурентов с таким лид-магнитом в 2026 нет.</div>
+        <div class="lm-closes">«ИИ заменит живого», «зачем платить если есть ChatGPT», позиционирование D24 vs ИИ</div>
+      </div>
+
+      <!-- Серийный формат -->
+      <div style="grid-column: 1 / -1;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--blue); margin: 16px 0 10px;">Серийный формат (высокий прогрев)</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-low">Идея</span>
+        <div class="lm-name">Email-курс «Первое делегирование за 5 дней»</div>
+        <div class="lm-desc">День 1 — выписать все задачи. День 2 — отфильтровать операционку. День 3 — написать первое ТЗ (шаблон прилагается). День 4 — передать задачу. День 5 — разбор что получилось. На 3-й день — естественное предложение попробовать D24. Строит привычку делегировать до покупки.</div>
+        <div class="lm-closes">инерция, «сложно начать», прогрев перед продажей</div>
+      </div>
+
+      <!-- Снятие страха объяснять -->
+      <div style="grid-column: 1 / -1;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--blue); margin: 16px 0 10px;">Снятие страха «объяснять дольше»</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-low">Идея</span>
+        <div class="lm-name">«Шаблон ТЗ для делегирования + 10 примеров»</div>
+        <div class="lm-desc">Конкретный шаблон с полями + 10 готовых ТЗ под разные типы задач (маркетинг, ресёрч, документы, HR, личные поручения). Человек видит — это просто → снимается психологический барьер входа. Напрямую закрывает главный страх из соцмедиа-сбора 30.06.</div>
+        <div class="lm-closes">«объяснять дольше чем сделать самому», страх первого шага к делегированию</div>
+      </div>
+
+      <!-- Из контент-воронки -->
+      <div style="grid-column: 1 / -1; border-top: 2px dashed #E2E8F0; padding-top: 20px; margin-top: 8px;">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);">Из контент-стратегии · привязаны к SEO-статьям Q3 2026</div>
+      </div>
+
+      <div style="grid-column: 1 / -1;">
+        <div style="font-size: 12px; font-weight: 700; color: #10B981; margin: 4px 0 10px;">TOFU — вход через управление временем (~90 000 запросов/мес)</div>
+      </div>
+
+      <div class="lm-card existing">
+        <span class="lm-priority p-high">Уже есть → подключить</span>
+        <div class="lm-name">Шаблон тайм-аудита руководителя <span class="tag-exists">В базе</span> <span style="font-size:11px;background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;margin-left:4px;font-weight:600;">TOFU · 50k</span></div>
+        <div class="lm-desc">Готовый инструмент — трекер на 5 дней с цветовой картой (красный = операционка, зелёный = стратегия). Человек сам ставит диагноз. Привязан к статье «Тайм-аудит руководителя» на Дзен под запрос «управление временем» (50 532/мес). Самый высокочастотный кластер всей воронки — SEO-приоритет №1.</div>
+        <div class="lm-closes">«нет системы учёта времени», инерция, «не знаю куда уходит день»</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-high">Создать в июле</span>
+        <div class="lm-name">Тест «Операционная ловушка» <span style="font-size:11px;background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;margin-left:4px;font-weight:600;">TOFU · 9k</span></div>
+        <div class="lm-desc">10 вопросов — диагностирует: ловушка ли это. Выдаёт «вы тратите X часов в неделю на задачи не вашего уровня». Отличается от «Готов ли бизнес к делегированию»: тот — о готовности, этот — о том, что уже тонешь. Привязан к статье «Эффективный руководитель vs. операционка» под запрос «эффективность руководителя» (9 033/мес).</div>
+        <div class="lm-closes">«не осознаю масштаб проблемы», «может так и надо», «у всех так»</div>
+      </div>
+
+      <div style="grid-column: 1 / -1;">
+        <div style="font-size: 12px; font-weight: 700; color: #4F8EF7; margin: 16px 0 10px;">MOFU — рассматривают автоматизацию как решение (~17 000 запросов/мес)</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-mid">Создать в июле</span>
+        <div class="lm-name">Чек-лист «Что отдать ИИ, что — живым людям» <span style="font-size:11px;background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;margin-left:4px;font-weight:600;">MOFU · 5.8k</span></div>
+        <div class="lm-desc">Одностраничный чек-лист по типам задач: ИИ-инструменты / живая команда / гибрид. Отличается от гайда «ИИ + аутсорс + вы»: тот — детальный разбор, этот — быстрый инструмент-скаффолд на 1 листе. D24 появляется в блоке «живой слой» без давления. Привязан к статье «ИИ + живая команда» под «автоматизация бизнес-процессов» (5 804/мес). Окно возможности: конкурентов в SEO пока нет, 6–12 мес.</div>
+        <div class="lm-closes">«ИИ всё заменит», «зачем платить людям», «не понимаю что кому поручить»</div>
+      </div>
+
+      <div style="grid-column: 1 / -1;">
+        <div style="font-size: 12px; font-weight: 700; color: #9B5EF5; margin: 16px 0 10px;">BOFU — сравнивают экономику, близки к решению (~5 000 запросов/мес)</div>
+      </div>
+
+      <div class="lm-card new">
+        <span class="lm-priority p-high">Создать в июле</span>
+        <div class="lm-name">Калькулятор реальной стоимости сотрудника (ФОТ) <span style="font-size:11px;background:#F3E8FF;color:#6B21A8;padding:2px 8px;border-radius:20px;margin-left:4px;font-weight:600;">BOFU · 2.2k · самый конвертирующий</span></div>
+        <div class="lm-desc">Google Sheets: зарплата + НДФЛ + страховые взносы + больничные + отпуск + найм + онбординг + текучка → итоговая цифра на год. В конце — автоматическое сравнение с подпиской D24. Отличается от «Калькулятора потерь от операционки»: тот считает упущенное время, этот — реальные деньги ФОТ. Привязан к статье «Сколько реально стоит сотрудник» (2 187/мес). Аудитория — максимально близкая к покупке.</div>
+        <div class="lm-closes">«D24 дорого», «непонятен ROI», «найму лучше штатного»</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. Что добавить от себя -->
+  <div class="section">
+    <div class="section-title"><span class="num">04</span> Дополнительно — что стоит зафиксировать</div>
+    <div class="two-col">
+      <div class="content-block">
+        <h3>Коммуникационные «нельзя»</h3>
+        <ul class="item-list">
+          <li><span class="ico">🚫</span><div class="txt">Не говорить «ассистент» как ключевое слово — снижает ценность</div></li>
+          <li><span class="ico">🚫</span><div class="txt">Не продавать «часы» — клиент не понимает что покупает</div></li>
+          <li><span class="ico">🚫</span><div class="txt"><strong>Не обещать «мы понимаем ваш бизнес» без доказательств</strong> — CustDev: ожидание 46%, факт 12%. Разрыв −34%. Если пообещаем и не выполним — клиент уйдёт через 2–4 мес, а маркетинг становится машиной по генерации оттока.</div></li>
+          <li><span class="ico">🚫</span><div class="txt">Не делать акцент только на «дёшево» — теряем Сегменты 1 и 3</div></li>
+          <li><span class="ico">🚫</span><div class="txt"><strong>Не обещать «минимум вашего контроля» как ключевой оффер</strong> — пока продукт не закрывает разрыв −25% по вовлечённости. Можно говорить об этом как о цели, но не как о гарантии уже сейчас.</div></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <h3>Приоритеты Q3 2026</h3>
+        <ul class="item-list">
+          <li><span class="ico">1</span><div class="txt"><strong>Запустить контент-воронку</strong> — 2 SEO-статьи на Дзен + Telegram в июле. Без этого нет трафика, нет лидов.</div></li>
+          <li><span class="ico">2</span><div class="txt"><strong>Создать 3 лид-магнита</strong> — тайм-аудит (уже есть), тест «Операционная ловушка», калькулятор ФОТ. Конвертируют трафик в контакты.</div></li>
+          <li><span class="ico">3</span><div class="txt"><strong>Настроить email-воронку</strong> — 5 писем от скачивания до заявки. Без неё лид-магниты дают скачивания, не продажи.</div></li>
+          <li><span class="ico">4</span><div class="txt"><strong>Собрать кейсы с цифрами</strong> — до/после. Самый дефицитный актив для конверсии.</div></li>
+          <li><span class="ico">5</span><div class="txt"><strong>Реферальная программа</strong> — 26% клиентов по рекомендации. Усилить самый работающий канал.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════ TAB 3: ВОРДСТАТ ════════════════════════════════════════ -->
+<div class="tab-content" id="tab-wordstat">
+<div class="page">
+
+  <div class="hero-block">
+    <div class="label">Яндекс Вордстат · 30.05–28.06.2026 · 25+ запросов проверено</div>
+    <h1>Главный инсайт:<br><em>рынок D24 не сформирован как поисковый запрос</em></h1>
+    <div class="sub">Боль «тону в операционке» существует — но в Яндекс с ней не идут. Люди жалуются в соцсетях, обсуждают с друзьями, но не формулируют это как запрос. Прямого коммерческого спроса на услугу D24 в поиске нет.</div>
+  </div>
+
+  <!-- 01. Сводная таблица -->
+  <div class="section">
+    <div class="section-title"><span class="num">01</span> Все проверенные запросы</div>
+
+    <div class="insight" style="margin-bottom:20px;">
+      <strong>Как читать таблицу</strong>
+      Цвет строки: <span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:4px;font-size:12px;">красный</span> — ловушка (звучит как наше, но не наше), <span style="background:#FFF8EC;color:#92400E;padding:2px 8px;border-radius:4px;font-size:12px;">жёлтый</span> — частично наше / образовательный трафик, <span style="background:#F0FFF7;color:#065F46;padding:2px 8px;border-radius:4px;font-size:12px;">зелёный</span> — реально наше (если есть).
+    </div>
+
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#0C1A3A;color:#fff;">
+          <th style="padding:10px 12px;text-align:left;font-weight:600;">Запрос</th>
+          <th style="padding:10px 12px;text-align:right;white-space:nowrap;">Объём/мес</th>
+          <th style="padding:10px 12px;text-align:left;">Кто ищёт</th>
+          <th style="padding:10px 12px;text-align:left;">Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#fffbe6;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">делегировать</td>
+          <td style="padding:9px 12px;text-align:right;">34 311</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Ищут определение понятия («что это значит»)</td>
+          <td style="padding:9px 12px;"><span style="background:#FFF8EC;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Образовательный</span></td>
+        </tr>
+        <tr style="background:#fffbe6;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">аутсорсинг</td>
+          <td style="padding:9px 12px;text-align:right;">91 665</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Образовательный + аутсорсинг бухгалтерии (3 674) — единственная коммерческая ниша</td>
+          <td style="padding:9px 12px;"><span style="background:#FFF8EC;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Образовательный</span></td>
+        </tr>
+        <tr style="background:#fffbe6;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">аутстаффинг</td>
+          <td style="padding:9px 12px;text-align:right;">15 271</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Образовательный + HR/кадровая тема</td>
+          <td style="padding:9px 12px;"><span style="background:#FFF8EC;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Образовательный</span></td>
+        </tr>
+        <tr style="background:#fef2f2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">помощник руководителя</td>
+          <td style="padding:9px 12px;text-align:right;">20 249</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">~40% соискатели (вакансии 3 881 + работа 1 569 + должность 1 535)</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Ловушка — соискатели</span></td>
+        </tr>
+        <tr style="background:#fef2f2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">бизнес ассистент</td>
+          <td style="padding:9px 12px;text-align:right;">6 287</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">~30% соискатели, ~20% хотят стать ассистентом (курсы/обучение)</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Ловушка — соискатели</span></td>
+        </tr>
+        <tr style="background:#fef2f2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">удалённый помощник</td>
+          <td style="padding:9px 12px;text-align:right;">6 374</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">«Удалить помощника» (3 525) — про удаление программы с ПК. Остальное — вакансии.</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Ловушка — IT + вакансии</span></td>
+        </tr>
+        <tr style="background:#fef2f2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">виртуальный ассистент</td>
+          <td style="padding:9px 12px;text-align:right;">4 943</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Алиса, Салют, IT-виртуализация. Вопросы «какая компания выпустила» — образование.</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Ловушка — IT/голосовые</span></td>
+        </tr>
+        <tr style="background:#fef2f2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">ИИ ассистент</td>
+          <td style="padding:9px 12px;text-align:right;">23 133</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Инструменты: Глиф, Яндекс. «Как отключить» (1 269) + «как убрать» (1 266) — ИИ-усталость.</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Ловушка — инструменты</span></td>
+        </tr>
+        <tr style="background:#fef2f2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">заменить ассистента</td>
+          <td style="padding:9px 12px;text-align:right;">498</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Замена Google Assistant на Алису/Gemini на Android. Совсем не наше.</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Ловушка — смартфоны</span></td>
+        </tr>
+        <tr style="background:#fffbe6;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">как делегировать задачи</td>
+          <td style="padding:9px 12px;text-align:right;">545</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Ищут КАК делегировать сотрудникам, не аутсорсу. Похожие → HR/кадровая тема.</td>
+          <td style="padding:9px 12px;"><span style="background:#FFF8EC;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Образовательный</span></td>
+        </tr>
+        <tr style="background:#fffbe6;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">делегирование задач</td>
+          <td style="padding:9px 12px;text-align:right;">~8 000</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Руководителям / подчинённым / сотрудникам — внутри компании, не аутсорс</td>
+          <td style="padding:9px 12px;"><span style="background:#FFF8EC;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Образовательный</span></td>
+        </tr>
+        <tr style="background:#fffbe6;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">оптимизация сотрудников</td>
+          <td style="padding:9px 12px;text-align:right;">2 584</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Кризисный контекст 2026: «оптимизация численности», «оптимизация штата» — сокращение, не аутсорс</td>
+          <td style="padding:9px 12px;"><span style="background:#FFF8EC;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Косвенно близко</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">ИИ ассистент для бизнеса</td>
+          <td style="padding:9px 12px;text-align:right;">313</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Растущая ниша. Пока мала, но формируется. Конкурентов в SEO мало.</td>
+          <td style="padding:9px 12px;"><span style="background:#F0FFF7;color:#065F46;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Перспективно</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">сервис ассистентов / бизнес ассистентов</td>
+          <td style="padding:9px 12px;text-align:right;">~70</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">«Сервис бизнес ассистентов» (39) + «сервис удалённого ассистента» (33) — буквально наша категория</td>
+          <td style="padding:9px 12px;"><span style="background:#F0FFF7;color:#065F46;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Наше — но мизер</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;background:#fef2f2;">
+          <td style="padding:9px 12px;font-weight:600;">аутсорс задач / передать задачи на аутсорс / аутсорс операционных задач</td>
+          <td style="padding:9px 12px;text-align:right;">45 / 0 / 0</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Мёртво. Так никто не ищет.</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Не существует</span></td>
+        </tr>
+        <tr style="background:#fef2f2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">как перестать делать всё самому / выгорание предпринимателя / как всё успевать</td>
+          <td style="padding:9px 12px;text-align:right;">60 / 81 / 27</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Боль есть — запроса нет. Люди это не гуглят.</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF2F2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Боль без запроса</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- 02. Три ловушки -->
+  <div class="section">
+    <div class="section-title"><span class="num">02</span> Три ловушки — запросы, которые кажутся нашими</div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+      <div style="background:#FEF2F2;border-radius:12px;padding:20px;border-left:4px solid #EF4444;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#B91C1C;margin-bottom:8px;">Ловушка 1</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:10px;">«Помощник руководителя» и «бизнес-ассистент»</div>
+        <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Звучат как наша аудитория. На деле 40–50% — это люди, которые <strong>ищут работу</strong> ассистентом. Реклама туда = платим за клики соискателей.</div>
+      </div>
+
+      <div style="background:#FEF2F2;border-radius:12px;padding:20px;border-left:4px solid #EF4444;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#B91C1C;margin-bottom:8px;">Ловушка 2</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:10px;">«Удалённый помощник»</div>
+        <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">6 374 запроса — кажется горячо. Но «удалить помощника» (3 525) — это про удаление <strong>программы с компьютера</strong>. Больше половины трафика — IT, остаток — вакансии.</div>
+      </div>
+
+      <div style="background:#FEF2F2;border-radius:12px;padding:20px;border-left:4px solid #EF4444;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#B91C1C;margin-bottom:8px;">Ловушка 3</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:10px;">«ИИ ассистент» (23 133)</div>
+        <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Огромный объём — но это Глиф, Яндекс, голосовые ассистенты на телефоне. Примечательно: «как отключить ИИ ассистента» (1 269) + «как убрать» (1 266) — <strong>ИИ-усталость уже есть</strong>.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 03. Что реально работает -->
+  <div class="section">
+    <div class="section-title"><span class="num">03</span> Что реально работает в поиске</div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px;">
+
+      <div class="insight">
+        <strong>Единственная коммерческая ниша аутсорса — бухгалтерия</strong><br>
+        <span style="color:#5A6A8A;font-size:13px;">«Аутсорсинг бухгалтерии» — 3 674 запроса с явным коммерческим намерением. Это показывает: аутсорс <em>конкретной функции</em> люди ищут. Нашего функционального аутсорса (операционка, ассистенты) — нет. Значит, мы первые в этой нише или рынок просто ещё не созрел.</span>
+      </div>
+
+      <div class="insight">
+        <strong>Образовательный трафик — единственный доступный объём</strong><br>
+        <span style="color:#5A6A8A;font-size:13px;">«Делегировать» (34к), «аутсорсинг» (91к), «делегирование задач» (8к) — это реальные люди нашей аудитории, но в режиме учёбы, не покупки. Единственный способ работать с этим трафиком — контент и лид-магниты, не прямая реклама услуги.</span>
+      </div>
+
+    </div>
+
+    <div style="background:#F0F4FF;border-radius:12px;padding:20px;border-left:4px solid var(--blue);">
+      <div style="font-weight:700;margin-bottom:8px;">Перспективная ставка: «ИИ ассистент для бизнеса» (313 запросов)</div>
+      <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Пока мало — но ниша только формируется. Конкурентов в SEO почти нет. D24 может занять позицию «живой слой поверх ИИ» в этой семантике первыми. Через 6–12 месяцев объём вырастет — и мы уже там.</div>
+    </div>
+  </div>
+
+  <!-- 04. Стратегические выводы -->
+  <div class="section">
+    <div class="section-title"><span class="num">04</span> Стратегические выводы для маркетинга</div>
+
+    <div style="display:grid;grid-template-columns:1fr;gap:12px;">
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border);">
+        <div style="min-width:32px;height:32px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">1</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">Поиск — не канал прямых продаж для D24</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Суммарный коммерческий спрос под нашу услугу — несколько сотен запросов в месяц. Строить бизнес на поисковом трафике невозможно. Это подтверждает: D24 работает в рынке, где спрос нужно создавать, а не перехватывать.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border);">
+        <div style="min-width:32px;height:32px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">2</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">Яндекс Директ объясняет почему работает только как лид-магнитный трафик</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Прямые офферы не конвертируют — потому что в поиске нет людей с явной потребностью купить. Есть люди с образовательным запросом. Чек-листы → прогрев → продажа — единственная работающая цепочка через Директ.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border);">
+        <div style="min-width:32px;height:32px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">3</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">Соцсети и контент — правильный выбор</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Аудитория живёт в соцсетях с этой болью — не в поиске. Соцмедиа-сбор 30.06 это подтвердил: люди активно обсуждают делегирование, аутсорс, ИИ vs живой ассистент. SEO и Директ дополняют, но не заменяют контент-канал.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border);">
+        <div style="min-width:32px;height:32px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">4</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">SEO-стратегия: входим через боль — «управление временем», а не «делегирование»</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">SEO-приоритет #1 — «управление временем» (50k) + «тайм-менеджмент» (32k) + «эффективность руководителя» (9k). Это ~90k/мес реального трафика нашей аудитории. «Делегировать» и «аутсорсинг» — образовательные запросы, конкуренция выше, интент размыт. Конверсия в лид — через шаблон тайм-аудита и тест «Операционная ловушка» на странице статьи.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#F0FFF7;border-radius:12px;padding:18px;border:1px solid #A7F3D0;">
+        <div style="min-width:32px;height:32px;background:#10B981;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">5</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">Оппортунити: занять «ИИ + живой помощник» в поиске первыми</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">«ИИ ассистент для бизнеса» — 313 запросов сейчас, рынок только формируется. Статья / лендинг «Что ИИ не заменит: гибридная схема работы» — минимум конкуренции, максимум попадания в тренд. Через год это будет горячая семантика.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 05. Семантика для работы -->
+  <div class="section">
+    <div class="section-title"><span class="num">05</span> Семантика — что и зачем использовать</div>
+
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#0C1A3A;color:#fff;">
+          <th style="padding:10px 12px;text-align:left;">Семантика</th>
+          <th style="padding:10px 12px;text-align:left;">Канал</th>
+          <th style="padding:10px 12px;text-align:left;">Зачем</th>
+          <th style="padding:10px 12px;text-align:left;">Конверсия в продажу</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E2E8F0;background:#F0FFF7;">
+          <td style="padding:9px 12px;font-weight:600;">управление временем <span style="font-size:10px;background:#DCFCE7;color:#166534;padding:1px 6px;border-radius:10px;margin-left:4px;">ПРИОРИТЕТ #1</span></td>
+          <td style="padding:9px 12px;">SEO-статьи Дзен, Директ РСЯ</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">50 532/мес — наша аудитория с болью «нет времени». Входная точка №1 для воронки.</td>
+          <td style="padding:9px 12px;"><span style="color:#10B981;font-weight:600;">Высокая через воронку (лид-магнит тайм-аудит)</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;background:#F0FFF7;">
+          <td style="padding:9px 12px;font-weight:600;">тайм-менеджмент <span style="font-size:10px;background:#DCFCE7;color:#166534;padding:1px 6px;border-radius:10px;margin-left:4px;">ПРИОРИТЕТ #2</span></td>
+          <td style="padding:9px 12px;">SEO-статьи Дзен</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">32 725/мес — сужать через «для руководителей» (есть школьники). Лид-магнит: Google Sheets шаблон.</td>
+          <td style="padding:9px 12px;"><span style="color:#10B981;font-weight:600;">Высокая через воронку</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;background:#F0FFF7;">
+          <td style="padding:9px 12px;font-weight:600;">эффективность руководителя <span style="font-size:10px;background:#DCFCE7;color:#166534;padding:1px 6px;border-radius:10px;margin-left:4px;">ПРИОРИТЕТ #3</span></td>
+          <td style="padding:9px 12px;">SEO-статьи Дзен, Telegram</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">9 342/мес — прямое попадание в ICP. Лид-магнит: тест «Операционная ловушка».</td>
+          <td style="padding:9px 12px;"><span style="color:#10B981;font-weight:600;">Высокая через воронку</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">делегировать, делегирование задач</td>
+          <td style="padding:9px 12px;">SEO-статьи, Директ РСЯ</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">34k + 8k/мес — образовательный, ищут КАК делегировать внутри компании. Полезен для SEO-охвата.</td>
+          <td style="padding:9px 12px;"><span style="color:#F59E0B;font-weight:600;">Низкая прямая / высокая через воронку</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;background:#F8FAFF;">
+          <td style="padding:9px 12px;font-weight:600;">аутсорсинг (общее)</td>
+          <td style="padding:9px 12px;">SEO-статьи</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">91k/мес — огромный трафик, но конкуренция высокая (бухгалтерия, IT, склад). Строить осведомлённость.</td>
+          <td style="padding:9px 12px;"><span style="color:#F59E0B;font-weight:600;">Низкая прямая / через воронку</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">ИИ ассистент для бизнеса</td>
+          <td style="padding:9px 12px;">SEO-статьи (сейчас)</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Занять нишу пока конкурентов нет, трафик вырастет</td>
+          <td style="padding:9px 12px;"><span style="color:#10B981;font-weight:600;">Высокая — попадает в ядро нашей аудитории</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;background:#F8FAFF;">
+          <td style="padding:9px 12px;font-weight:600;">помощник руководителя, бизнес ассистент</td>
+          <td style="padding:9px 12px;">Директ с минус-словами</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Минусовать: вакансии, работа, курсы, обучение, ОКЗ → останется тонкий слой покупателей</td>
+          <td style="padding:9px 12px;"><span style="color:#F59E0B;font-weight:600;">Средняя — после чистки</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">оптимизация сотрудников / штата (2026)</td>
+          <td style="padding:9px 12px;">Контент, РСЯ-ретаргет</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Кризисный триггер: «сократили штат — задачи остались» — D24 как решение</td>
+          <td style="padding:9px 12px;"><span style="color:#10B981;font-weight:600;">Потенциально высокая — горячая боль</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- 06. Расширенный поиск — широкие боли -->
+  <div class="section">
+    <div class="section-title"><span class="num">06</span> Расширенный поиск — широкие боли аудитории</div>
+
+    <div class="insight" style="margin-bottom:20px;">
+      <strong>Второй раунд: где аудитория находится ДО того, как узнала про D24</strong><br>
+      <span style="font-size:13px;color:#5A6A8A;">Расширили поиск от прямых запросов услуги к болям аудитории. Ключевой вывод: аудитория D24 активно ищет «управление временем» и «оптимизация бизнеса» (~90k+/мес) — но не знает, что D24 решает именно это. Здесь и строится контент-стратегия.</span>
+    </div>
+
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#0C1A3A;color:#fff;">
+          <th style="padding:10px 12px;text-align:left;">Запрос</th>
+          <th style="padding:10px 12px;text-align:right;white-space:nowrap;">Объём/мес</th>
+          <th style="padding:10px 12px;text-align:left;">Уровень</th>
+          <th style="padding:10px 12px;text-align:left;">Вывод</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#F0FFF7;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">управление временем</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;">50 532</td>
+          <td style="padding:9px 12px;"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">TOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Наша аудитория с болью «нет времени». Огромный охват → SEO-статьи + Дзен</td>
+        </tr>
+        <tr style="background:#F0FFF7;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">тайм-менеджмент</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;">32 725</td>
+          <td style="padding:9px 12px;"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">TOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Широкий трафик. Есть школьники — сужать через контент «для руководителей и собственников»</td>
+        </tr>
+        <tr style="background:#F0FFF7;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">эффективность руководителя</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;">9 342</td>
+          <td style="padding:9px 12px;"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">TOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Прямое попадание в ICP. Ищут собственники и топ-менеджеры</td>
+        </tr>
+        <tr style="background:#EFF6FF;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">оптимизация бизнеса + бизнес-процессов</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;">11 122</td>
+          <td style="padding:9px 12px;"><span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">MOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Уже осознали проблему — ищут как улучшить. D24 как инструмент оптимизации</td>
+        </tr>
+        <tr style="background:#EFF6FF;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">автоматизация бизнес-процессов</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;">5 826</td>
+          <td style="padding:9px 12px;"><span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">MOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Горячий тренд 2026. AI-угол: «что автоматизировать ИИ, что оставить людям»</td>
+        </tr>
+        <tr style="background:#EFF6FF;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">нейросети для бизнеса</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;">2 076</td>
+          <td style="padding:9px 12px;"><span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">MOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Растущий тренд. D24 = «живой слой поверх ИИ» — уникальный угол для контента</td>
+        </tr>
+        <tr style="background:#FFFBEB;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">сколько стоит сотрудник</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;">2 226</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">BOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Считают деньги — момент «а может аутсорс?». Статья + калькулятор ФОТ</td>
+        </tr>
+        <tr style="background:#FFFBEB;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">текучка кадров</td>
+          <td style="padding:9px 12px;text-align:right;font-weight:700;">2 898</td>
+          <td style="padding:9px 12px;"><span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">BOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Усталость от найма/увольнений. «Альтернатива которая не уходит» — D24</td>
+        </tr>
+        <tr style="background:#FEF2F2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">специалист удалённо</td>
+          <td style="padding:9px 12px;text-align:right;">8 554</td>
+          <td style="padding:9px 12px;"><span style="background:#FEE2E2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">ЛОВУШКА</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Соискатели ищут удалённую работу — не наш сегмент</td>
+        </tr>
+        <tr style="background:#FEF2F2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">удалённый юрист</td>
+          <td style="padding:9px 12px;text-align:right;">6 494</td>
+          <td style="padding:9px 12px;"><span style="background:#FEE2E2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">ЛОВУШКА</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">50%+ соискатели-юристы ищут удалённую работу</td>
+        </tr>
+        <tr style="background:#FEF2F2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">аутсорсинг персонала</td>
+          <td style="padding:9px 12px;text-align:right;">4 777</td>
+          <td style="padding:9px 12px;"><span style="background:#FEE2E2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">ЛОВУШКА</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Линейный персонал (склад, производство) — не наш сегмент</td>
+        </tr>
+        <tr style="background:#FEF2F2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">как выжить бизнесу в кризис</td>
+          <td style="padding:9px 12px;text-align:right;">22</td>
+          <td style="padding:9px 12px;"><span style="background:#FEE2E2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">ЛОВУШКА</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Похожие — выживание в лесу, survival-игры. Не деловой контекст вообще</td>
+        </tr>
+        <tr style="background:#FEF2F2;border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">как масштабировать бизнес</td>
+          <td style="padding:9px 12px;text-align:right;">194</td>
+          <td style="padding:9px 12px;"><span style="background:#FEE2E2;color:#B91C1C;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">ЛОВУШКА</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Похожие — масштаб на экране ПК, fashion business. Не предпринимательский запрос</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+</div>
+</div>
+<!-- ════════════════════════════════════════ END TAB 3 ════════════════════════════════════════ -->
+
+<!-- ════════════════════════════════════════ TAB 4: КОНТЕНТ-СТРАТЕГИЯ ════════════════════════════════════════ -->
+<div class="tab-content" id="tab-content">
+<div class="page">
+
+  <div class="hero-block">
+    <div class="label">Контент-стратегия · Q3 2026 · на основе Вордстат-исследования</div>
+    <h1>Встречаем аудиторию там,<br><em>где она есть — и ведём к D24</em></h1>
+    <div class="sub">Прямого поискового спроса на D24 нет. Есть 90k+ запросов про боли, которые D24 решает. Контент — это мост от «нет времени» до «подключить D24».</div>
+    <div class="meta-row">
+      <div class="meta-chip">TOFU: <strong>~90 000 запросов/мес</strong></div>
+      <div class="meta-chip">MOFU: <strong>~17 000 запросов/мес</strong></div>
+      <div class="meta-chip">BOFU: <strong>~5 000 запросов/мес</strong></div>
+      <div class="meta-chip">Окно до конкурентов в AI-нише: <strong>6–12 мес</strong></div>
+    </div>
+  </div>
+
+  <!-- 01. Воронка -->
+  <div class="section">
+    <div class="section-title"><span class="num">01</span> Контентная воронка — три уровня входа</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;">
+
+      <div style="background:#F0FFF7;border-radius:16px;padding:24px;border-top:4px solid #10B981;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#059669;margin-bottom:8px;">TOFU · Верх воронки</div>
+        <div style="font-size:28px;font-weight:800;margin-bottom:2px;">~90 000</div>
+        <div style="font-size:12px;color:#5A6A8A;margin-bottom:16px;">запросов/мес</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Кластеры:</div>
+        <ul style="font-size:13px;color:#5A6A8A;line-height:1.9;padding-left:16px;">
+          <li>управление временем (50k)</li>
+          <li>тайм-менеджмент (32k)</li>
+          <li>эффективность руководителя (9k)</li>
+        </ul>
+        <div style="margin-top:16px;padding:10px 14px;background:#DCFCE7;border-radius:8px;font-size:12px;color:#166534;line-height:1.5;">
+          <strong>Цель:</strong> осведомлённость о проблеме + первый контакт с D24
+        </div>
+      </div>
+
+      <div style="background:#EFF6FF;border-radius:16px;padding:24px;border-top:4px solid var(--blue);">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--blue-dark);margin-bottom:8px;">MOFU · Середина воронки</div>
+        <div style="font-size:28px;font-weight:800;margin-bottom:2px;">~17 000</div>
+        <div style="font-size:12px;color:#5A6A8A;margin-bottom:16px;">запросов/мес</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Кластеры:</div>
+        <ul style="font-size:13px;color:#5A6A8A;line-height:1.9;padding-left:16px;">
+          <li>оптимизация бизнеса (11k)</li>
+          <li>автоматизация процессов (6k)</li>
+          <li>нейросети для бизнеса (2k)</li>
+        </ul>
+        <div style="margin-top:16px;padding:10px 14px;background:#DBEAFE;border-radius:8px;font-size:12px;color:#1E40AF;line-height:1.5;">
+          <strong>Цель:</strong> рассмотрение D24 как решения + захват через лид-магнит
+        </div>
+      </div>
+
+      <div style="background:#FFFBEB;border-radius:16px;padding:24px;border-top:4px solid #F59E0B;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#92400E;margin-bottom:8px;">BOFU · Низ воронки</div>
+        <div style="font-size:28px;font-weight:800;margin-bottom:2px;">~5 000</div>
+        <div style="font-size:12px;color:#5A6A8A;margin-bottom:16px;">запросов/мес</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Кластеры:</div>
+        <ul style="font-size:13px;color:#5A6A8A;line-height:1.9;padding-left:16px;">
+          <li>текучка кадров (2.9k)</li>
+          <li>сколько стоит сотрудник (2.2k)</li>
+          <li>стоимость найма (167)</li>
+        </ul>
+        <div style="margin-top:16px;padding:10px 14px;background:#FEF3C7;border-radius:8px;font-size:12px;color:#92400E;line-height:1.5;">
+          <strong>Цель:</strong> финансовый аргумент + прямое сравнение с D24
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
+      <div style="font-weight:700;margin-bottom:14px;font-size:14px;">Путь клиента через контент</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;flex-wrap:wrap;line-height:1.5;">
+        <div style="background:#F0FFF7;border-radius:8px;padding:8px 12px;border:1px solid #A7F3D0;">📖 Статья «тайм-менеджмент руководителя»</div>
+        <div style="color:#9CA3AF;font-size:16px;">→</div>
+        <div style="background:#F0FFF7;border-radius:8px;padding:8px 12px;border:1px solid #A7F3D0;">📥 Лид-магнит (шаблон аудита времени)</div>
+        <div style="color:#9CA3AF;font-size:16px;">→</div>
+        <div style="background:#EFF6FF;border-radius:8px;padding:8px 12px;border:1px solid #BFDBFE;">📬 Email-серия с кейсами D24</div>
+        <div style="color:#9CA3AF;font-size:16px;">→</div>
+        <div style="background:#FFFBEB;border-radius:8px;padding:8px 12px;border:1px solid #FDE68A;">🧮 Статья «сколько стоит сотрудник»</div>
+        <div style="color:#9CA3AF;font-size:16px;">→</div>
+        <div style="background:#0C1A3A;color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;">✅ Заявка на D24</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02. 12 тем -->
+  <div class="section">
+    <div class="section-title"><span class="num">02</span> Контент-план — 12 тем на квартал (июль–сентябрь 2026)</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+      <div style="border-radius:12px;border:2px solid #A7F3D0;overflow:hidden;">
+        <div style="background:#059669;color:#fff;padding:10px 18px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">TOFU — Осведомлённость</div>
+
+        <div style="padding:16px 18px;border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:13px;">1. «7 признаков что вы тонете в операционке»</div>
+            <span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Telegram + Дзен</span>
+          </div>
+          <div style="font-size:12px;color:#5A6A8A;">Под «эффективность руководителя» (9k). Лид-магнит: тест «Операционная ловушка»</div>
+        </div>
+
+        <div style="padding:16px 18px;border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:13px;">2. «Тайм-аудит собственника: шаблон + разбор»</div>
+            <span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">SEO-статья</span>
+          </div>
+          <div style="font-size:12px;color:#5A6A8A;">Под «тайм-менеджмент» (32k). Лид-магнит: Google Sheets шаблон. SEO-приоритет #1.</div>
+        </div>
+
+        <div style="padding:16px 18px;border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:13px;">3. «Что делают эффективные руководители иначе»</div>
+            <span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Дзен + VK</span>
+          </div>
+          <div style="font-size:12px;color:#5A6A8A;">Под «эффективность руководителя» (9k). Вирусный потенциал. Вывод: делегирование — ключ.</div>
+        </div>
+
+        <div style="padding:16px 18px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:13px;">4. «Как правильно делегировать: честный гайд»</div>
+            <span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">SEO-статья</span>
+          </div>
+          <div style="font-size:12px;color:#5A6A8A;">Под «делегирование задач» (3.4k + делегировать 34k). Образовательный → лид-магнит в конце.</div>
+        </div>
+      </div>
+
+      <div style="border-radius:12px;border:2px solid #BFDBFE;overflow:hidden;">
+        <div style="background:var(--blue);color:#fff;padding:10px 18px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">MOFU — Рассмотрение</div>
+
+        <div style="padding:16px 18px;border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:13px;">5. «ИИ vs живой ассистент: что умеет каждый»</div>
+            <span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Статья + Telegram</span>
+          </div>
+          <div style="font-size:12px;color:#5A6A8A;">Под «нейросети для бизнеса» (2k). Занять нишу первыми. Вирусный потенциал.</div>
+        </div>
+
+        <div style="padding:16px 18px;border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:13px;">6. «Оптимизация бизнеса без раздутого штата»</div>
+            <span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">SEO-статья</span>
+          </div>
+          <div style="font-size:12px;color:#5A6A8A;">Под «оптимизация бизнеса» (6.4k). D24 как конкретный инструмент оптимизации.</div>
+        </div>
+
+        <div style="padding:16px 18px;border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:13px;">7. «Что автоматизировать ИИ, что — людям»</div>
+            <span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Дзен + лид-магнит</span>
+          </div>
+          <div style="font-size:12px;color:#5A6A8A;">Под «автоматизация бизнес-процессов» (5.8k). Лид-магнит: чек-лист задач для ИИ vs людей.</div>
+        </div>
+
+        <div style="padding:16px 18px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:13px;">8. «Аутсорс операционки: как это работает»</div>
+            <span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Блог + лендинг</span>
+          </div>
+          <div style="font-size:12px;color:#5A6A8A;">Объясняющий материал про модель D24. Для тех, кто уже думает об аутсорсе.</div>
+        </div>
+      </div>
+
+      <div style="border-radius:12px;border:2px solid #FDE68A;overflow:hidden;grid-column:1/-1;">
+        <div style="background:#F59E0B;color:#fff;padding:10px 18px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">BOFU — Финансовый аргумент + Конверсия</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+          <div style="padding:16px 18px;border-bottom:1px solid #FDE68A;border-right:1px solid #FDE68A;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+              <div style="font-weight:700;font-size:13px;">9. «Реальная стоимость сотрудника: считаем всё»</div>
+              <span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Статья + калькулятор</span>
+            </div>
+            <div style="font-size:12px;color:#5A6A8A;">Под «сколько стоит сотрудник» (2.2k). Лид-магнит: калькулятор ФОТ. В конце — сравнение с D24.</div>
+          </div>
+
+          <div style="padding:16px 18px;border-bottom:1px solid #FDE68A;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+              <div style="font-weight:700;font-size:13px;">10. «Текучка кадров: когда аутсорс выгоднее найма»</div>
+              <span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Статья + Telegram</span>
+            </div>
+            <div style="font-size:12px;color:#5A6A8A;">Под «текучка кадров» (2.9k). Горячая боль 2026 — дефицит кадров + постоянный найм.</div>
+          </div>
+
+          <div style="padding:16px 18px;border-right:1px solid #FDE68A;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+              <div style="font-weight:700;font-size:13px;">11. «Кейс: как освободить 20 часов в неделю»</div>
+              <span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Кейс-статья</span>
+            </div>
+            <div style="font-size:12px;color:#5A6A8A;">Реальный клиент D24. Цифры до/после. Самый конвертирующий формат.</div>
+          </div>
+
+          <div style="padding:16px 18px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+              <div style="font-weight:700;font-size:13px;">12. «Подписка D24: что входит, зачем брать»</div>
+              <span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap;flex-shrink:0;">Продуктовый контент</span>
+            </div>
+            <div style="font-size:12px;color:#5A6A8A;">Снимает барьер «не понимаю что получу». Для тех, кто уже интересуется D24.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 03. Форматы и каналы -->
+  <div class="section">
+    <div class="section-title"><span class="num">03</span> Форматы и каналы — что и где публикуем</div>
+
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#0C1A3A;color:#fff;">
+          <th style="padding:10px 12px;text-align:left;">Канал</th>
+          <th style="padding:10px 12px;text-align:left;">Роль в воронке</th>
+          <th style="padding:10px 12px;text-align:left;">Формат</th>
+          <th style="padding:10px 12px;text-align:left;">Частота</th>
+          <th style="padding:10px 12px;text-align:left;">Кто создаёт</th>
+          <th style="padding:10px 12px;text-align:left;">CTA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">Telegram</td>
+          <td style="padding:9px 12px;"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">TOFU</span> + прогрев</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Посты 800–1200 знаков, карусели, опросы, мини-кейсы</td>
+          <td style="padding:9px 12px;font-weight:600;">3–4 поста/нед</td>
+          <td style="padding:9px 12px;color:#374151;">Юлия + AI-помощь</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">→ статья / → лид-магнит</td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;background:#F8FAFF;">
+          <td style="padding:9px 12px;font-weight:600;">Яндекс Дзен</td>
+          <td style="padding:9px 12px;"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">TOFU</span> SEO</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Статьи 2–4k знаков под «управление временем», «эффективность руководителя»</td>
+          <td style="padding:9px 12px;font-weight:600;">1–2 статьи/нед</td>
+          <td style="padding:9px 12px;color:#374151;">Юлия + AI-черновик</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">→ лид-магнит / → сайт D24</td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">Блог сайта</td>
+          <td style="padding:9px 12px;"><span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">MOFU</span> + <span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">BOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Лонгриды 3–6k знаков, кейсы, сравнения (найм vs D24)</td>
+          <td style="padding:9px 12px;font-weight:600;">2–4 статьи/мес</td>
+          <td style="padding:9px 12px;color:#374151;">Юлия + AI-черновик</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">→ заявка / → пробный период</td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;background:#F8FAFF;">
+          <td style="padding:9px 12px;font-weight:600;">Email-воронка</td>
+          <td style="padding:9px 12px;"><span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">MOFU</span> → <span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">BOFU</span></td>
+          <td style="padding:9px 12px;color:#5A6A8A;">5–7 писем после лид-магнита: кейс → возражение → финансовый аргумент → оффер</td>
+          <td style="padding:9px 12px;font-weight:600;">Авто / по триггеру</td>
+          <td style="padding:9px 12px;color:#374151;">Юлия (один раз) → автоматика</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">→ заявка на D24</td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;font-weight:600;">VK / Instagram</td>
+          <td style="padding:9px 12px;"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">TOFU</span> охват</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Адаптация Telegram-контента, карточки, короткие посты</td>
+          <td style="padding:9px 12px;font-weight:600;">3 поста/нед</td>
+          <td style="padding:9px 12px;color:#374151;">Переработка готового Telegram-контента</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">→ Telegram / → сайт</td>
+        </tr>
+        <tr>
+          <td style="padding:9px 12px;font-weight:600;">Директ РСЯ</td>
+          <td style="padding:9px 12px;"><span style="background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">TOFU</span> → лид-магнит</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">Контентные объявления аудитории «управление временем» / «делегирование»</td>
+          <td style="padding:9px 12px;font-weight:600;">После запуска контента</td>
+          <td style="padding:9px 12px;color:#374151;">Специалист по Директу</td>
+          <td style="padding:9px 12px;color:#5A6A8A;">→ скачать лид-магнит</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- 04. Первые шаги -->
+  <div class="section">
+    <div class="section-title"><span class="num">04</span> Первые шаги — что делаем прямо сейчас</div>
+
+    <div style="display:grid;grid-template-columns:1fr;gap:12px;">
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#F0FFF7;border-radius:12px;padding:18px;border:1px solid #A7F3D0;">
+        <div style="min-width:36px;height:36px;background:#059669;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;">1</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">Написать 2 SEO-статьи под TOFU — неделя 1–2 июля</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Темы: «Тайм-аудит руководителя» + «Что делают эффективные руководители». Опубликовать на Дзен. Прикрепить шаблон тайм-аудита как лид-магнит. Даёт поисковый трафик уже в июле.</div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span style="background:#DCFCE7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">50k+ потенциальных просмотров</span>
+            <span style="background:#DCFCE7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Лид-магнит уже есть в базе</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#EFF6FF;border-radius:12px;padding:18px;border:1px solid #BFDBFE;">
+        <div style="min-width:36px;height:36px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;">2</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">Запустить Telegram по TOFU-темам — неделя 1 июля</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">3–4 поста в неделю. Пн: инсайт про управление временем / делегирование. Ср: кейс / практика. Пт: полезный инструмент или разбор. Пока без агрессивного CTA — строим доверие.</div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span style="background:#DBEAFE;color:#1E40AF;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Запускается немедленно</span>
+            <span style="background:#DBEAFE;color:#1E40AF;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Нет зависимостей</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#F5F3FF;border-radius:12px;padding:18px;border:1px solid #DDD6FE;">
+        <div style="min-width:36px;height:36px;background:#7C3AED;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;">3</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">Написать «ИИ vs живой ассистент» — занять нишу — неделя 2–3 июля</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Под «нейросети для бизнеса» (2k) + «ИИ ассистент для бизнеса» (313). Конкурентов в SEO пока нет. Через 6–12 месяцев запрос вырастет — D24 уже в топе. Лид-магнит: чек-лист «Что отдать ИИ, что людям».</div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span style="background:#EDE9FE;color:#5B21B6;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Конкурентов пока нет</span>
+            <span style="background:#EDE9FE;color:#5B21B6;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Растущая ниша</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#FFFBEB;border-radius:12px;padding:18px;border:1px solid #FDE68A;">
+        <div style="min-width:36px;height:36px;background:#F59E0B;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;">4</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">«Реальная стоимость сотрудника» + калькулятор ФОТ — неделя 3–4 июля</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">Под «сколько стоит сотрудник» (2.2k). Показываем: зарплата + налоги + найм + обучение + текучка = реальная цифра. В конце — сравнение с подпиской D24. Лид-магнит: Google Sheets калькулятор ФОТ. Самый конвертирующий материал.</div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span style="background:#FEF3C7;color:#92400E;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Прямой финансовый аргумент</span>
+            <span style="background:#FEF3C7;color:#92400E;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Высокая конверсия в заявку</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border);">
+        <div style="min-width:36px;height:36px;background:#374151;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;">5</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:4px;">Настроить email-воронку от лид-магнита до заявки — неделя 3–4 июля</div>
+          <div style="font-size:13px;color:#5A6A8A;line-height:1.6;">5 писем: 1) доставка магнита, 2) кейс клиента D24, 3) закрытие возражения «это не для меня», 4) финансовый аргумент (ФОТ vs D24), 5) оффер + пробный период. Превращает лид-магниты в реальные продажи, а не просто скачивания.</div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span style="background:#F3F4F6;color:#374151;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Зависит от шагов 1–4</span>
+            <span style="background:#F3F4F6;color:#374151;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">Автоматизирует прогрев</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 05. Метрики успеха Q3 -->
+  <div class="section">
+    <div class="section-title"><span class="num">05</span> Метрики успеха — как поймём что работает</div>
+
+    <div class="insight" style="margin-bottom: 20px;">
+      Без метрик контент-стратегия — это план без обратной связи. Эти цифры не догма, но они дают точку сравнения. Если в конце июля ни одна метрика не движется — значит, что-то не так с форматом или темой, не с объёмом.
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+
+      <div style="background: #F0FFF7; border-radius: 12px; padding: 20px; border-top: 3px solid #10B981;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #059669; margin-bottom: 12px;">Июль — запуск</div>
+        <ul style="font-size: 13px; color: #374151; line-height: 2; list-style: none; padding: 0;">
+          <li>✦ 2 статьи опубликованы на Дзен</li>
+          <li>✦ Telegram запущен, 8–12 постов</li>
+          <li>✦ 1 лид-магнит доступен для скачивания</li>
+          <li>✦ Email-сервис подключён</li>
+          <li style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #A7F3D0; font-weight: 700; color: #059669;">≥ 30 скачиваний лид-магнита</li>
+          <li style="font-weight: 700; color: #059669;">≥ 100 подписчиков Telegram</li>
+        </ul>
+      </div>
+
+      <div style="background: #EFF6FF; border-radius: 12px; padding: 20px; border-top: 3px solid #4F8EF7;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #1D4ED8; margin-bottom: 12px;">Август — разгон</div>
+        <ul style="font-size: 13px; color: #374151; line-height: 2; list-style: none; padding: 0;">
+          <li>✦ 4–6 статей суммарно</li>
+          <li>✦ Email-воронка запущена</li>
+          <li>✦ 2–3 лид-магнита в работе</li>
+          <li>✦ Первые SEO-позиции в Дзен</li>
+          <li style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #BFDBFE; font-weight: 700; color: #1D4ED8;">≥ 150 email-адресов в базе</li>
+          <li style="font-weight: 700; color: #1D4ED8;">≥ 1–2 заявки из контента</li>
+        </ul>
+      </div>
+
+      <div style="background: #FFFBEB; border-radius: 12px; padding: 20px; border-top: 3px solid #F59E0B;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #92400E; margin-bottom: 12px;">Сентябрь — результат Q3</div>
+        <ul style="font-size: 13px; color: #374151; line-height: 2; list-style: none; padding: 0;">
+          <li>✦ 10–12 единиц контента</li>
+          <li>✦ Воронка работает автономно</li>
+          <li>✦ Первые органические лиды из SEO</li>
+          <li>✦ Кейс D24 опубликован</li>
+          <li style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #FDE68A; font-weight: 700; color: #92400E;">≥ 500 email-адресов в базе</li>
+          <li style="font-weight: 700; color: #92400E;">≥ 5 заявок из контент-канала</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="insight warn" style="margin-top: 16px;">
+      <strong>Что контролировать еженедельно:</strong> количество скачиваний лид-магнита, open rate первого письма в email-цепочке, прирост подписчиков Telegram. Если open rate &lt; 25% — проблема в теме письма. Если скачиваний нет — проблема в офере или трафике на страницу.
+    </div>
+  </div>
+
+</div>
+</div>
+<!-- ════════════════════════════════════════ END TAB 4 ════════════════════════════════════════ -->
+
+<script>
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function switchOffers(groupId, btn) {
+    document.querySelectorAll('.offer-group').forEach(g => g.classList.remove('active'));
+    document.querySelectorAll('.offer-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('offers-' + groupId).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
