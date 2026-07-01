@@ -1089,6 +1089,12 @@ function openPicker(e, wk, chId, dayIndex) {
 
   var wrap = e.target.closest('.format-picker-wrap');
   wrap.appendChild(div);
+  // открыть вверх если не хватает места снизу
+  var rect = div.getBoundingClientRect();
+  if (rect.bottom > window.innerHeight - 8) {
+    div.style.top = 'auto';
+    div.style.bottom = 'calc(100% + 4px)';
+  }
   activePicker = div;
 
   // Закрывать при клике вне пикера

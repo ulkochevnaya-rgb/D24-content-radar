@@ -4763,8 +4763,8 @@
             var cid = ch.id+'_t'+ri+'_d'+di; // ключ для ручной отметки в виджете
             var hubCid = ch.id+'_d'+di;      // ключ форматпикера из content_hub
             var hubPosted = Array.isArray(state[hubCid]) ? state[hubCid] : [];
-            var done = !!state[cid] || hubPosted.length > 0;
-            var chipLabel = hubPosted.length > 0 ? hubPosted.join(', ') : task.l;
+            var done = !!state[cid] || hubPosted.indexOf(task.l) !== -1;
+            var chipLabel = task.l;
             html += '<div class="cw-chip '+ch.cls+(done?' done':'')+'" onclick="cwToggle(this,\''+wk+'\',\''+cid+'\')">'
               +'<span class="cw-chk"></span>'+chipLabel+'</div>';
           });
