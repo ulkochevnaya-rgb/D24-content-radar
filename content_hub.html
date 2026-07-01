@@ -920,8 +920,13 @@ var CHANNELS = [
   }
 ];
 
+// embed mode
+var _urlParams = new URLSearchParams(window.location.search);
+var _isEmbed = _urlParams.get('embed') === '1';
+var _weekParam = _urlParams.get('week'); // YYYY-MM-DD
+
 function getWeekDates() {
-  var now = new Date();
+  var now = _weekParam ? new Date(_weekParam + 'T12:00:00') : new Date();
   var dow = now.getDay();
   var monday = new Date(now);
   monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1) + weekOffset * 7);
@@ -931,6 +936,13 @@ function getWeekDates() {
     d.setDate(monday.getDate() + i);
     return d;
   });
+}
+
+function notifyEmbedHeight() {
+  if (_isEmbed) {
+    var h = document.getElementById('tab-plan').scrollHeight + 8;
+    window.parent.postMessage({ type: 'd24_embed_height', height: h }, '*');
+  }
 }
 
 // ── FIREBASE ──
@@ -1059,6 +1071,7 @@ function renderPlanUI(dates, wk, state) {
 
   document.getElementById('plan-rows').innerHTML = rows;
   document.getElementById('week-progress').textContent = totalPosted + ' публикаций за неделю';
+  setTimeout(notifyEmbedHeight, 50);
 }
 
 // ── FORMAT PICKER ──
@@ -1144,6 +1157,14 @@ function resetWeek() {
   lsSave(wk, {});
   if (fbDb && currentUser) fbRef(wk).remove();
   renderPlanUI(dates, wk, {});
+}
+
+// ── EMBED MODE ──
+if (_isEmbed) {
+  document.querySelector('.hdr').style.display = 'none';
+  document.body.style.cssText += ';margin:0;padding:0;background:transparent;';
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('tab-plan').classList.add('active');
 }
 
 renderPlan();

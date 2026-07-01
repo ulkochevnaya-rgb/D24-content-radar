@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -1626,9 +1626,9 @@
             <span class="cw-title">📅 Контент этой недели</span>
             <span class="cw-week-lbl"></span>
             <button class="cw-tmpl-btn" onclick="cwSaveAsTemplate(this)" title="Добавить контент-виджет в шаблон нового спринта">↻</button>
-            <a class="cw-link" href="#" onclick="showSprint('content-hub');return false;">Полная карта →</a>
+            <a class="cw-link" href="content_hub.html" target="_blank">Полная карта →</a>
           </div>
-          <div class="cw-grid-root"></div>
+          <iframe class="cw-embed-iframe cw-grid-root" frameborder="0" scrolling="no"></iframe>
         </div>
       </div>
 
@@ -2441,9 +2441,9 @@
             <span class="cw-title">📅 Контент этой недели</span>
             <span class="cw-week cw-week-lbl" id="cw-week-label"></span>
             <button class="cw-tmpl-btn" onclick="cwSaveAsTemplate(this)" title="Добавить контент-виджет в шаблон нового спринта">↻</button>
-            <a class="cw-link" href="#" onclick="showSprint('content-hub');return false;">Полная карта →</a>
+            <a class="cw-link" href="content_hub.html" target="_blank">Полная карта →</a>
           </div>
-          <div id="cw-grid" class="cw-grid-root"></div>
+          <iframe class="cw-embed-iframe cw-grid-root" frameborder="0" scrolling="no"></iframe>
         </div>
 
       </div>
@@ -4668,41 +4668,15 @@
       }
     }
 
-    // Render a single grid element (supports multiple widgets per page)
+    // Инициализировать iframe-виджет
     function cwRenderOne(gridEl) {
-      if (!gridEl) return;
-      var wrap = gridEl.closest('.cw-wrap');
-      var lbl = wrap ? wrap.querySelector('.cw-week-lbl') : null;
+      if (!gridEl || gridEl.tagName !== 'IFRAME') return;
       var dates = cwGetWeek(gridEl);
-      var wk = cwWeekKey(dates);
-      var prevWk = gridEl.dataset.cwWk;
-      // Render from localStorage immediately (may be empty on fresh visit)
-      cwRenderUI(gridEl, lbl, dates, wk, cwLoad(wk));
-      if (fbDb) {
-        // Always do a one-time read to get fresh data from Firebase
-        fbDb.ref('content_hub/' + wk).once('value', function(snap) {
-          var fbState = snap.val() || {};
-          try { localStorage.setItem(wk, JSON.stringify(fbState)); } catch(e) {}
-          cwRenderUI(gridEl, lbl, dates, wk, fbState);
-          // Show diagnostic info in widget label
-          if (lbl) lbl.title = 'key:' + wk + ' items:' + Object.keys(fbState).length;
-        }, function(err) {
-          if (lbl) lbl.title = 'Firebase error: ' + (err && err.code || 'unknown');
-        });
-      } else {
-        if (lbl) lbl.title = 'fbDb=null (Firebase не инициализирован)';
-      }
-      if (wk === prevWk) return; // already have real-time listener
-      gridEl.dataset.cwWk = wk;
-      // Clear previous Firebase listener on this element
-      if (gridEl._cwRef) { gridEl._cwRef.off(); gridEl._cwRef = null; }
-      if (fbDb) {
-        gridEl._cwRef = fbDb.ref('content_hub/' + wk);
-        gridEl._cwRef.on('value', function(snap) {
-          var fbState = snap.val() || {};
-          try { localStorage.setItem(wk, JSON.stringify(fbState)); } catch(e) {}
-          cwRenderUI(gridEl, lbl, dates, wk, fbState);
-        }, function() {});
+      var week = dates[0].toISOString().slice(0, 10);
+      var src = 'content_hub.html?embed=1&week=' + week;
+      if (gridEl.src !== src && !gridEl.src.endsWith(src)) {
+        gridEl.src = src;
+        gridEl.style.cssText = 'width:100%;min-height:480px;border:none;display:block;';
       }
     }
 
@@ -4789,7 +4763,14 @@
     });
 
     window.addEventListener('message', function(e) {
-      if (e.data && e.data.type === 'd24_plan_update') cwRender();
+      if (!e.data) return;
+      if (e.data.type === 'd24_plan_update') cwRender();
+      if (e.data.type === 'd24_embed_height') {
+        // авторесайз iframe который прислал сообщение
+        document.querySelectorAll('.cw-embed-iframe').forEach(function(iframe) {
+          try { if (iframe.contentWindow === e.source) iframe.style.height = (e.data.height + 8) + 'px'; } catch(e) {}
+        });
+      }
     });
   })();
 
@@ -5062,9 +5043,9 @@
           '<span class="cw-title">📅 Контент этой недели</span>' +
           '<span class="cw-week-lbl"></span>' +
           '<button class="cw-tmpl-btn active" onclick="cwSaveAsTemplate(this)" title="Контент-виджет включён в шаблон (нажмите чтобы отключить)">↻</button>' +
-          '<a class="cw-link" href="#" onclick="showSprint(\'content-hub\');return false;">Полная карта →</a>' +
+          '<a class="cw-link" href="content_hub.html" target="_blank">Полная карта →</a>' +
         '</div>' +
-        '<div class="cw-grid-root"></div>' +
+        '<iframe class="cw-embed-iframe cw-grid-root" frameborder="0" scrolling="no"></iframe>' +
       '</div>';
     }
 
