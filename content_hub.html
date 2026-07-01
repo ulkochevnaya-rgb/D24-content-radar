@@ -254,6 +254,84 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 }
 .reset-btn:hover { background: #fff1f1; color: #ef4444; border-color: #fecaca; }
 
+/* ── Format picker ── */
+.format-picker-wrap { position: relative; display: inline-block; }
+.format-picker {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 300;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(60,80,180,.16);
+  padding: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 150px;
+  max-width: 210px;
+}
+.fmt-opt {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: var(--bg);
+  color: var(--dark);
+  white-space: nowrap;
+  font-family: inherit;
+  transition: all .1s;
+}
+.fmt-opt:hover { background: var(--p-light); color: var(--primary); border-color: #c7ceff; }
+.add-fmt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px dashed #d0d4e8;
+  background: transparent;
+  color: var(--muted);
+  transition: all .12s;
+  margin-top: 2px;
+  font-family: inherit;
+}
+.add-fmt-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--p-light); }
+.posted-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 5px 2px 6px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+.posted-chip .pcx {
+  cursor: pointer;
+  opacity: .45;
+  font-size: 9px;
+  line-height: 1;
+  transition: opacity .1s;
+  margin-left: 1px;
+}
+.posted-chip .pcx:hover { opacity: 1; }
+.cell-plan-hint {
+  font-size: 9px;
+  color: #c0c4d8;
+  font-weight: 500;
+  line-height: 1.3;
+  padding-bottom: 2px;
+}
+
 .plan-grid {
   background: var(--white);
   border-radius: 16px;
@@ -797,62 +875,48 @@ function showTab(id, btn) {
 // ── Weekly Plan ──
 var weekOffset = 0;
 var DAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-var DAY_FULL = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
 
-// Schedule template: [Пн,Вт,Ср,Чт,Пт,Сб,Вс]
-// null = no task that day
+// Форматы контента per channel (показываются в дропдауне)
+var FORMAT_OPTIONS = {
+  tg: ['Пост','Видео-кружок','Опрос','Мем','Ссылка','Репост'],
+  ig: ['Мем-видео','Карусель','Рилс','Стори','Пост','Комментинг'],
+  fb: ['Пост','Репост','Видео','Фото'],
+  vk: ['Пост','Репост','Видео','Фото'],
+  mx: ['Пост','Репост','Видео'],
+  dz: ['Статья','SEO-статья','Видео','Репост'],
+  bl: ['Кейс-статья','SEO-статья','Статья'],
+  th: ['Пост','Видео','Комментинг'],
+  yt: ['Видео','Shorts','Мем-видео']
+};
+
+// Плановое расписание (показывается как подсказка в ячейке)
 var CHANNELS = [
   { id:'tg',  name:'Telegram',  url:'https://t.me/delegator24', cls:'chip-tg',
-    tasks: [
-      [{l:'Пост'},{l:'Пост'},{l:'Пост'},{l:'Пост'},{l:'Пост'},null,null]
-    ]
+    plan: ['Пост','Пост','Пост','Пост','Пост',null,null]
   },
   { id:'ig',  name:'Instagram', url:'https://www.instagram.com/delegator24.ru/', cls:'chip-ig',
-    tasks: [
-      [{l:'Мем-видео'},null,null,null,{l:'Мем-видео'},null,null],
-      [null,{l:'Карусель'},{l:'Карусель'},{l:'Карусель'},null,null,null],
-      [{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},null,null]
-    ]
+    plan: ['Мем + Комм','Карусель + Комм','Карусель + Комм','Карусель + Комм','Мем + Комм',null,null]
   },
   { id:'fb',  name:'Facebook',  url:'https://www.facebook.com/delegator24', cls:'chip-fb',
-    tasks: [
-      [{l:'Репост IG'},null,null,null,{l:'Репост IG'},null,null],
-      [null,{l:'Репост IG'},{l:'Репост IG'},{l:'Репост IG'},null,null,null]
-    ]
+    plan: ['Репост IG',null,null,null,'Репост IG',null,null]
   },
   { id:'vk',  name:'ВКонтакте', url:'https://vk.com/delegator24', cls:'chip-vk',
-    tasks: [
-      [{l:'Репост TG'},null,{l:'Репост TG'},null,{l:'Репост TG'},null,null],
-      [{l:'Репост видео'},null,null,null,{l:'Репост видео'},null,null]
-    ]
+    plan: ['Репост TG',null,'Репост TG',null,'Репост TG',null,null]
   },
   { id:'mx',  name:'MAX',       url:'https://max.ru/id2634102694_biz', cls:'chip-mx',
-    tasks: [
-      [{l:'Репост TG'},{l:'Репост TG'},{l:'Репост TG'},{l:'Репост TG'},{l:'Репост TG'},null,null]
-    ]
+    plan: ['Репост TG','Репост TG','Репост TG','Репост TG','Репост TG',null,null]
   },
   { id:'dz',  name:'Дзен',      url:'https://dzen.ru/delegator24', cls:'chip-dz',
-    tasks: [
-      [null,{l:'Статья'},null,{l:'Статья'},null,null,null],
-      [{l:'Видео'},null,null,null,{l:'Видео'},null,null]
-    ]
+    plan: ['SEO-статья','Статья',null,'Статья',null,null,null]
   },
   { id:'bl',  name:'Блог',      url:'https://delegator24.ru/blog', cls:'chip-bl',
-    tasks: [
-      [null,null,null,{l:'Кейс-статья'},null,null,null],
-      [{l:'SEO-статья'},null,null,null,null,null,null]
-    ]
+    plan: ['SEO-статья',null,null,'Кейс-статья',null,null,null]
   },
   { id:'th',  name:'Threads',   url:'https://www.threads.com/@delegator24.ru', cls:'chip-th',
-    tasks: [
-      [{l:'Пост'},{l:'Пост'},{l:'Пост'},{l:'Пост'},{l:'Пост'},null,null],
-      [{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},{l:'Комментинг'},null,null]
-    ]
+    plan: ['Пост + Комм','Пост + Комм','Пост + Комм','Пост + Комм','Пост + Комм',null,null]
   },
   { id:'yt',  name:'YouTube',   url:'https://www.youtube.com/@Delegator24', cls:'chip-yt',
-    tasks: [
-      [{l:'Мем-видео'},null,null,null,{l:'Мем-видео'},null,null]
-    ]
+    plan: ['Мем-видео',null,null,null,'Мем-видео',null,null]
   }
 ];
 
@@ -861,7 +925,7 @@ function getWeekDates() {
   var dow = now.getDay();
   var monday = new Date(now);
   monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1) + weekOffset * 7);
-  monday.setHours(12, 0, 0, 0); // anchor to noon so toISOString() gives correct date in any timezone
+  monday.setHours(12, 0, 0, 0);
   return Array.from({length:7}, function(_,i) {
     var d = new Date(monday);
     d.setDate(monday.getDate() + i);
@@ -869,7 +933,7 @@ function getWeekDates() {
   });
 }
 
-// ── FIREBASE CONFIG — вставь свой конфиг из Firebase Console ──
+// ── FIREBASE ──
 var FIREBASE_CONFIG = {
   apiKey:            "AIzaSyDeGmw8aQPJXdZOmG4Y_1Lyv3h0nAzPzPM",
   authDomain:        "delegator24-55500.firebaseapp.com",
@@ -879,10 +943,7 @@ var FIREBASE_CONFIG = {
   messagingSenderId: "749886002183",
   appId:             "1:749886002183:web:4e4dc29c5660a2a810c6a2"
 };
-
-var fbDb = null;
-var fbAuth = null;
-var currentUser = null;
+var fbDb = null; var fbAuth = null; var currentUser = null;
 try {
   var fbApp = firebase.initializeApp(FIREBASE_CONFIG);
   fbDb = firebase.database();
@@ -892,8 +953,8 @@ try {
     var btn = document.getElementById('auth-btn');
     if (btn) {
       btn.textContent = currentUser ? '✓ Юлия' : '🔐 Войти';
-      btn.style.background = currentUser ? '#e8f5e9' : '#fff';
-      btn.style.color = currentUser ? '#2e7d32' : '#6b7280';
+      btn.style.background  = currentUser ? '#e8f5e9' : '#fff';
+      btn.style.color       = currentUser ? '#2e7d32' : '#6b7280';
       btn.style.borderColor = currentUser ? '#a5d6a7' : '#dde0f0';
     }
   });
@@ -901,116 +962,189 @@ try {
 
 function toggleAuth() {
   if (!fbAuth) return;
-  if (currentUser) {
-    fbAuth.signOut();
-  } else {
-    fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(){});
-  }
+  if (currentUser) { fbAuth.signOut(); }
+  else { fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(){}); }
 }
 
-// ── STATE ─────────────────────────────────────────
+// ── STATE ──
 var stateCache  = {};
 var currentWk   = null;
 var fbListener  = null;
+var _localWrite = false; // подавляем Firebase-listener пока сами пишем
 
-function weekKey(dates) { return 'd24_plan_' + dates[0].toISOString().slice(0,10); }
-function chipId(chId, ti, d) { return chId + '_t' + ti + '_d' + d; }
-function fbRef(wk) { return fbDb ? fbDb.ref('content_hub/' + wk) : null; }
+function weekKey(dates) { return 'd24_plan2_' + dates[0].toISOString().slice(0,10); }
+function fbRef(wk)      { return fbDb ? fbDb.ref('content_hub/' + wk) : null; }
+function lsLoad(wk)     { try { return JSON.parse(localStorage.getItem(wk)||'{}'); } catch(e) { return {}; } }
+function lsSave(wk, s)  { try { localStorage.setItem(wk, JSON.stringify(s)); } catch(e) {} }
+function cellKey(chId, d) { return chId + '_d' + d; }
 
-function lsLoad(wk) { try { return JSON.parse(localStorage.getItem(wk)||'{}'); } catch(e) { return {}; } }
-function lsSave(wk, s) { try { localStorage.setItem(wk, JSON.stringify(s)); } catch(e) {} }
+function saveState(wk) {
+  lsSave(wk, stateCache[wk]);
+  _localWrite = true; // всегда блокируем Firebase-listener пока пишем локально
+  if (fbDb && currentUser) {
+    fbRef(wk).set(stateCache[wk]).then(function() {
+      setTimeout(function() { _localWrite = false; }, 500);
+    }).catch(function() { _localWrite = false; });
+  } else {
+    setTimeout(function() { _localWrite = false; }, 500);
+  }
+  window.parent.postMessage({type:'d24_plan_update'}, '*');
+}
 
+// ── RENDER ──
 function renderPlan() {
   var dates = getWeekDates();
   var wk = weekKey(dates);
-  // Render immediately from localStorage so grid is never blank
   stateCache[wk] = lsLoad(wk);
   renderPlanUI(dates, wk, stateCache[wk]);
   if (!fbDb) return;
-  // One-time immediate read for fresh data
-  fbDb.ref('content_hub/' + wk).once('value', function(snap) {
-    var data = snap.val() || {};
-    stateCache[wk] = data;
-    lsSave(wk, data);
-    renderPlanUI(dates, wk, data);
-  }, function() {});
-  // Real-time listener for updates
   if (fbListener && currentWk) fbDb.ref('content_hub/' + currentWk).off('value', fbListener);
   currentWk = wk;
   fbListener = fbRef(wk).on('value', function(snap) {
+    if (_localWrite) return;
     var data = snap.val() || {};
-    stateCache[wk] = data;
-    lsSave(wk, data);
+    if (!data || Object.keys(data).length === 0) return; // не стираем локальный state пустыми данными
+    stateCache[wk] = data; lsSave(wk, data);
     renderPlanUI(dates, wk, data);
-  }, function() {});
+  }, function(){});
 }
 
 function renderPlanUI(dates, wk, state) {
   var today = new Date();
-  var fmt = function(d) { return d.getDate() + '.' + String(d.getMonth()+1).padStart(2,'0'); };
-  document.getElementById('week-label').textContent = fmt(dates[0]) + ' – ' + fmt(dates[6]) + ' ' + dates[0].getFullYear();
+  var dfmt = function(d) { return d.getDate() + '.' + String(d.getMonth()+1).padStart(2,'0'); };
+  document.getElementById('week-label').textContent = dfmt(dates[0]) + ' – ' + dfmt(dates[6]) + ' ' + dates[0].getFullYear();
+
   var hdr = '<div class="plan-day-hd" style="background:var(--bg);border-right:1px solid var(--border)"></div>';
   dates.forEach(function(d,i) {
     var isToday = d.toDateString() === today.toDateString();
-    hdr += '<div class="plan-day-hd' + (isToday?' today':'') + '"><span class="day-name">' + DAYS[i] + '</span><span class="day-date">' + fmt(d) + '</span></div>';
+    hdr += '<div class="plan-day-hd'+(isToday?' today':'')+'"><span class="day-name">'+DAYS[i]+'</span><span class="day-date">'+dfmt(d)+'</span></div>';
   });
   document.getElementById('plan-header').innerHTML = hdr;
-  var rows = ''; var total = 0, done = 0;
+
+  var rows = ''; var totalPosted = 0;
   CHANNELS.forEach(function(ch) {
     rows += '<div class="plan-row">';
-    var chLabel = ch.url ? '<a href="' + ch.url + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">' + ch.name + '</a>' : ch.name;
-    rows += '<div class="plan-ch-label"><div class="plan-ch-dot" style="background:var(--' + ch.id + ')"></div><div class="plan-ch-name">' + chLabel + '</div></div>';
+    var chLabel = ch.url
+      ? '<a href="'+ch.url+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">'+ch.name+'</a>'
+      : ch.name;
+    rows += '<div class="plan-ch-label"><div class="plan-ch-dot" style="background:var(--'+ch.id+')"></div><div class="plan-ch-name">'+chLabel+'</div></div>';
+
     for (var d=0; d<7; d++) {
-      rows += '<div class="plan-cell' + (d>=5?' weekend':'') + '">';
-      ch.tasks.forEach(function(taskRow, ti) {
-        var task = taskRow[d]; if (!task) return;
-        var cid = chipId(ch.id, ti, d);
-        var isDone = !!(state && state[cid]);
-        if (isDone) done++; total++;
-        rows += '<div class="task-chip ' + ch.cls + (isDone?' done':'') + '" onclick="toggleChip(this,\'' + wk + '\',\'' + cid + '\')">' +
-          '<span class="chip-check"></span>' + task.l + '</div>';
+      var isWeekend = d >= 5;
+      rows += '<div class="plan-cell'+(isWeekend?' weekend':'')+'">';
+
+      // Плановая подсказка
+      if (ch.plan[d]) {
+        rows += '<div class="cell-plan-hint">план: '+ch.plan[d]+'</div>';
+      }
+
+      // Опубликованные форматы из state
+      var ck = cellKey(ch.id, d);
+      var posted = state && Array.isArray(state[ck]) ? state[ck] : [];
+      totalPosted += posted.length;
+      posted.forEach(function(fmt, fi) {
+        rows += '<div class="posted-chip '+ch.cls+'">✓ '+esc(fmt)+
+          '<span class="pcx" onclick="removePosted(event,\''+wk+'\',\''+ck+'\','+fi+')">✕</span></div>';
       });
+
+      // Кнопка добавить (все дни, включая выходные — вдруг запостили)
+      rows += '<div class="format-picker-wrap">'+
+        '<button class="add-fmt-btn" onclick="openPicker(event,\''+wk+'\',\''+ch.id+'\','+d+')">＋ добавить</button>'+
+        '</div>';
+
       rows += '</div>';
     }
     rows += '</div>';
   });
+
   document.getElementById('plan-rows').innerHTML = rows;
-  document.getElementById('week-progress').textContent = done + ' / ' + total + ' выполнено';
+  document.getElementById('week-progress').textContent = totalPosted + ' публикаций за неделю';
 }
 
-function toggleChip(el, wk, cid) {
-  if (!currentUser) return;
-  var isDone = el.classList.contains('done');
-  if (isDone) { el.classList.remove('done'); } else { el.classList.add('done'); }
+// ── FORMAT PICKER ──
+var activePicker = null;
+
+function openPicker(e, wk, chId, dayIndex) {
+  e.stopPropagation();
+  closePicker();
+
+  var opts = FORMAT_OPTIONS[chId] || ['Пост','Видео','Статья','Репост'];
+  var div = document.createElement('div');
+  div.className = 'format-picker';
+  div.id = 'active-picker';
+
+  opts.forEach(function(fmt) {
+    var btn = document.createElement('button');
+    btn.className = 'fmt-opt';
+    btn.textContent = fmt;
+    btn.onclick = function(ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+      var _wk = wk, _ck = cellKey(chId, dayIndex), _fmt = fmt;
+      activePicker = null; // сбрасываем до renderPlanUI
+      addPosted(_wk, _ck, _fmt);
+    };
+    div.appendChild(btn);
+  });
+
+  var wrap = e.target.closest('.format-picker-wrap');
+  wrap.appendChild(div);
+  activePicker = div;
+
+  // Закрывать при клике вне пикера
+  setTimeout(function() {
+    document.addEventListener('click', function handler(ev) {
+      if (activePicker && !activePicker.contains(ev.target)) {
+        closePicker();
+        document.removeEventListener('click', handler);
+      }
+    });
+  }, 0);
+}
+
+function closePicker() {
+  if (activePicker) { activePicker.remove(); activePicker = null; }
+}
+
+function addPosted(wk, ck, fmt) {
   if (!stateCache[wk]) stateCache[wk] = {};
-  if (isDone) { delete stateCache[wk][cid]; } else { stateCache[wk][cid] = true; }
-  lsSave(wk, stateCache[wk]);
-  if (fbDb) fbRef(wk).set(stateCache[wk]);
-  var d = document.querySelectorAll('.task-chip.done').length;
-  var t = document.querySelectorAll('.task-chip').length;
-  document.getElementById('week-progress').textContent = d + ' / ' + t + ' выполнено';
-  window.parent.postMessage({type:'d24_plan_update'}, '*');
+  var arr = Array.isArray(stateCache[wk][ck]) ? stateCache[wk][ck] : [];
+  arr.push(fmt);
+  stateCache[wk][ck] = arr;
+  saveState(wk);
+  renderPlanUI(getWeekDates(), wk, stateCache[wk]);
+}
+
+function removePosted(e, wk, ck, fi) {
+  e.stopPropagation();
+  if (!stateCache[wk] || !Array.isArray(stateCache[wk][ck])) return;
+  stateCache[wk][ck].splice(fi, 1);
+  if (stateCache[wk][ck].length === 0) delete stateCache[wk][ck];
+  saveState(wk);
+  renderPlanUI(getWeekDates(), wk, stateCache[wk]);
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function changeWeek(dir) { weekOffset += dir; renderPlan(); }
 
 function resetWeek() {
-  if (!confirm('Сбросить прогресс этой недели?')) return;
+  if (!confirm('Сбросить все публикации этой недели?')) return;
   var dates = getWeekDates();
   var wk = weekKey(dates);
   stateCache[wk] = {};
-  if (fbDb) { fbRef(wk).remove(); } else { lsSave(wk, {}); }
+  lsSave(wk, {});
+  if (fbDb && currentUser) fbRef(wk).remove();
   renderPlanUI(dates, wk, {});
 }
 
-// Pre-render plan regardless of active tab so grid is populated on first switch
 renderPlan();
 
-// Sync via postMessage from parent (tasks.html widget)
 window.addEventListener('message', function(e) {
   if (!e.data) return;
   if (e.data.type === 'd24_open_plan') {
-    // Switch to plan tab and refresh
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-plan').classList.add('active');
