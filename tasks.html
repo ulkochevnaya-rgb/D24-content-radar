@@ -4655,11 +4655,17 @@
       });
     }
 
-    function cwWeekKey(dates) { return 'd24_plan_' + dates[0].toISOString().slice(0,10); }
+    function cwWeekKey(dates) { return 'd24_plan2_' + dates[0].toISOString().slice(0,10); }
     function cwLoad(k) { try { return JSON.parse(localStorage.getItem(k)||'{}'); } catch(e) { return {}; } }
-    function cwSave(k,s) {
-      try { localStorage.setItem(k,JSON.stringify(s)); } catch(e) {}
-      if (fbDb) try { fbDb.ref('content_hub/' + k).set(s); } catch(e) {}
+    function cwSave(k, cid, val) {
+      // patch only the specific key — не перезаписываем массивы форматпикера
+      var local = cwLoad(k);
+      if (val === null) { delete local[cid]; } else { local[cid] = val; }
+      try { localStorage.setItem(k, JSON.stringify(local)); } catch(e) {}
+      if (fbDb) {
+        var patch = {}; patch[cid] = val;
+        try { fbDb.ref('content_hub/' + k).update(patch); } catch(e) {}
+      }
     }
 
     // Render a single grid element (supports multiple widgets per page)
@@ -4754,10 +4760,13 @@
           ch.rows.forEach(function(row, ri) {
             var task = row[di];
             if (!task) return;
-            var cid = ch.id+'_t'+ri+'_d'+di;  // совпадает с chipId() в content_hub.html
-            var done = !!state[cid];
+            var cid = ch.id+'_t'+ri+'_d'+di; // ключ для ручной отметки в виджете
+            var hubCid = ch.id+'_d'+di;      // ключ форматпикера из content_hub
+            var hubPosted = Array.isArray(state[hubCid]) ? state[hubCid] : [];
+            var done = !!state[cid] || hubPosted.length > 0;
+            var chipLabel = hubPosted.length > 0 ? hubPosted.join(', ') : task.l;
             html += '<div class="cw-chip '+ch.cls+(done?' done':'')+'" onclick="cwToggle(this,\''+wk+'\',\''+cid+'\')">'
-              +'<span class="cw-chk"></span>'+task.l+'</div>';
+              +'<span class="cw-chk"></span>'+chipLabel+'</div>';
           });
           html += '</div>';
         }
@@ -4768,11 +4777,9 @@
 
     window.cwToggle = function(el, wk, cid) {
       if (!currentUser) { showAuthToast(); return; }
-      var state = cwLoad(wk);
       var done = el.classList.contains('done');
-      if (done) { delete state[cid]; el.classList.remove('done'); }
-      else { state[cid]=true; el.classList.add('done'); }
-      cwSave(wk, state);
+      el.classList.toggle('done', !done);
+      cwSave(wk, cid, done ? null : true);
       cwPostToHub({type:'d24_plan_update'});
     };
 
