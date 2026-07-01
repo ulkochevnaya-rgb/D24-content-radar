@@ -1092,7 +1092,7 @@ function openPicker(e, wk, chId, dayIndex) {
       ev.stopPropagation();
       ev.preventDefault();
       var _wk = wk, _ck = cellKey(chId, dayIndex), _fmt = fmt;
-      activePicker = null; // сбрасываем до renderPlanUI
+      div.remove(); activePicker = null;
       addPosted(_wk, _ck, _fmt);
     };
     div.appendChild(btn);
