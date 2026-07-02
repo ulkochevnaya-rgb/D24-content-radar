@@ -4356,9 +4356,10 @@
       else if (state[id] === false) applyDone(subtask, false);
       else if (htmlDone) applyDone(subtask, true);
 
-      subtask.addEventListener('click', () => {
+      subtask.addEventListener('click', (e) => {
         if (subtask.closest('.sprint-panel[data-archived]')) return;
         if (!currentUser) return;
+        if (e.target.closest('.subtask') !== subtask) return;
         const isDone = subtask.classList.contains('done');
         applyDone(subtask, !isDone);
         const s = loadState();
