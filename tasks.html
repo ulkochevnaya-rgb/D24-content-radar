@@ -743,7 +743,6 @@
     .sprint-panel[data-archived] .subtask { cursor: default; }
     .sprint-panel[data-archived] .subtask:hover { background: transparent; }
     .sprint-panel[data-archived] .subtask-actions { display: none !important; }
-    .subtask .subtask-list .subtask-actions { display: none !important; }
     .sprint-panel[data-archived] header { opacity: 0.9; }
 
     /* ===================== SUBTASK ACTIONS ===================== */
@@ -1419,7 +1418,7 @@
         <div class="task-group" data-color="blue">
           <div class="task-group-header">
             <div class="task-group-title">Разовые задачи · Аналитика</div>
-            <span class="task-group-count">0/2</span>
+            <span class="task-group-count">0/5</span>
           </div>
           <ul class="subtask-list">
             <li class="subtask">
@@ -1439,27 +1438,28 @@
                   <span class="pill pill-p1">P1</span>
                   <span class="pill pill-today">завтра</span>
                 </div>
-                <ul class="subtask-list" style="margin-top:6px;">
-                  <li class="subtask">
-                    <div class="sub-checkbox"></div>
-                    <div class="subtask-body">
-                      <div class="subtask-title">Получить от Лидии методику анализа диалогов и загрузить в агента</div>
-                      <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
-                    </div>
-                  </li>
-                  <li class="subtask">
-                    <div class="sub-checkbox"></div>
-                    <div class="subtask-body">
-                      <div class="subtask-title">Настроить анализ записей звонков — транскрипция через faster-whisper локально</div>
-                      <div class="subtask-meta"><span class="pill pill-done">выполнено 02.07</span></div>
-                    </div>
-                  </li>
-                  <li class="subtask">
-                    <div class="sub-checkbox"></div>
-                    <div class="subtask-body">
-                      <div class="subtask-title">Автооценка сделок: качество диалога (1–10) + технология продаж (%) + сегментация клиента (ABCD)</div>
-                      <div class="subtask-meta"><span class="pill pill-done">выполнено 02.07</span></div>
-                    </div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Получить от Лидии методику анализа диалогов и загрузить в агента</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Настроить анализ записей звонков — транскрипция через faster-whisper локально</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено 02.07</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Автооценка сделок: качество диалога (1–10) + технология продаж (%) + сегментация клиента (ABCD)</div>
+                <div class="subtask-meta"><span class="pill pill-done">выполнено 02.07</span></div>
+              </div>
                   </li>
                 </ul>
               </div>
@@ -4359,7 +4359,6 @@
       subtask.addEventListener('click', (e) => {
         if (subtask.closest('.sprint-panel[data-archived]')) return;
         if (!currentUser) return;
-        if (e.target.closest('.subtask') !== subtask) return;
         const isDone = subtask.classList.contains('done');
         applyDone(subtask, !isDone);
         const s = loadState();
@@ -4371,7 +4370,7 @@
         if (sprintPanel) updateProgress(sprintPanel.id);
       });
 
-      if (!subtask.closest('.sprint-panel[data-archived]') && !subtask.closest('.subtask .subtask-list')) addSubtaskActions(subtask);
+      if (!subtask.closest('.sprint-panel[data-archived]')) addSubtaskActions(subtask);
     });
     if (_stateChanged) saveState(state);
 
