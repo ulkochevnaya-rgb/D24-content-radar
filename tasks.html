@@ -4370,7 +4370,7 @@
         if (sprintPanel) updateProgress(sprintPanel.id);
       });
 
-      if (!subtask.closest('.sprint-panel[data-archived]')) addSubtaskActions(subtask);
+      if (!subtask.closest('.sprint-panel[data-archived]') && !subtask.closest('.subtask .subtask-list')) addSubtaskActions(subtask);
     });
     if (_stateChanged) saveState(state);
 
