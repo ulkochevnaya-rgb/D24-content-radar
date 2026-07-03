@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delegator24 · База знаний</title>
+<style>
+  :root{
+    --ink:#182230; --ink-2:#3d4a5c; --muted:#6a7686;
+    --ground:#eef1f5; --card:#ffffff; --line:#dde3ec; --line-2:#e9edf3;
+    --accent:#235d8a; --accent-2:#2f7cb5; --accent-wash:#eaf1f7;
+    --ready:#2e8b6b; --ready-wash:#e6f4ee;
+    --soon:#8a94a2; --soon-wash:#eef1f4;
+    --sheet:#1a7f52; --sheet-wash:#e7f5ee;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:var(--sans); color:var(--ink); background:var(--ground);
+    line-height:1.55; -webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 22px 80px}
+
+  header{padding:44px 0 30px; border-bottom:1px solid var(--line)}
+  .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+    font-weight:700; margin:0 0 12px}
+  h1{font-size:clamp(26px,4vw,38px); letter-spacing:-.02em; font-weight:800; margin:0 0 12px}
+  .sub{font-size:17px; color:var(--ink-2); margin:0; max-width:60ch}
+
+  section{padding:34px 0 8px; border-bottom:1px solid var(--line-2)}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin:0 0 18px}
+  .sec-n{font-variant-numeric:tabular-nums; font-weight:800; color:var(--accent);
+    font-size:14px; letter-spacing:.04em}
+  h2{font-size:19px; letter-spacing:-.01em; font-weight:700; margin:0}
+
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:18px 18px 16px; display:flex; flex-direction:column; gap:10px}
+  .card.soon{background:#f7f9fb; border-style:dashed}
+  .card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+  .card h3{font-size:16px; font-weight:700; margin:0; letter-spacing:-.01em}
+  .card p{font-size:13.5px; color:var(--ink-2); margin:0}
+  .card.soon h3{color:var(--ink-2)}
+
+  .chip{flex:none; font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    padding:3px 8px; border-radius:999px; white-space:nowrap}
+  .chip-ready{color:var(--ready); background:var(--ready-wash)}
+  .chip-soon{color:var(--soon); background:var(--soon-wash)}
+  .chip-auto{color:#065f46; background:#d1fae5; text-transform:none; letter-spacing:0}
+
+  .links{display:flex; flex-wrap:wrap; gap:8px; margin-top:2px}
+  .btn{display:inline-flex; align-items:center; gap:5px; font-size:12.5px; font-weight:650;
+    text-decoration:none; padding:6px 11px; border-radius:8px; border:1px solid transparent}
+  .btn-page{color:#fff; background:var(--accent)}
+  .btn-page:hover{background:var(--accent-2)}
+  .btn-sheet{color:var(--sheet); background:var(--sheet-wash); border-color:#bfe6cf}
+  .btn-dash{color:var(--accent); background:var(--accent-wash); border-color:#cfe0ee}
+  .btn-soon{color:var(--soon); background:transparent; border-color:var(--line); cursor:default}
+
+  .foot{padding-top:26px; color:var(--muted); font-size:13px}
+
+  @media(max-width:720px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="kicker">Delegator24 · Маркетинг</p>
+    <h1>База знаний</h1>
+    <p class="sub">Постоянные материалы, инструменты и таблицы — всегда под рукой и не теряются в закрытых спринтах.</p>
+  </header>
+
+  <!-- 1 -->
+  <section>
+    <div class="sec-head"><span class="sec-n">01</span><h2>Аудитория и позиционирование</h2></div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Анализ аудитории 2026</h3><span class="chip chip-ready">готово</span></div>
+        <p>Сегменты, боли, триггеры, путь клиента — переанализ ЦА.</p>
+        <div class="links"><a class="btn btn-page" href="audience_analysis_2026.html" target="_blank">Открыть →</a></div>
+      </div>
+      <div class="card soon">
+        <div class="card-top"><h3>Портрет клиента / ICP</h3><span class="chip chip-soon">готовится</span></div>
+        <p>Идеальный клиент + сегментация лидов A / B / C / D и правила оценки.</p>
+        <div class="links"><span class="btn btn-soon">скоро</span></div>
+      </div>
+      <div class="card soon">
+        <div class="card-top"><h3>Позиционирование и оффер</h3><span class="chip chip-soon">готовится</span></div>
+        <p>Как формулируем ценность, оффер, отстройка от конкурентов.</p>
+        <div class="links"><span class="btn btn-soon">скоро</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="sec-head"><span class="sec-n">02</span><h2>Контент-маркетинг</h2></div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Контент-хаб</h3><span class="chip chip-ready">готово</span></div>
+        <p>Карта · Матрица · Недельный план публикаций по каналам.</p>
+        <div class="links"><a class="btn btn-page" href="content_hub.html" target="_blank">Открыть →</a></div>
+      </div>
+      <div class="card soon">
+        <div class="card-top"><h3>Каналы и правила</h3><span class="chip chip-soon">готовится</span></div>
+        <p>9 каналов, расписание Пн–Пт, 5 столпов, шаблоны карточек и стиль.</p>
+        <div class="links"><span class="btn btn-soon">скоро</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="sec-head"><span class="sec-n">03</span><h2>Продажи и CRM</h2></div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>ИИ-анализ диалогов</h3><span class="chip chip-ready">готово</span></div>
+        <p>Как работает автооценка диалогов менеджеров (для коллег).</p>
+        <div class="links"><a class="btn btn-page" href="ai-analysis.html" target="_blank">Открыть →</a></div>
+      </div>
+      <div class="card soon">
+        <div class="card-top"><h3>Стандарт оценки диалогов</h3><span class="chip chip-soon">готовится</span></div>
+        <p>11 критериев чек-листа, шкала качества, формула технологии %.</p>
+        <div class="links"><span class="btn btn-soon">скоро</span></div>
+      </div>
+      <div class="card soon">
+        <div class="card-top"><h3>Воронка amoCRM</h3><span class="chip chip-soon">готовится</span></div>
+        <p>Этапы, поля атрибуции и правила заполнения сделок.</p>
+        <div class="links"><span class="btn btn-soon">скоро</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="sec-head"><span class="sec-n">04</span><h2>Аналитика</h2></div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Дашборд аналитики лидов</h3><span class="chip chip-ready">готово</span></div>
+        <p>Отчёт из выгрузки amoCRM: воронка по неделям + разбивка по каналам.</p>
+        <div class="links"><a class="btn btn-page" href="dashboard.html" target="_blank">Открыть →</a></div>
+      </div>
+      <div class="card soon">
+        <div class="card-top"><h3>Ключевые метрики</h3><span class="chip chip-soon">готовится</span></div>
+        <p>Unit-экономика, MRR, конверсии воронки — одним взглядом.</p>
+        <div class="links"><span class="btn btn-soon">скоро</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="sec-head"><span class="sec-n">05</span><h2>Отчётность и таблицы</h2></div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Ежедневные метрики</h3><span class="chip chip-ready">таблица</span></div>
+        <p>Показатели прошлого дня (для Романа).</p>
+        <div class="links"><a class="btn btn-sheet" href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?gid=726020795#gid=726020795" target="_blank">↗ Таблица</a></div>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Еженедельные показатели</h3><span class="chip chip-ready">таблица</span></div>
+        <p>Основные метрики за неделю.</p>
+        <div class="links">
+          <a class="btn btn-sheet" href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?gid=241894299#gid=241894299" target="_blank">↗ Таблица</a>
+          <a class="btn btn-dash" href="dashboard.html" target="_blank">↗ Дашборд</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Ежемесячные показатели</h3><span class="chip chip-ready">таблица</span></div>
+        <p>Основные метрики за месяц.</p>
+        <div class="links">
+          <a class="btn btn-sheet" href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?gid=1700449446#gid=1700449446" target="_blank">↗ Таблица</a>
+          <a class="btn btn-dash" href="dashboard.html" target="_blank">↗ Дашборд</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>OKR — стратегические цели</h3><span class="chip chip-ready">таблица</span></div>
+        <p>Цели и задачи, апдейт еженедельно, цели на месяц.</p>
+        <div class="links"><a class="btn btn-sheet" href="https://docs.google.com/spreadsheets/d/1N-lpKRgmQ_1803Zs-Fwb6_Mi2_qHbltTQ3trgBfnxos/edit?gid=1675440595#gid=1675440595" target="_blank">↗ Таблица</a></div>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Каналы привлечения</h3><span class="chip chip-auto">✓ автоматизировано</span></div>
+        <p>Отчёт по каналам, ежемесячно.</p>
+        <div class="links">
+          <a class="btn btn-sheet" href="https://docs.google.com/spreadsheets/d/1wxwS2Cn-D80f14GygrP4u2jws3Q4-dh36B-eJpp5zK8/edit?gid=649283860#gid=649283860" target="_blank">↗ Таблица</a>
+          <a class="btn btn-dash" href="dashboard.html" target="_blank">↗ Дашборд</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Эффективность каналов</h3><span class="chip chip-ready">таблица</span></div>
+        <p>Разные срезы по эффективности привлечения.</p>
+        <div class="links"><a class="btn btn-sheet" href="https://docs.google.com/spreadsheets/d/16_43HAnjHeCsENXGg-VFKK9SxkmZtbtXSD5aKbOwMQk/edit?gid=1239880610#gid=1239880610" target="_blank">↗ Таблица</a></div>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Планирование бюджета</h3><span class="chip chip-ready">таблица</span></div>
+        <p>Бюджет на следующий месяц (до 26 числа).</p>
+        <div class="links"><a class="btn btn-sheet" href="https://docs.google.com/spreadsheets/d/16WFJrZTOzzLT6F32B4OYqZlk3fnHhFPaSlpWFIDK9Fo/edit?gid=0#gid=0" target="_blank">↗ Таблица</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="sec-head"><span class="sec-n">06</span><h2>Стратегия</h2></div>
+    <div class="grid">
+      <div class="card soon">
+        <div class="card-top"><h3>Цели года и фокус квартала</h3><span class="chip chip-soon">готовится</span></div>
+        <p>Стратегия x3 за год, фокус квартала: переанализ ЦА → прогрев → автоматизация и AI.</p>
+        <div class="links"><span class="btn btn-soon">скоро</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Быстрые ссылки на таблицы дублируются в задачах спринта — здесь их канонический, постоянный список. Раздел пополняется по мере готовности материалов.</p>
+
+</div>
+</body>
+</html>
