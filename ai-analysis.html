@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Как работает ИИ-анализ диалогов — Delegator24</title></head><body>
+<style>
+  :root{
+    --ink:#182230; --ink-2:#3d4a5c; --muted:#6a7686;
+    --ground:#eef1f5; --card:#ffffff; --line:#dde3ec; --line-2:#e9edf3;
+    --accent:#235d8a; --accent-2:#2f7cb5; --accent-wash:#eaf1f7;
+    --good:#2e8b6b; --warn:#bf8a2b; --crit:#bd5142;
+    --segA:#2e8b6b; --segB:#235d8a; --segC:#bf8a2b; --segD:#8a94a2;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{
+    font-family:var(--sans); color:var(--ink); background:var(--ground);
+    line-height:1.6; -webkit-font-smoothing:antialiased; padding:0 20px 88px;
+  }
+  .col{max-width:840px; margin:0 auto}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* ── header ── */
+  header{padding:64px 0 40px; border-bottom:1px solid var(--line)}
+  .eyebrow{
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin:0 0 18px;
+  }
+  h1{
+    font-size:clamp(30px,5vw,46px); line-height:1.08; letter-spacing:-.02em;
+    font-weight:800; margin:0 0 20px; text-wrap:balance;
+  }
+  .lede{font-size:19px; color:var(--ink-2); margin:0; max-width:64ch; text-wrap:pretty}
+
+  /* ── sections ── */
+  section{padding:44px 0; border-bottom:1px solid var(--line-2)}
+  h2{
+    font-size:13px; letter-spacing:.12em; text-transform:uppercase; font-weight:700;
+    color:var(--muted); margin:0 0 24px;
+  }
+  h3{font-size:20px; letter-spacing:-.01em; margin:0 0 8px; font-weight:700}
+  p{margin:0 0 14px; max-width:66ch}
+  p.big{font-size:18px; color:var(--ink-2)}
+  strong{font-weight:650}
+
+  /* ── three dimensions ── */
+  .dims{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  .dim{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 20px}
+  .dim .tag{
+    display:inline-block; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    font-weight:700; color:var(--accent); background:var(--accent-wash);
+    padding:4px 9px; border-radius:6px; margin-bottom:14px;
+  }
+  .dim h3{font-size:18px}
+  .dim p{font-size:14.5px; color:var(--ink-2); margin:0}
+  .dim .scale{font-size:13px; color:var(--muted); margin-top:12px; font-variant-numeric:tabular-nums}
+
+  /* ── deal card mock ── */
+  .mock{background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden}
+  .mock .bar{
+    background:var(--ink); color:#fff; padding:14px 20px; display:flex; flex-wrap:wrap;
+    gap:8px 22px; align-items:center; font-size:13.5px; font-variant-numeric:tabular-nums;
+  }
+  .mock .bar b{font-weight:700}
+  .mock .bar .sep{opacity:.35}
+  .mock .body{padding:6px 20px 18px}
+  .mrow{padding:16px 0; border-bottom:1px solid var(--line-2)}
+  .mrow:last-child{border-bottom:0}
+  .mrow .lbl{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:7px}
+  .mrow p{font-size:14.5px; color:var(--ink-2); margin:0}
+  .check{list-style:none; margin:6px 0 0; padding:0; font-size:14px}
+  .check li{display:flex; gap:9px; padding:3px 0; color:var(--ink-2)}
+  .check .m{flex:none; width:18px; text-align:center}
+  .rec{background:var(--accent-wash); border-left:3px solid var(--accent); padding:12px 15px; border-radius:0 8px 8px 0; font-size:14.5px; color:#1d3549}
+
+  /* pills */
+  .pill{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700;
+    padding:3px 10px; border-radius:999px; letter-spacing:.02em}
+  .pill-num{background:#fff; color:var(--ink); border:1px solid rgba(255,255,255,.4)}
+  .seg{color:#fff; padding:2px 8px; border-radius:5px; font-weight:700; font-size:12px}
+
+  /* ── table ── */
+  .tblwrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14.5px; background:var(--card)}
+  th,td{text-align:left; padding:14px 18px; vertical-align:top}
+  thead th{
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+    font-weight:700; background:#f4f7fa; border-bottom:1px solid var(--line);
+  }
+  tbody tr+tr td{border-top:1px solid var(--line-2)}
+  td.sit{font-weight:650; color:var(--ink); white-space:nowrap}
+  td.act{color:var(--ink-2)}
+
+  /* ── flow / sources ── */
+  .flow{display:flex; flex-wrap:wrap; align-items:center; gap:10px; font-size:14.5px; color:var(--ink-2); margin-top:4px}
+  .node{background:var(--card); border:1px solid var(--line); border-radius:9px; padding:9px 14px; font-weight:600; color:var(--ink)}
+  .arrow{color:var(--accent); font-weight:700}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px}
+  .fact{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px}
+  .fact h3{font-size:16px; margin-bottom:6px}
+  .fact p{font-size:14.5px; color:var(--ink-2); margin:0}
+
+  .foot{padding-top:40px; color:var(--muted); font-size:13.5px}
+
+  @media(max-width:680px){
+    .dims{grid-template-columns:1fr}
+    .two{grid-template-columns:1fr}
+  }
+</style>
+
+<div class="wrap">
+<div class="col">
+
+  <header>
+    <p class="eyebrow">Delegator24 · Внутренний инструмент</p>
+    <h1>Как работает ИИ-анализ диалогов менеджеров</h1>
+    <p class="lede">Система автоматически разбирает каждый диалог с клиентом — переписки и звонки — и по каждой сделке даёт объективную оценку и практический коучинг. Работает сама, без ручного запуска.</p>
+  </header>
+
+  <section>
+    <h2>В двух словах</h2>
+    <p class="big">Раньше разбор диалогов делался руками и выборочно. Теперь ИИ смотрит <strong>каждую</strong> сделку по единому стандарту «Экспертные продажи», фиксирует объективные метрики в amoCRM и подсказывает менеджеру, что сделать дальше.</p>
+    <p>Это не «контроль ради контроля». Главная ценность — <strong>тренер у каждого менеджера</strong>: где сработал хорошо, где потерял клиента и какой следующий шаг сделает сделку теплее. Оценка и рекомендация появляются прямо в карточке сделки.</p>
+  </section>
+
+  <section>
+    <h2>Три измерения — их нельзя путать</h2>
+    <div class="dims">
+      <div class="dim">
+        <span class="tag">Качество</span>
+        <h3>Качество диалога</h3>
+        <p>Насколько диалог соответствует технологии «Экспертные продажи». Глубокий разбор в стиле наставника: что хорошо, главная системная ошибка, как надо — со скриптами.</p>
+        <div class="scale">Шкала 1–10</div>
+      </div>
+      <div class="dim">
+        <span class="tag">Технология</span>
+        <h3>Технология %</h3>
+        <p>Сухой чек-лист из 11 шагов ведения сделки: был шаг или нет. Не про качество — только про факт прохождения этапов (представление, выявление бюджета, работа с возражениями и т.д.).</p>
+        <div class="scale">0–100 %</div>
+      </div>
+      <div class="dim">
+        <span class="tag">Сегмент</span>
+        <h3>Сегмент клиента</h3>
+        <p>Потенциал самого клиента, а не исход диалога. Отказ или «дорого» ≠ автоматически D — часто это ошибка менеджера, а клиент перспективный.</p>
+        <div class="scale">A · B · C · D</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Что появляется в карточке сделки</h2>
+    <p>Три поля заполняются автоматически, а в ленту сделки падает заметка из четырёх частей. Вот как это выглядит (пример):</p>
+    <div class="mock">
+      <div class="bar">
+        <span>AI-АНАЛИЗ ДИАЛОГА</span>
+        <span class="sep">|</span>
+        <span>ОЦЕНКА: <b>3/10</b></span>
+        <span class="sep">|</span>
+        <span>ТЕХНОЛОГИЯ: <b>68%</b></span>
+        <span class="sep">|</span>
+        <span>СЕГМЕНТ: <span class="seg" style="background:var(--segB)">B</span></span>
+      </div>
+      <div class="body">
+        <div class="mrow">
+          <div class="lbl">1 · Экспертный разбор</div>
+          <p>Менеджер дала клиенту выговориться, но не провела ни одного шага экспертной продажи — просто слушала монолог и в конце сказала «я вам напишу». Главная ошибка: не выявила задачу и не зафиксировала следующий шаг конкретно…</p>
+        </div>
+        <div class="mrow">
+          <div class="lbl">2 · Чек-лист ведения сделки — 68%</div>
+          <ul class="check">
+            <li><span class="m">✔️</span><span>Проверка, кто клиент (ЛПР) — собственник, ясно из контекста</span></li>
+            <li><span class="m">➖</span><span>Корректное представление — клиент вернувшийся, не требуется</span></li>
+            <li><span class="m">❌</span><span>Выяснение бюджета — оплата и процесс решения не обсуждались</span></li>
+            <li><span class="m">✔️</span><span>Работа с возражениями — ответила на страх из-за прошлого опыта</span></li>
+          </ul>
+        </div>
+        <div class="mrow">
+          <div class="lbl">3 · Сегментация</div>
+          <p>Сегмент B: действующий бизнес и конкретный запрос, но решение откладывает — сравнивает с прошлым неудачным опытом, хочет обсудить с коллегами.</p>
+        </div>
+        <div class="mrow">
+          <div class="lbl">4 · Рекомендация следующего касания</div>
+          <div class="rec">Сегодня же отправьте два конкретных варианта: пилот на 5–7 звонков с оплатой за результат и полное сопровождение на месяц. Назначьте точную дату созвона («3-го в 12:00», не «после 2-го») и снимите главный страх: «Понимаю ваш прошлый опыт — начнём с небольшого пилота, чтобы вы увидели реальную конверсию».</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Система понимает контекст сделки</h2>
+    <p>Диалоги живут по-разному: тянутся днями, ставятся на паузу, обрываются. ИИ не оценивает «по дню» — он смотрит на ситуацию сделки и реагирует по-разному:</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Ситуация</th><th>Что делает система</th></tr></thead>
+        <tbody>
+          <tr><td class="sit">Полноценный диалог</td><td class="act">Полная оценка: балл + технология % + сегмент + разбор + рекомендация</td></tr>
+          <tr><td class="sit">Диалог тянется днями</td><td class="act">Ждёт паузу 48 ч → оценивает весь диалог. Продолжился — переоценивает заново</td></tr>
+          <tr><td class="sit">Клиент попросил паузу,<br>менеджер поставил задачу</td><td class="act">Видит задачу в amoCRM → уважает договорённость, не оценивает раньше срока</td></tr>
+          <tr><td class="sit">Задачи нет / просрочена,<br>диалог остыл</td><td class="act">Помечает как <strong>охлаждение диалога по вине менеджера</strong> — прямо в разборе</td></tr>
+          <tr><td class="sit">Заход: клиент не ответил</td><td class="act"><strong>Без балла</strong> — разбирает саму попытку и даёт рекомендацию, как зайти лучше</td></tr>
+          <tr><td class="sit">Сделка закрыта</td><td class="act">Оценивает сразу — исход уже определён</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Откуда берутся диалоги и когда считается</h2>
+    <div class="flow">
+      <span class="node">WhatsApp · Telegram · MAX</span>
+      <span class="arrow">→</span>
+      <span class="node">Сервер собирает переписку</span>
+      <span class="arrow">+</span>
+      <span class="node">Звонки (расшифровка)</span>
+      <span class="arrow">→</span>
+      <span class="node">Ночная оценка → amoCRM</span>
+    </div>
+    <p style="margin-top:22px">Сообщения клиентов и записи звонков стекаются на сервер по мере общения. Каждую ночь система разбирает сделки, где диалог завершил очередной раунд, и заполняет карточку. Утром у менеджера и руководителя — готовая картина по каждой сделке.</p>
+  </section>
+
+  <section>
+    <h2>Почему это честно по отношению к менеджеру</h2>
+    <div class="two">
+      <div class="fact">
+        <h3>Заходы не штрафуются зря</h3>
+        <p>Если клиент не ответил, диалога не было — балл не ставится. Вместо этого система разбирает саму попытку и подсказывает, как зайти сильнее.</p>
+      </div>
+      <div class="fact">
+        <h3>Сегмент — про клиента, не про вину</h3>
+        <p>«Дорого» или отказ не делают клиента автоматически бесперспективным. Система оценивает потенциал клиента отдельно от работы менеджера.</p>
+      </div>
+      <div class="fact">
+        <h3>Единый стандарт для всех</h3>
+        <p>Все диалоги смотрятся по одному чек-листу и одной методике — без вкусовщины и «любимчиков».</p>
+      </div>
+      <div class="fact">
+        <h3>Всегда есть следующий шаг</h3>
+        <p>Каждый разбор заканчивается конкретной рекомендацией со скриптом — что написать или сделать по этой сделке дальше.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Инструмент внутренний, работает автономно. Правила оценки настраиваются — если какой-то критерий срабатывает не так, его можно поправить централизованно, и это применится ко всем будущим разборам.</p>
+
+</div>
+</div>
+</body></html>
