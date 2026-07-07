@@ -1224,8 +1224,12 @@
         </div>
       </div>
       <div class="month-sprints">
-        <div class="sprint-item active" data-sprint="sprint-30-jun" onclick="showSprint('sprint-30-jun')">
-          <div class="sprint-item-dates">29 июн – 5 июл <span class="sprint-now-badge">сейчас</span></div>
+        <div class="sprint-item active" data-sprint="sprint-06-jul" onclick="showSprint('sprint-06-jul')">
+          <div class="sprint-item-dates">6–12 июля <span class="sprint-now-badge">сейчас</span></div>
+          <div class="sprint-item-progress" id="sidebar-progress-sprint-06-jul">загрузка...</div>
+        </div>
+        <div class="sprint-item" data-sprint="sprint-30-jun" onclick="showSprint('sprint-30-jun')">
+          <div class="sprint-item-dates">29 июн – 5 июл</div>
           <div class="sprint-item-progress" id="sidebar-progress-sprint-30-jun">загрузка...</div>
         </div>
         <div class="sprint-item new-sprint-btn" onclick="openNewSprintModal()">
@@ -1266,8 +1270,94 @@
   <!-- ===================== MAIN ===================== -->
   <main class="main">
 
+    <!-- ====== СПРИНТ: 6–12 ИЮЛ (НОВЫЙ) ====== -->
+    <div class="sprint-panel active" id="sprint-06-jul" data-week-start="2026-07-06">
+      <header>
+        <div class="badge">Delegator24 · Маркетинг</div>
+        <h1>Неделя 6 – 12 июля</h1>
+        <p class="subtitle">Юлия Кочевная · Директор по маркетингу</p>
+        <div class="progress-wrap">
+          <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar-sprint-06-jul"></div></div>
+          <div class="progress-label" id="progress-label-sprint-06-jul">загрузка...</div>
+        </div>
+        <div class="header-toolbar">
+          <button class="toolbar-btn" onclick="collapseAll()">↑ Свернуть все</button>
+          <button class="toolbar-btn" onclick="expandAll()">↓ Развернуть все</button>
+          <button class="toolbar-btn" id="hide-done-btn" onclick="toggleHideDone()">✓ Скрыть выполненные</button>
+          <button class="toolbar-btn" onclick="showExport()">↗ Экспорт задач</button>
+        </div>
+      </header>
+
+      <div class="section" id="s-funnel-jul">
+        <div class="section-header">
+          <div class="section-icon" style="background:#eef2ff;">🎯</div>
+          <div class="section-label">Лендинги и воронка</div>
+          <span class="section-tag" style="background:#eef2ff;color:#4361ee;">Форма-first</span>
+        </div>
+        <div class="task-group" data-color="green">
+          <div class="task-group-header"><div class="task-group-title">Разворот воронки на форму-first (все 3 ленда)</div><span class="task-group-count">0/6</span></div>
+          <ul class="subtask-list">
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Форма + квалификация на лендинге → amoCRM (лид ловим всегда), после отправки — окно «в бота»</div><div class="subtask-meta"><span class="pill pill-p1">P1</span></div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Материал/расчёт выдаем В БОТЕ, не на лендинге (тянет в диалог); согласие на ПД — в форме</div><div class="subtask-meta"><span class="pill pill-p1">P1</span></div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Форма сайта → amoCRM через вебхук (перенос из прошлого спринта)</div><div class="subtask-meta"><span class="pill pill-active">перенос</span></div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Переписать ТЗ бота под форму-first: бот = материал + диалог; склейка с лид-формой по телефону</div><div class="subtask-meta"><span class="pill pill-p1">P1</span></div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Автозадача менеджеру в amoCRM для тех, кто форму отправил, но в бота не пошёл (SLA/эскалация)</div><div class="subtask-meta"><span class="pill pill-idea">подстраховка</span></div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">KPI-развилка: двухсторонние диалоги vs форма-лиды — обсудить с командой</div><div class="subtask-meta"><span class="pill pill-idea">решение</span></div></div></li>
+          </ul>
+        </div>
+        <div class="task-group" data-color="green">
+          <div class="task-group-header"><div class="task-group-title">500+ задач · докрутка</div><span class="task-group-count">0/2</span></div>
+          <ul class="subtask-list">
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Калибровка часов калькулятора по категориям (тиры 9 / 5 / 2 ч/мес)</div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Ниши-подборки: клик по нише → автоотметка релевантных задач (готовая подборка)</div></div></li>
+          </ul>
+        </div>
+        <div class="task-group" data-color="green">
+          <div class="task-group-header"><div class="task-group-title">Деплой и инфраструктура</div><span class="task-group-count">0/3</span></div>
+          <ul class="subtask-list">
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Миграция деплоя лендингов на GitHub Org Delegator24 + 2FA (не личный аккаунт)</div><div class="subtask-meta"><span class="pill pill-p1">P1</span></div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Реальные юзернеймы ботов tg/max в лендингах + проверить MAX start-param</div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Внести боевой домен в whitelist UIS + проверить CSP в консоли</div></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section" id="s-materials-jul">
+        <div class="section-header">
+          <div class="section-icon" style="background:#ecfdf5;">📄</div>
+          <div class="section-label">Материалы (выдаем в боте)</div>
+          <span class="section-tag" style="background:#ecfdf5;color:#059669;">Контент</span>
+        </div>
+        <div class="task-group" data-color="green">
+          <div class="task-group-header"><div class="task-group-title">Документы под барьеры</div><span class="task-group-count">0/4</span></div>
+          <ul class="subtask-list">
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Гайд «Как ставить задачи и проверять качество»</div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Шаблон «Контроль без микроменеджмента»</div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">«Передаточный лист» — инструкция передачи задачи</div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">«Карта разгрузки» — методичка «как снимать» (под снимок дня)</div></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section" id="s-later-jul">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fef3c7;">🧭</div>
+          <div class="section-label">Позже · отдельная фаза</div>
+          <span class="section-tag" style="background:#fef3c7;color:#d97706;">Backlog</span>
+        </div>
+        <div class="task-group" data-color="gray">
+          <div class="task-group-header"><div class="task-group-title">Сегмент «оптимизация» (после валидации сегмента №1)</div><span class="task-group-count">0/3</span></div>
+          <ul class="subtask-list">
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Свои ЛМ под «оптимизацию»: аудит узких мест, калькулятор экономии, чек-лист зрелости операционки</div><div class="subtask-meta"><span class="pill pill-idea">фаза 2</span></div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Лид-магнит: Шаблон тайм-аудита руководителя (перенос) — под оптимизацию / TOFU</div><div class="subtask-meta"><span class="pill pill-active">перенос</span></div></div></li>
+            <li class="subtask"><div class="sub-checkbox"></div><div class="subtask-body"><div class="subtask-title">Лид-магнит: Калькулятор ФОТ vs D24 (перенос) — ретаргет / BOFU</div><div class="subtask-meta"><span class="pill pill-active">перенос</span></div></div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <!-- ====== СПРИНТ: 30 ИЮН – 6 ИЮЛ ====== -->
-    <div class="sprint-panel active" id="sprint-30-jun" data-week-start="2026-06-29">
+    <div class="sprint-panel" id="sprint-30-jun" data-week-start="2026-06-29">
 
       <header>
         <div class="badge">Delegator24 · Маркетинг</div>
@@ -1663,10 +1753,10 @@
                 </div>
               </div>
             </li>
-            <li class="subtask">
-              <div class="sub-checkbox"></div>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
               <div class="subtask-body">
-                <div class="subtask-title">«Ошибки делегирования»: переработать из PDF в HTML — примеры, структура, дизайн → заменить в воронке бота</div>
+                <div class="subtask-title">«Ошибки делегирования» → изменилось: вместо PDF сделали тест-диагностику «Почему делаю сам» + снимок дня (разворот на барьеры: страх / как / с чего)</div>
                 <div class="subtask-meta">
                   <span class="pill pill-p1">P1</span>
                   <span class="pill pill-today">эта неделя</span>
