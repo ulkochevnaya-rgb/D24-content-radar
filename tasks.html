@@ -6303,12 +6303,14 @@
         hdr.addEventListener('click', function() { hdr.closest('.task-group').classList.toggle('group-collapsed'); });
       });
     });
-    // Update June meta count (hardcoded sprints)
-    var junMeta = document.getElementById('month-meta-jun-2026');
-    if (junMeta) {
-      var n = document.querySelectorAll('#month-jun-2026 .sprint-item:not(.new-sprint-btn)').length;
-      junMeta.textContent = n + ' ' + (n === 1 ? 'спринт' : n < 5 ? 'спринта' : 'спринтов');
-    }
+    // Счетчики спринтов по месяцам — считаем сами, а не хардкодим:
+    // раньше автоматически считался только июнь, а июль был вписан руками и врал.
+    document.querySelectorAll('[id^="month-meta-"]').forEach(function(meta) {
+      var block = document.getElementById(meta.id.replace('month-meta-', 'month-'));
+      if (!block) return;
+      var n = block.querySelectorAll('.sprint-item:not(.new-sprint-btn)').length;
+      meta.textContent = n + ' ' + (n === 1 ? 'спринт' : n < 5 ? 'спринта' : 'спринтов');
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function() {
