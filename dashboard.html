@@ -147,9 +147,11 @@
   <div class="upload-box">
     <span class="upload-emoji">📊</span>
     <h1>Аналитика лидов</h1>
-    <p>Загрузите CSV-выгрузку из amoCRM.<br>Отчёт по метрикам и каналам построится автоматически.</p>
-    <button class="btn btn-primary" onclick="event.stopPropagation();document.getElementById('file-input').click()">↑ Загрузить CSV</button>
-    <div class="upload-hint">amoCRM → Сделки → Экспорт → CSV UTF-8 · или перетащите файл сюда</div>
+    <p>Данные тянутся из amoCRM сами.<br>Отчёт по метрикам и каналам построится автоматически.</p>
+    <button class="btn btn-primary" onclick="event.stopPropagation();обновитьСервер()">↻ Загрузить данные</button>
+    <div class="upload-hint">Обновляются каждый час ·
+      <a href="#" onclick="event.stopPropagation();document.getElementById('file-input').click();return false"
+         style="color:inherit">загрузить файл вручную</a></div>
   </div>
 </div>
 
@@ -162,7 +164,12 @@
         <div class="brand-sub" id="h-sub">—</div>
       </div>
     </div>
-    <button class="btn btn-ghost" onclick="document.getElementById('file-input').click()">↻ Обновить данные</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="built-at" style="font-size:12px;color:var(--muted)"></span>
+      <button class="btn btn-ghost" id="btn-sync" onclick="обновитьСервер()">↻ Обновить данные</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('file-input').click()"
+              title="Загрузить файл вручную">файл</button>
+    </div>
   </header>
 
   <main>
@@ -878,6 +885,66 @@ function handleDrop(event){
   var reader=new FileReader();
   reader.onload=function(evt){try{var rows=parseCSV(evt.target.result);if(rows.length<2){alert('Файл пустой');return;}loadData(rows);}catch(err){alert('Ошибка: '+err.message);}};
   reader.readAsText(file,'UTF-8');
+}
+
+// ── ЗАГРУЗКА С СЕРВЕРА ────────────────────────────
+// Свежие данные тянутся с chat.delegator24.ru, где выгрузка пересобирается
+// каждый час. Ключ в коде страницы НЕ хранится: она публичная на GitHub Pages.
+// Юля вводит его один раз, дальше он лежит в браузере.
+var СЕРВЕР='https://chat.delegator24.ru/funnel.csv';
+
+function ключ(){
+  var k=null;
+  try{k=localStorage.getItem('d24_funnel_key');}catch(e){}
+  if(!k){
+    k=prompt('Ключ доступа к данным (спросить у Клода, вводится один раз):');
+    if(!k)return null;
+    k=k.trim();
+    try{localStorage.setItem('d24_funnel_key',k);}catch(e){}
+  }
+  return k;
+}
+
+function показатьСвежесть(ts){
+  var el=document.getElementById('built-at');
+  if(!el)return;
+  if(!ts){el.textContent='';return;}
+  var мин=Math.round((Date.now()/1000-ts)/60);
+  el.textContent = мин<2 ? 'данные только что'
+    : мин<60 ? 'данные '+мин+' мин назад'
+    : 'данные '+Math.round(мин/60)+' ч назад';
+}
+
+function обновитьСервер(){
+  var k=ключ();
+  if(!k)return;
+  var b=document.getElementById('btn-sync');
+  var было=b.textContent;
+  b.textContent='загружаю…'; b.disabled=true;
+  fetch(СЕРВЕР+'?k='+encodeURIComponent(k),{cache:'no-store'})
+    .then(function(r){
+      if(r.status===403){
+        try{localStorage.removeItem('d24_funnel_key');}catch(e){}
+        throw new Error('Ключ не подошёл. Нажмите ещё раз и введите заново.');
+      }
+      if(r.status===503)throw new Error('Выгрузка на сервере ещё не собрана, попробуйте через минуту.');
+      if(!r.ok)throw new Error('Сервер ответил '+r.status);
+      var ts=r.headers.get('X-Built-At');
+      return r.text().then(function(t){return{текст:t,ts:ts?+ts:0};});
+    })
+    .then(function(о){
+      var rows=parseCSV(о.текст);
+      if(rows.length<2)throw new Error('Пришёл пустой файл');
+      loadData(rows);
+      показатьСвежесть(о.ts);
+    })
+    .catch(function(e){
+      // Отдельно ловим обрыв связи: fetch не различает «нет сети» и «блокировка».
+      alert(e.message==='Failed to fetch'
+        ? 'Не достучался до сервера. Проверьте интернет — или загрузите файл кнопкой «файл».'
+        : e.message);
+    })
+    .finally(function(){b.textContent=было;b.disabled=false;});
 }
 
 // ── LOAD ──────────────────────────────────────────
