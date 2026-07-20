@@ -211,6 +211,10 @@
     </div>
 
     <div id="tab-channels" class="tab-pane">
+      <div class="tbl-section-label">Длина сделки по каналам</div>
+      <div class="tbl-wrap">
+        <table><thead id="cyc-thead"></thead><tbody id="cyc-tbody"></tbody></table>
+      </div>
       <div class="tbl-section-label">Лиды — каналы и источники</div>
       <div class="tbl-wrap">
         <table><thead id="l-thead"></thead><tbody id="l-tbody"></tbody></table>
@@ -352,6 +356,37 @@ function rnk(row){
 function isPaid(row){
   return v(row,COL.stage).toLowerCase().trim().indexOf('успешно реализовано')===0;
 }
+
+// ── длина сделки ──────────────────────────────────
+// Дней от создания заявки до оплаты. Считаем МЕДИАНУ, а не среднее: у сделок
+// длинный хвост (один клиент, который думал полгода, перекосит среднее один),
+// а медиана показывает типичный срок.
+function dealDays(row){
+  if(!isPaid(row))return null;
+  var a=parseDate(v(row,COL.created)),b=parseDate(v(row,COL.closed));
+  if(!a||!b)return null;
+  var d=Math.round((b-a)/86400000);
+  return d>=0?d:null;
+}
+function median(arr){
+  if(!arr.length)return null;
+  var s=arr.slice().sort(function(x,y){return x-y;});
+  var m=Math.floor(s.length/2);
+  return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2);
+}
+// Порог достоверности: на одной-двух сделках «средний срок» — это не средний
+// срок, а срок одной сделки. Лучше прочерк, чем уверенное враньё.
+var MIN_CYCLE=3;
+function cycleOf(deals){
+  var d=deals.map(dealDays).filter(function(x){return x!==null;});
+  return d.length>=MIN_CYCLE?{дн:median(d),n:d.length}:{дн:null,n:d.length};
+}
+function fmtDays(c){
+  if(!c||c.дн===null)return '—';
+  var n=c.дн;
+  var сл=(n%10===1&&n%100!==11)?'день':((n%10>=2&&n%10<=4)&&(n%100<10||n%100>=20)?'дня':'дней');
+  return n+' '+сл;
+}
 function isQualTarget(row){return v(row,COL.qual)==='Целевой клиент';}
 function isSegTarget(row){var s=v(row,COL.seg).toUpperCase();return s==='A'||s==='B';}
 function getBudget(row){var b=parseFloat((v(row,COL.budget)||'0').replace(/\s/g,'').replace(',','.'));return isNaN(b)?0:b;}
@@ -371,6 +406,7 @@ function computeMetrics(deals) {
   var revenue=deals.filter(function(r){return isPaid(r);}).reduce(function(s,r){return s+getBudget(r);},0);
   var lost=deals.filter(function(r){var s=v(r,COL.stage).toLowerCase();return rnk(r)===0||s.indexOf('не реализ')>=0||s.indexOf('закрыт')>=0;}).length;
   var avgCheck=paid>0?Math.round(revenue/paid):0;
+  var cycle=cycleOf(deals);
   return{all:all,allTarget:allTarget,cvAllTarget:pct(allTarget,all),
     mkQual:mkQual,cvMkQual:pct(mkQual,all),
     dialog:dialog,cvDialog:pct(dialog,all),
@@ -378,7 +414,7 @@ function computeMetrics(deals) {
     tgtOpQual:tgtOpQual,cvTgtOpQual:pct(tgtOpQual,opQual),
     paid:paid,cvPaid:pct(paid,all),
     paidTgt:paidTgt,cvPaidTgt:pct(paidTgt,allTarget),
-    revenue:revenue,lost:lost,cvLost:pct(lost,all),avgCheck:avgCheck};
+    revenue:revenue,lost:lost,cvLost:pct(lost,all),avgCheck:avgCheck,cycle:cycle};
 }
 
 var METRIC_DEFS = [
@@ -394,6 +430,7 @@ var METRIC_DEFS = [
   {key:'_paidAll',  label:'Оплаченные (все время)',      cv:null,          allTime:true, dot:'result'},
   {key:'_cvPaidAll',label:'Общая конверсия (все время)', cv:null,          allTime:true, pctVal:true, dot:'result'},
   {key:'revenue',   label:'Выручка (тек. период)',       cv:null,          fmt:'rub', dot:'result'},
+  {key:'cycle',     label:'Длина сделки',                cv:null,          fmt:'days', dot:'result'},
   {key:'lost',      label:'Закрыто без оплаты',          cv:'cvLost',      cvLbl:'% отказов от всех заявок', dot:'result'},
 ];
 
@@ -572,11 +609,12 @@ function buildMetricRows(plans,totalK,cols,getColK,nCols){
       for(var ci=0;ci<nCols;ci++){var cell=tr.insertCell();cell.textContent='—';cell.className='zero';}
     } else {
       var tot=totalK[m.key];
-      var tc=tr.insertCell();tc.className='td-total';tc.textContent=m.fmt==='rub'?fmtRub(tot):(tot||'—');
+      var tc=tr.insertCell();tc.className='td-total';
+      tc.textContent=m.fmt==='days'?fmtDays(tot):(m.fmt==='rub'?fmtRub(tot):(tot||'—'));
       if(!tot)tc.classList.add('zero');
       cols.forEach(function(col){
         var K=getColK(col);var val=K[m.key]||0;var cell=tr.insertCell();
-        cell.textContent=m.fmt==='rub'?fmtRub(val):(val||'—');
+        cell.textContent=m.fmt==='days'?fmtDays(val):(m.fmt==='rub'?fmtRub(val):(val||'—'));
         if(m.fmt==='rub'){if(!val)cell.className='zero';}
         else if(plan!=null&&plan>0){cell.className=val>=plan?'good':val>=plan*0.8?'warn':'bad';}
         else if(!val)cell.className='zero';
@@ -600,7 +638,56 @@ function toggleSubRows(groupId,iconEl){
   if(iconEl) iconEl.classList.toggle('open',!isOpen);
 }
 
+// Длина сделки в разрезе каналов. Отдельной таблицей, а не в помесячной:
+// там на канал в месяц приходится 0–2 сделки, медиана по такому — фикция.
+function renderCycleByChannel(){
+  var deals=getDealsForPeriod();
+  var по={};
+  deals.forEach(function(r){
+    var d=dealDays(r);
+    if(d===null)return;
+    var ch=v(r,COL.channel)||'Не указан';
+    (по[ch]=по[ch]||[]).push(d);
+  });
+  var все=[];Object.keys(по).forEach(function(k){все=все.concat(по[k]);});
+  document.getElementById('cyc-thead').innerHTML=
+    '<tr><th style="text-align:left;min-width:180px">Канал</th>'+
+    '<th class="th-col">Медиана</th><th class="th-col">Сделок</th>'+
+    '<th class="th-total">Разброс</th></tr>';
+  var tb=document.getElementById('cyc-tbody');tb.innerHTML='';
+  if(!все.length){
+    var tr0=tb.insertRow();var c0=tr0.insertCell();c0.colSpan=4;
+    c0.style.cssText='text-align:center;color:var(--muted);padding:18px';
+    c0.textContent='Нет оплаченных сделок за период';
+    return;
+  }
+  Object.keys(по).sort(function(a,b){return по[b].length-по[a].length;}).forEach(function(ch){
+    var d=по[ch].slice().sort(function(x,y){return x-y;});
+    var tr=tb.insertRow();
+    var lc=tr.insertCell();lc.style.textAlign='left';
+    var b=document.createElement('span');b.className='ch-badge'+(ch==='Не указан'?' empty':'');
+    b.textContent=ch;lc.appendChild(b);
+    var mc=tr.insertCell();mc.style.textAlign='right';
+    // Мало сделок — показываем прочерк, а не число: «средний срок» по одной
+    // сделке это не средний срок, а срок одной сделки.
+    if(d.length>=MIN_CYCLE){mc.textContent=fmtDays({дн:median(d)});}
+    else{mc.textContent='—';mc.className='zero';mc.title='Мало данных: нужно от '+MIN_CYCLE+' сделок';}
+    var nc=tr.insertCell();nc.style.textAlign='right';nc.textContent=d.length;
+    var rc=tr.insertCell();rc.className='td-total';
+    rc.textContent=d.length?d[0]+'…'+d[d.length-1]+' дн':'—';
+  });
+  var tr=tb.insertRow();tr.className='ch-expand-row';
+  var lc=tr.insertCell();lc.style.textAlign='left';lc.innerHTML='<b>Все каналы</b>';
+  var mc=tr.insertCell();mc.style.textAlign='right';
+  mc.innerHTML='<b>'+(все.length>=MIN_CYCLE?fmtDays({дн:median(все)}):'—')+'</b>';
+  var nc=tr.insertCell();nc.style.textAlign='right';nc.innerHTML='<b>'+все.length+'</b>';
+  var rc=tr.insertCell();rc.className='td-total';
+  все.sort(function(x,y){return x-y;});
+  rc.textContent=все[0]+'…'+все[все.length-1]+' дн';
+}
+
 function renderChannels(){
+  renderCycleByChannel();
   var months=getMonthRange();
   if(months.length===1){
     var m=months[0];
@@ -954,6 +1041,7 @@ function loadData(rows){
   var createdIdx=ci('Дата создания сделки');if(createdIdx<0)createdIdx=ci('Дата создания');
   var budgetIdx=ci('Бюджет ₽');if(budgetIdx<0)budgetIdx=ci('Бюджет');
   COL={stage:ci('Этап сделки'),maxStage:ci('Максимальный этап'),budget:budgetIdx,created:createdIdx,
+       closed:ci('Дата закрытия'),
        channel:ci('Канал привлечения'),source:ci('Источник лида'),
        qual:ci('Квалификация'),seg:ci('Сегмент клиента')};
   ALL=rows.slice(1).map(function(r){return{row:r,date:parseDate(v(r,COL.created))};}).filter(function(d){return d.date;});
