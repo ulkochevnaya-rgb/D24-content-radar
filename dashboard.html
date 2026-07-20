@@ -271,13 +271,19 @@ var STAGE_RANK = {
   'выставлен счет':7,'успешно реализовано':8,'закрыто и не реализовано':2
 };
 
-// Ранг закрытых сделок по причине — парсится из "Закрыто и не реализовано (Причина)"
+// Нижняя планка по причине закрытия: что человек ОБЯЗАН был пройти, чтобы такая
+// причина возникла. Менеджеры перескакивают этапы — бросают сделку в «закрытые»
+// прямо из начала воронки, хотя разговор был. «Не подходит формат» без обсуждения
+// не выяснишь, значит квалификация была, её просто не отметили.
+// Итоговый этап = максимум из фактической истории («Максимальный этап») и планки.
 var CLOSE_REASON_RANK = {
   'спам':1,'соискатель':1,'партнерка':1,'контент-интерес':1,
-  'не ца':2,'нет связи':2,'без причины':2,
-  'не подходит формат':4,'разовая задача':4,
-  'слишком дорого':5,'не устроили условия':5,
-  'выбрали другое решение':5,'решение отложено':5
+  'не ца':2,             // видно по внешним признакам, до разговора
+  'нет связи':2,         // разговора не было — выше не поднимаем
+  'без причины':2,
+  'не подходит формат':4,'разовая задача':4,'слишком дорого':4,
+  'выбрали другое решение':4,'решение отложено':4,
+  'не устроили условия':5 // торговались об условиях
 };
 
 // ── CSV ──────────────────────────────────────────
@@ -302,7 +308,29 @@ function parseDate(s){if(!s)return null;var m=s.match(/(\d{2})\.(\d{2})\.(\d{4})
 function fmtDate(d){if(!d)return'—';return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear();}
 function fmtDateISO(d){if(!d)return'';return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function v(row,idx){return(idx>=0&&row[idx])?row[idx].trim():'';}
+// Ранг, который следует из причины закрытия (нижняя планка).
+function поПричине(row){
+  var s=v(row,COL.stage).toLowerCase().trim();
+  if(s.indexOf('закрыто и не реализовано')!==0)return 0;
+  var m=s.match(/\(([^)]+)\)/);
+  if(!m)return 2;
+  var r=CLOSE_REASON_RANK[m[1].trim()];
+  return r!==undefined?r:2;
+}
 function rnk(row){
+  // Колонка «Максимальный этап» — самый дальний этап, до которого сделка реально
+  // дошла (собирается build_export.py из истории переходов amoCRM).
+  // Причина закрытия НЕ должна стирать пройденный путь: сделка могла провести
+  // диалог и квалификацию, и только потом выясниться, что человек не ЦА —
+  // работа-то была сделана. Гадать по причине нельзя: замер 17.07 показал, что
+  // сделки с одной причиной («Нет связи») доходили до пяти разных этапов.
+  // Планка по причине уже учтена в самой колонке (build_export.py), но берём
+  // максимум и здесь — на случай, если файл собран старой версией скрипта.
+  if(COL.maxStage>=0){
+    var mx=v(row,COL.maxStage).toLowerCase().trim();
+    if(mx&&STAGE_RANK[mx]!==undefined)return Math.max(STAGE_RANK[mx],поПричине(row));
+  }
+  // Файла без этой колонки (старая выгрузка) — работаем как раньше, по причине.
   var s=v(row,COL.stage).toLowerCase().trim();
   // "закрыто и не реализовано (причина)" — извлекаем причину из скобок
   if(s.indexOf('закрыто и не реализовано')===0){
@@ -311,6 +339,11 @@ function rnk(row){
     return 2;
   }
   return STAGE_RANK[s]!==undefined?STAGE_RANK[s]:1;
+}
+// Оплаченные считаем по ТЕКУЩЕМУ этапу, а не по максимальному: сделка, которая
+// когда-то была успешной, а потом закрылась, — не клиент.
+function isPaid(row){
+  return v(row,COL.stage).toLowerCase().trim().indexOf('успешно реализовано')===0;
 }
 function isQualTarget(row){return v(row,COL.qual)==='Целевой клиент';}
 function isSegTarget(row){var s=v(row,COL.seg).toUpperCase();return s==='A'||s==='B';}
@@ -326,9 +359,9 @@ function computeMetrics(deals) {
   var dialog=deals.filter(function(r){return rnk(r)>=3;}).length;
   var opQual=deals.filter(function(r){return rnk(r)>=4;}).length;
   var tgtOpQual=deals.filter(function(r){return rnk(r)>=4&&isSegTarget(r);}).length;
-  var paid=deals.filter(function(r){return rnk(r)>=8;}).length;
-  var paidTgt=deals.filter(function(r){return rnk(r)>=8&&isQualTarget(r);}).length;
-  var revenue=deals.filter(function(r){return rnk(r)>=8;}).reduce(function(s,r){return s+getBudget(r);},0);
+  var paid=deals.filter(function(r){return isPaid(r);}).length;
+  var paidTgt=deals.filter(function(r){return isPaid(r)&&isQualTarget(r);}).length;
+  var revenue=deals.filter(function(r){return isPaid(r);}).reduce(function(s,r){return s+getBudget(r);},0);
   var lost=deals.filter(function(r){var s=v(r,COL.stage).toLowerCase();return rnk(r)===0||s.indexOf('не реализ')>=0||s.indexOf('закрыт')>=0;}).length;
   var avgCheck=paid>0?Math.round(revenue/paid):0;
   return{all:all,allTarget:allTarget,cvAllTarget:pct(allTarget,all),
@@ -639,7 +672,7 @@ function renderMonthlyHierarchyTable(theadId,tbodyId,months,salesMode){
 }
 
 function renderDailyHierarchyTable(theadId,tbodyId,deals,days,weeks,salesMode){
-  function val(arr){return salesMode?arr.filter(function(r){return rnk(r)>=8;}).reduce(function(s,r){return s+getBudget(r);},0):arr.length;}
+  function val(arr){return salesMode?arr.filter(function(r){return isPaid(r);}).reduce(function(s,r){return s+getBudget(r);},0):arr.length;}
   function fmt(n){return salesMode?fmtRub(n):(n||'—');}
   var map=buildChSrcMap(deals,salesMode);
   var r1='<tr><th rowspan="2" style="text-align:left;min-width:180px">Канал / источник</th>';
@@ -683,7 +716,7 @@ function renderDailyHierarchyTable(theadId,tbodyId,deals,days,weeks,salesMode){
   });
   var ttr=tbody.insertRow(); ttr.className='total-row';
   var tlc=ttr.insertCell(); tlc.textContent='ИТОГО'; tlc.style.textAlign='left';
-  addDailyRow(ttr,deals.filter(function(r){return !salesMode||rnk(r)>=8;}));
+  addDailyRow(ttr,deals.filter(function(r){return !salesMode||isPaid(r);}));
 }
 
 // ── RENDER ALL ────────────────────────────────────
@@ -853,14 +886,14 @@ function loadData(rows){
   function ci(name){return hdrs.findIndex(function(h){return h.replace(/^﻿/,'').trim()===name;});}
   var createdIdx=ci('Дата создания сделки');if(createdIdx<0)createdIdx=ci('Дата создания');
   var budgetIdx=ci('Бюджет ₽');if(budgetIdx<0)budgetIdx=ci('Бюджет');
-  COL={stage:ci('Этап сделки'),budget:budgetIdx,created:createdIdx,
+  COL={stage:ci('Этап сделки'),maxStage:ci('Максимальный этап'),budget:budgetIdx,created:createdIdx,
        channel:ci('Канал привлечения'),source:ci('Источник лида'),
        qual:ci('Квалификация'),seg:ci('Сегмент клиента')};
   ALL=rows.slice(1).map(function(r){return{row:r,date:parseDate(v(r,COL.created))};}).filter(function(d){return d.date;});
   if(!ALL.length){alert('Нет сделок с распознанными датами');return;}
   var allRows=ALL.map(function(d){return d.row;});
   G.totalAll=allRows.length;
-  G.paidAll=allRows.filter(function(r){return rnk(r)>=8;}).length;
+  G.paidAll=allRows.filter(function(r){return isPaid(r);}).length;
   G.cvPaidAll=pct(G.paidAll,G.totalAll);
   var dates=ALL.map(function(d){return d.date;});
   dataStart=new Date(Math.min.apply(null,dates));
