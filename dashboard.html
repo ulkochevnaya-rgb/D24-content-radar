@@ -426,6 +426,16 @@ function computeMetrics(deals, вПериод) {
   // Разбивка осмысленна только для ОДНОГО месяца. На широком периоде год
   // считается «одним периодом», всё сваливается в «этого периода», а ноль в
   // «прошлых» читается как пропавшие данные. Честнее прочерк.
+  // ── текущего = заявки периода, ДОШЕДШИЕ до этапа (dialog/opQual, по дате заявки — считает и тех, кто дошёл позже);
+  //    реактивация = заявки ПРОШЛОГО месяца, вышедшие на этап в этом периоде (по дате выхода на этап).
+  function ymN(dt){return dt.getFullYear()*12+dt.getMonth();}
+  var dlgOld=0,opqOld=0;
+  if(вПериод){
+    ALL.forEach(function(d){
+      if(d.dlg&&вПериод(d.dlg)&&d.date&&ymN(d.date)<ymN(d.dlg))dlgOld++;
+      if(d.opq&&вПериод(d.opq)&&d.date&&ymN(d.date)<ymN(d.opq))opqOld++;
+    });
+  }
   var разбивкаЕсть=(typeof curPresetMonths!=='undefined'&&curPresetMonths===1&&!isCustom);
   var salesCycle=cycleOf(продажи);
   return{all:all,allTarget:allTarget,cvAllTarget:pct(allTarget,all),
@@ -440,16 +450,22 @@ function computeMetrics(deals, вПериод) {
     salesNew:разбивкаЕсть?нов:null,salesOld:разбивкаЕсть?стар:null,
     salesRevenue:вырОпл,
     salesCycle:salesCycle,
-    salesAvg:продажи.length?Math.round(вырОпл/продажи.length):0};
+    salesAvg:продажи.length?Math.round(вырОпл/продажи.length):0,
+    dlgOld:dlgOld,dlgTotal:dialog+dlgOld,
+    opqOld:opqOld,opqTotal:opQual+opqOld};
 }
 
 var METRIC_DEFS = [
   {key:'all',       label:'Все заявки',                 cv:null,          sec:'gen',    secLabel:'Лидогенерация', dot:'gen'},
   {key:'allTarget', label:'Все заявки ЦА',              cv:'cvAllTarget', cvLbl:'% ЦА от всех', dot:'gen'},
   {key:'mkQual',    label:'Маркетинг квал',              cv:'cvMkQual',    cvLbl:'% МК от всех', sec:'funnel', secLabel:'Воронка', dot:'funnel'},
-  {key:'dialog',    label:'Вышли на диалог ОП',          cv:'cvDialog',    cvLbl:'% ВД от всех', dot:'funnel'},
-  {key:'opQual',    label:'ОП квал',                     cv:'cvOpQual',    cvLbl:'% ОПК от диалога', dot:'funnel'},
-  {key:'tgtOpQual', label:'ЦА лиды из ОП квал',          cv:'cvTgtOpQual', cvLbl:'% ЦА от ОП квал', dot:'funnel'},
+  {key:'dialog',    label:'Вышли на диалог ОП (с заявок текущего периода)',  cv:'cvDialog', cvLbl:'% ВД от всех', dot:'funnel'},
+  {key:'dlgOld',    label:'Вышли на диалог ОП (реактивация, заявки прошлых мес.)', cv:null, dot:'funnel'},
+  {key:'dlgTotal',  label:'Вышли на диалог ОП (ВСЕГО за период)',            cv:null, dot:'funnel'},
+  {key:'opQual',    label:'ОП квал (с заявок текущего периода)',             cv:'cvOpQual', cvLbl:'% ОПК от диалога', dot:'funnel'},
+  {key:'opqOld',    label:'ОП квал (реактивация, заявки прошлых мес.)',      cv:null, dot:'funnel'},
+  {key:'opqTotal',  label:'ОП квал (ВСЕГО за период)',                       cv:null, dot:'funnel'},
+  {key:'tgtOpQual', label:'ЦА лиды из ОП квал',                              cv:'cvTgtOpQual', cvLbl:'% ЦА от ОП квал', dot:'funnel'},
   {key:'paid',      label:'Оплаченные (тек. период)',    cv:'cvPaid',      cvLbl:'% оплат от всех заявок', sec:'result', secLabel:'Результат', dot:'result'},
   {key:'paidTgt',   label:'Оплаченные из ЦА',            cv:'cvPaidTgt',   cvLbl:'% оплат от ЦА заявок', dot:'result'},
   {key:'avgCheck',  label:'Средний чек',                 cv:null,          fmt:'rub', dot:'result'},
@@ -1082,10 +1098,12 @@ function loadData(rows){
   var budgetIdx=ci('Бюджет ₽');if(budgetIdx<0)budgetIdx=ci('Бюджет');
   COL={stage:ci('Этап сделки'),maxStage:ci('Максимальный этап'),budget:budgetIdx,created:createdIdx,
        closed:ci('Дата закрытия'),
+       dialogDate:ci('Дата входа в диалог'),opqualDate:ci('Дата входа в ОП квал'),
        channel:ci('Канал привлечения'),source:ci('Источник лида'),
        qual:ci('Квалификация'),seg:ci('Сегмент клиента')};
   ALL=rows.slice(1).map(function(r){return{row:r,date:parseDate(v(r,COL.created)),
-    paid:isPaid(r)?parseDate(v(r,COL.closed)):null};}).filter(function(d){return d.date;});
+    paid:isPaid(r)?parseDate(v(r,COL.closed)):null,
+    dlg:parseDate(v(r,COL.dialogDate)),opq:parseDate(v(r,COL.opqualDate))};}).filter(function(d){return d.date;});
   if(!ALL.length){alert('Нет сделок с распознанными датами');return;}
   var allRows=ALL.map(function(d){return d.row;});
   G.totalAll=allRows.length;
