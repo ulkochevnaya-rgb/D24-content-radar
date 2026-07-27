@@ -426,16 +426,16 @@ function computeMetrics(deals, вПериод) {
   // Разбивка осмысленна только для ОДНОГО месяца. На широком периоде год
   // считается «одним периодом», всё сваливается в «этого периода», а ноль в
   // «прошлых» читается как пропавшие данные. Честнее прочерк.
-  // ── выход на диалог/ОП квал по ДАТЕ ВХОДА В ЭТАП (реактивация: дозревшие лиды прошлых периодов) ──
-  var dlgFlow=0,dlgNew=0,dlgOld=0,opqFlow=0,opqNew=0,opqOld=0,opqTgtFlow=0,opqTgtNew=0,opqTgtOld=0;
+  // ── выход на диалог/ОП квал по ДАТЕ ВХОДА (реактивация = заявка пришла в прошлом месяце, дозрела в этом) ──
+  function ymN(dt){return dt.getFullYear()*12+dt.getMonth();}
+  var dlgFlow=0,dlgOld=0,opqFlow=0,opqOld=0;
   if(вПериод){
     ALL.forEach(function(d){
-      var свой=d.date&&вПериод(d.date);   // заявка того же периода — иначе дозревший из прошлого
-      if(d.dlg&&вПериод(d.dlg)){dlgFlow++;if(свой)dlgNew++;else dlgOld++;}
-      if(d.opq&&вПериод(d.opq)){opqFlow++;if(свой)opqNew++;else opqOld++;
-        if(isSegTarget(d.row)){opqTgtFlow++;if(свой)opqTgtNew++;else opqTgtOld++;}}
+      if(d.dlg&&вПериод(d.dlg)){dlgFlow++;if(d.date&&ymN(d.date)<ymN(d.dlg))dlgOld++;}
+      if(d.opq&&вПериод(d.opq)){opqFlow++;if(d.date&&ymN(d.date)<ymN(d.opq))opqOld++;}
     });
   }
+  var dlgSame=dlgFlow-dlgOld, opqSame=opqFlow-opqOld;
   var разбивкаЕсть=(typeof curPresetMonths!=='undefined'&&curPresetMonths===1&&!isCustom);
   var salesCycle=cycleOf(продажи);
   return{all:all,allTarget:allTarget,cvAllTarget:pct(allTarget,all),
@@ -451,24 +451,21 @@ function computeMetrics(deals, вПериод) {
     salesRevenue:вырОпл,
     salesCycle:salesCycle,
     salesAvg:продажи.length?Math.round(вырОпл/продажи.length):0,
-    dlgFlow:dlgFlow,dlgNew:разбивкаЕсть?dlgNew:null,dlgOld:разбивкаЕсть?dlgOld:null,
-    opqFlow:opqFlow,opqNew:разбивкаЕсть?opqNew:null,opqOld:разбивкаЕсть?opqOld:null,
-    opqTgtFlow:opqTgtFlow,opqTgtNew:разбивкаЕсть?opqTgtNew:null,opqTgtOld:разбивкаЕсть?opqTgtOld:null};
+    dlgSame:dlgSame,dlgOld:dlgOld,dlgFlow:dlgFlow,cvDlgSame:pct(dlgSame,all),
+    opqSame:opqSame,opqOld:opqOld,opqFlow:opqFlow,cvOpqSame:pct(opqSame,dlgSame)};
 }
 
 var METRIC_DEFS = [
   {key:'all',       label:'Все заявки',                 cv:null,          sec:'gen',    secLabel:'Лидогенерация', dot:'gen'},
   {key:'allTarget', label:'Все заявки ЦА',              cv:'cvAllTarget', cvLbl:'% ЦА от всех', dot:'gen'},
   {key:'mkQual',    label:'Маркетинг квал',              cv:'cvMkQual',    cvLbl:'% МК от всех', sec:'funnel', secLabel:'Воронка', dot:'funnel'},
-  {key:'dialog',    label:'Вышли на диалог ОП',          cv:'cvDialog',    cvLbl:'% ВД от всех', dot:'funnel'},
-  {key:'opQual',    label:'ОП квал',                     cv:'cvOpQual',    cvLbl:'% ОПК от диалога', dot:'funnel'},
-  {key:'tgtOpQual', label:'ЦА лиды из ОП квал',          cv:'cvTgtOpQual', cvLbl:'% ЦА от ОП квал', dot:'funnel'},
-  {key:'dlgFlow',   label:'Диалог — всего за период (по дате входа)',   cv:null, dot:'funnel'},
-  {key:'dlgOld',    label:'— в т.ч. реактивация (пришли раньше)',       cv:null, dot:'funnel'},
-  {key:'opqFlow',   label:'ОП квал — всего за период (по дате входа)',  cv:null, dot:'funnel'},
-  {key:'opqOld',    label:'— в т.ч. реактивация (пришли раньше)',       cv:null, dot:'funnel'},
-  {key:'opqTgtFlow',label:'ЦА из ОП квал — всего (по дате входа)',      cv:null, dot:'funnel'},
-  {key:'opqTgtOld', label:'— в т.ч. реактивация (пришли раньше)',       cv:null, dot:'funnel'},
+  {key:'dlgSame',   label:'Вышли на диалог ОП (с заявок текущего месяца)',   cv:'cvDlgSame', cvLbl:'% ВД от всех', dot:'funnel'},
+  {key:'dlgOld',    label:'Вышли на диалог ОП (с заявок прошлых периодов)',  cv:null, dot:'funnel'},
+  {key:'dlgFlow',   label:'Вышли на диалог ОП (ВСЕГО за период)',            cv:null, dot:'funnel'},
+  {key:'opqSame',   label:'ОП квал (с заявок текущего месяца)',              cv:'cvOpqSame', cvLbl:'% ОПК от диалога', dot:'funnel'},
+  {key:'opqOld',    label:'ОП квал (с заявок прошлых периодов)',             cv:null, dot:'funnel'},
+  {key:'opqFlow',   label:'ОП квал (ВСЕГО за период)',                       cv:null, dot:'funnel'},
+  {key:'tgtOpQual', label:'ЦА лиды из ОП квал',                              cv:'cvTgtOpQual', cvLbl:'% ЦА от ОП квал', dot:'funnel'},
   {key:'paid',      label:'Оплаченные (тек. период)',    cv:'cvPaid',      cvLbl:'% оплат от всех заявок', sec:'result', secLabel:'Результат', dot:'result'},
   {key:'paidTgt',   label:'Оплаченные из ЦА',            cv:'cvPaidTgt',   cvLbl:'% оплат от ЦА заявок', dot:'result'},
   {key:'avgCheck',  label:'Средний чек',                 cv:null,          fmt:'rub', dot:'result'},
@@ -985,8 +982,6 @@ function renderChartsNow(){
     {label:'Диалог ОП',  data:monthKs.map(function(k){return k.dialog;}), borderColor:'#06b6d4',backgroundColor:'transparent',            tension:.35,fill:false,pointRadius:PR, pointHoverRadius:PR+3,borderWidth:2},
     {label:'ОП квал',    data:monthKs.map(function(k){return k.opQual;}), borderColor:'#f59e0b',backgroundColor:'transparent',            tension:.35,fill:false,pointRadius:PR, pointHoverRadius:PR+3,borderWidth:2},
     {label:'Оплаченные', data:monthKs.map(function(k){return k.paid;}),   borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',   tension:.35,fill:true, pointRadius:PR2,pointHoverRadius:PR2+3,borderWidth:2.5},
-    {label:'Диалог — всего по входу (+реактивация)', data:monthKs.map(function(k){return k.dlgFlow;}), borderColor:'#06b6d4',borderDash:[5,3],backgroundColor:'transparent',tension:.35,fill:false,pointRadius:PR,pointHoverRadius:PR+3,borderWidth:1.5},
-    {label:'ОП квал — всего по входу (+реактивация)', data:monthKs.map(function(k){return k.opqFlow;}), borderColor:'#f59e0b',borderDash:[5,3],backgroundColor:'transparent',tension:.35,fill:false,pointRadius:PR,pointHoverRadius:PR+3,borderWidth:1.5},
     planDataset('План: заявки ('+cp.all+')',    cp.all,    labels,'rgba(67,97,238,.4)'),
     planDataset('План: диалоги ('+cp.dialog+')',cp.dialog, labels,'rgba(6,182,212,.4)'),
     planDataset('План: оплаты ('+cp.paid+')',   cp.paid,   labels,'rgba(16,185,129,.4)'),
