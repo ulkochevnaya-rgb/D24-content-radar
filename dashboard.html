@@ -426,6 +426,16 @@ function computeMetrics(deals, вПериод) {
   // Разбивка осмысленна только для ОДНОГО месяца. На широком периоде год
   // считается «одним периодом», всё сваливается в «этого периода», а ноль в
   // «прошлых» читается как пропавшие данные. Честнее прочерк.
+  // ── выход на диалог/ОП квал по ДАТЕ ВХОДА В ЭТАП (реактивация: дозревшие лиды прошлых периодов) ──
+  var dlgFlow=0,dlgNew=0,dlgOld=0,opqFlow=0,opqNew=0,opqOld=0,opqTgtFlow=0,opqTgtNew=0,opqTgtOld=0;
+  if(вПериод){
+    ALL.forEach(function(d){
+      var свой=d.date&&вПериод(d.date);   // заявка того же периода — иначе дозревший из прошлого
+      if(d.dlg&&вПериод(d.dlg)){dlgFlow++;if(свой)dlgNew++;else dlgOld++;}
+      if(d.opq&&вПериод(d.opq)){opqFlow++;if(свой)opqNew++;else opqOld++;
+        if(isSegTarget(d.row)){opqTgtFlow++;if(свой)opqTgtNew++;else opqTgtOld++;}}
+    });
+  }
   var разбивкаЕсть=(typeof curPresetMonths!=='undefined'&&curPresetMonths===1&&!isCustom);
   var salesCycle=cycleOf(продажи);
   return{all:all,allTarget:allTarget,cvAllTarget:pct(allTarget,all),
@@ -440,7 +450,10 @@ function computeMetrics(deals, вПериод) {
     salesNew:разбивкаЕсть?нов:null,salesOld:разбивкаЕсть?стар:null,
     salesRevenue:вырОпл,
     salesCycle:salesCycle,
-    salesAvg:продажи.length?Math.round(вырОпл/продажи.length):0};
+    salesAvg:продажи.length?Math.round(вырОпл/продажи.length):0,
+    dlgFlow:dlgFlow,dlgNew:разбивкаЕсть?dlgNew:null,dlgOld:разбивкаЕсть?dlgOld:null,
+    opqFlow:opqFlow,opqNew:разбивкаЕсть?opqNew:null,opqOld:разбивкаЕсть?opqOld:null,
+    opqTgtFlow:opqTgtFlow,opqTgtNew:разбивкаЕсть?opqTgtNew:null,opqTgtOld:разбивкаЕсть?opqTgtOld:null};
 }
 
 var METRIC_DEFS = [
@@ -450,6 +463,12 @@ var METRIC_DEFS = [
   {key:'dialog',    label:'Вышли на диалог ОП',          cv:'cvDialog',    cvLbl:'% ВД от всех', dot:'funnel'},
   {key:'opQual',    label:'ОП квал',                     cv:'cvOpQual',    cvLbl:'% ОПК от диалога', dot:'funnel'},
   {key:'tgtOpQual', label:'ЦА лиды из ОП квал',          cv:'cvTgtOpQual', cvLbl:'% ЦА от ОП квал', dot:'funnel'},
+  {key:'dlgFlow',   label:'Диалог — всего за период (по дате входа)',   cv:null, dot:'funnel'},
+  {key:'dlgOld',    label:'— в т.ч. реактивация (пришли раньше)',       cv:null, dot:'funnel'},
+  {key:'opqFlow',   label:'ОП квал — всего за период (по дате входа)',  cv:null, dot:'funnel'},
+  {key:'opqOld',    label:'— в т.ч. реактивация (пришли раньше)',       cv:null, dot:'funnel'},
+  {key:'opqTgtFlow',label:'ЦА из ОП квал — всего (по дате входа)',      cv:null, dot:'funnel'},
+  {key:'opqTgtOld', label:'— в т.ч. реактивация (пришли раньше)',       cv:null, dot:'funnel'},
   {key:'paid',      label:'Оплаченные (тек. период)',    cv:'cvPaid',      cvLbl:'% оплат от всех заявок', sec:'result', secLabel:'Результат', dot:'result'},
   {key:'paidTgt',   label:'Оплаченные из ЦА',            cv:'cvPaidTgt',   cvLbl:'% оплат от ЦА заявок', dot:'result'},
   {key:'avgCheck',  label:'Средний чек',                 cv:null,          fmt:'rub', dot:'result'},
@@ -966,6 +985,8 @@ function renderChartsNow(){
     {label:'Диалог ОП',  data:monthKs.map(function(k){return k.dialog;}), borderColor:'#06b6d4',backgroundColor:'transparent',            tension:.35,fill:false,pointRadius:PR, pointHoverRadius:PR+3,borderWidth:2},
     {label:'ОП квал',    data:monthKs.map(function(k){return k.opQual;}), borderColor:'#f59e0b',backgroundColor:'transparent',            tension:.35,fill:false,pointRadius:PR, pointHoverRadius:PR+3,borderWidth:2},
     {label:'Оплаченные', data:monthKs.map(function(k){return k.paid;}),   borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',   tension:.35,fill:true, pointRadius:PR2,pointHoverRadius:PR2+3,borderWidth:2.5},
+    {label:'Диалог — всего по входу (+реактивация)', data:monthKs.map(function(k){return k.dlgFlow;}), borderColor:'#06b6d4',borderDash:[5,3],backgroundColor:'transparent',tension:.35,fill:false,pointRadius:PR,pointHoverRadius:PR+3,borderWidth:1.5},
+    {label:'ОП квал — всего по входу (+реактивация)', data:monthKs.map(function(k){return k.opqFlow;}), borderColor:'#f59e0b',borderDash:[5,3],backgroundColor:'transparent',tension:.35,fill:false,pointRadius:PR,pointHoverRadius:PR+3,borderWidth:1.5},
     planDataset('План: заявки ('+cp.all+')',    cp.all,    labels,'rgba(67,97,238,.4)'),
     planDataset('План: диалоги ('+cp.dialog+')',cp.dialog, labels,'rgba(6,182,212,.4)'),
     planDataset('План: оплаты ('+cp.paid+')',   cp.paid,   labels,'rgba(16,185,129,.4)'),
@@ -1082,10 +1103,12 @@ function loadData(rows){
   var budgetIdx=ci('Бюджет ₽');if(budgetIdx<0)budgetIdx=ci('Бюджет');
   COL={stage:ci('Этап сделки'),maxStage:ci('Максимальный этап'),budget:budgetIdx,created:createdIdx,
        closed:ci('Дата закрытия'),
+       dialogDate:ci('Дата входа в диалог'),opqualDate:ci('Дата входа в ОП квал'),
        channel:ci('Канал привлечения'),source:ci('Источник лида'),
        qual:ci('Квалификация'),seg:ci('Сегмент клиента')};
   ALL=rows.slice(1).map(function(r){return{row:r,date:parseDate(v(r,COL.created)),
-    paid:isPaid(r)?parseDate(v(r,COL.closed)):null};}).filter(function(d){return d.date;});
+    paid:isPaid(r)?parseDate(v(r,COL.closed)):null,
+    dlg:parseDate(v(r,COL.dialogDate)),opq:parseDate(v(r,COL.opqualDate))};}).filter(function(d){return d.date;});
   if(!ALL.length){alert('Нет сделок с распознанными датами');return;}
   var allRows=ALL.map(function(d){return d.row;});
   G.totalAll=allRows.length;
