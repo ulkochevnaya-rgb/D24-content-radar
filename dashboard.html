@@ -426,16 +426,17 @@ function computeMetrics(deals, вПериод) {
   // Разбивка осмысленна только для ОДНОГО месяца. На широком периоде год
   // считается «одним периодом», всё сваливается в «этого периода», а ноль в
   // «прошлых» читается как пропавшие данные. Честнее прочерк.
-  // ── ГИБРИД (выбор Юли): «текущего периода» = заявки периода, дошедшие до этапа (dialog/opQual, по дате ЗАЯВКИ);
-  //    «реактивация» = заявки ПРОШЛОГО месяца, вышедшие на этап в этом периоде (по дате выхода на этап).
-  function ymN(dt){return dt.getFullYear()*12+dt.getMonth();}
-  var dlgOld=0,opqOld=0;
+  // ── ВСЁ по ДАТЕ ВХОДА в этап (одинаково для диалога и ОП квала).
+  //    текущего = вышел на этап И заявка в этом периоде; реактивация = вышел на этап в периоде, заявка раньше.
+  var dlgFlow=0,dlgNew=0,opqFlow=0,opqNew=0;
   if(вПериод){
     ALL.forEach(function(d){
-      if(d.dlg&&вПериод(d.dlg)&&d.date&&ymN(d.date)<ymN(d.dlg))dlgOld++;
-      if(d.opq&&вПериод(d.opq)&&d.date&&ymN(d.date)<ymN(d.opq))opqOld++;
+      var свой=d.date&&вПериод(d.date);
+      if(d.dlg&&вПериод(d.dlg)){dlgFlow++;if(свой)dlgNew++;}
+      if(d.opq&&вПериод(d.opq)){opqFlow++;if(свой)opqNew++;}
     });
   }
+  var dlgOld=dlgFlow-dlgNew, opqOld=opqFlow-opqNew;
   var разбивкаЕсть=(typeof curPresetMonths!=='undefined'&&curPresetMonths===1&&!isCustom);
   var salesCycle=cycleOf(продажи);
   return{all:all,allTarget:allTarget,cvAllTarget:pct(allTarget,all),
@@ -451,20 +452,20 @@ function computeMetrics(deals, вПериод) {
     salesRevenue:вырОпл,
     salesCycle:salesCycle,
     salesAvg:продажи.length?Math.round(вырОпл/продажи.length):0,
-    dlgOld:dlgOld,dlgTotal:dialog+dlgOld,
-    opqOld:opqOld,opqTotal:opQual+opqOld};
+    dlgNew:dlgNew,dlgOld:dlgOld,dlgFlow:dlgFlow,cvDlgNew:pct(dlgNew,all),
+    opqNew:opqNew,opqOld:opqOld,opqFlow:opqFlow,cvOpqNew:pct(opqNew,dlgNew)};
 }
 
 var METRIC_DEFS = [
   {key:'all',       label:'Все заявки',                 cv:null,          sec:'gen',    secLabel:'Лидогенерация', dot:'gen'},
   {key:'allTarget', label:'Все заявки ЦА',              cv:'cvAllTarget', cvLbl:'% ЦА от всех', dot:'gen'},
   {key:'mkQual',    label:'Маркетинг квал',              cv:'cvMkQual',    cvLbl:'% МК от всех', sec:'funnel', secLabel:'Воронка', dot:'funnel'},
-  {key:'dialog',    label:'Вышли на диалог ОП (с заявок текущего месяца)',   cv:'cvDialog', cvLbl:'% ВД от всех', dot:'funnel'},
-  {key:'dlgOld',    label:'Вышли на диалог ОП (реактивация, заявки прошлых мес.)', cv:null, dot:'funnel'},
-  {key:'dlgTotal',  label:'Вышли на диалог ОП (ВСЕГО за период)',            cv:null, dot:'funnel'},
-  {key:'opQual',    label:'ОП квал (с заявок текущего месяца)',              cv:'cvOpQual', cvLbl:'% ОПК от диалога', dot:'funnel'},
-  {key:'opqOld',    label:'ОП квал (реактивация, заявки прошлых мес.)',      cv:null, dot:'funnel'},
-  {key:'opqTotal',  label:'ОП квал (ВСЕГО за период)',                       cv:null, dot:'funnel'},
+  {key:'dlgNew',    label:'Вышли на диалог ОП (с заявок текущего периода)',  cv:'cvDlgNew', cvLbl:'% ВД от всех', dot:'funnel'},
+  {key:'dlgOld',    label:'Вышли на диалог ОП (реактивация, заявки прошлых периодов)', cv:null, dot:'funnel'},
+  {key:'dlgFlow',   label:'Вышли на диалог ОП (ВСЕГО за период)',            cv:null, dot:'funnel'},
+  {key:'opqNew',    label:'ОП квал (с заявок текущего периода)',             cv:'cvOpqNew', cvLbl:'% ОПК от диалога', dot:'funnel'},
+  {key:'opqOld',    label:'ОП квал (реактивация, заявки прошлых периодов)',  cv:null, dot:'funnel'},
+  {key:'opqFlow',   label:'ОП квал (ВСЕГО за период)',                       cv:null, dot:'funnel'},
   {key:'tgtOpQual', label:'ЦА лиды из ОП квал',                              cv:'cvTgtOpQual', cvLbl:'% ЦА от ОП квал', dot:'funnel'},
   {key:'paid',      label:'Оплаченные (тек. период)',    cv:'cvPaid',      cvLbl:'% оплат от всех заявок', sec:'result', secLabel:'Результат', dot:'result'},
   {key:'paidTgt',   label:'Оплаченные из ЦА',            cv:'cvPaidTgt',   cvLbl:'% оплат от ЦА заявок', dot:'result'},
