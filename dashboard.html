@@ -429,11 +429,11 @@ function computeMetrics(deals, вПериод) {
   // ── текущего = заявки периода, ДОШЕДШИЕ до этапа (dialog/opQual, по дате заявки — считает и тех, кто дошёл позже);
   //    реактивация = заявки ПРОШЛОГО месяца, вышедшие на этап в этом периоде (по дате выхода на этап).
   function ymN(dt){return dt.getFullYear()*12+dt.getMonth();}
-  var dlgOld=0,opqOld=0;
+  var dlgOld=0,opqOld=0,opqTgtOld=0;
   if(вПериод){
     ALL.forEach(function(d){
       if(d.dlg&&вПериод(d.dlg)&&d.date&&ymN(d.date)<ymN(d.dlg))dlgOld++;
-      if(d.opq&&вПериод(d.opq)&&d.date&&ymN(d.date)<ymN(d.opq))opqOld++;
+      if(d.opq&&вПериод(d.opq)&&d.date&&ymN(d.date)<ymN(d.opq)){opqOld++;if(isSegTarget(d.row))opqTgtOld++;}
     });
   }
   var разбивкаЕсть=(typeof curPresetMonths!=='undefined'&&curPresetMonths===1&&!isCustom);
@@ -452,7 +452,8 @@ function computeMetrics(deals, вПериод) {
     salesCycle:salesCycle,
     salesAvg:продажи.length?Math.round(вырОпл/продажи.length):0,
     dlgOld:dlgOld,dlgTotal:dialog+dlgOld,
-    opqOld:opqOld,opqTotal:opQual+opqOld};
+    opqOld:opqOld,opqTotal:opQual+opqOld,
+    tgtOpTotal:tgtOpQual+opqTgtOld,cvTgtTotal:pct(tgtOpQual+opqTgtOld,opQual+opqOld)};
 }
 
 var METRIC_DEFS = [
@@ -465,7 +466,7 @@ var METRIC_DEFS = [
   {key:'opQual',    label:'ОП квал (с заявок текущего периода)',             cv:'cvOpQual', cvLbl:'% ОПК от диалога', dot:'funnel'},
   {key:'opqOld',    label:'ОП квал (реактивация, заявки прошлых мес.)',      cv:null, dot:'funnel'},
   {key:'opqTotal',  label:'ОП квал (ВСЕГО за период)',                       cv:null, dot:'funnel'},
-  {key:'tgtOpQual', label:'ЦА лиды из ОП квал',                              cv:'cvTgtOpQual', cvLbl:'% ЦА от ОП квал', dot:'funnel'},
+  {key:'tgtOpTotal', label:'ЦА лиды из ОП квал (текущие + реактивация)',     cv:'cvTgtTotal', cvLbl:'% ЦА от ОП квал (всего)', dot:'funnel'},
   {key:'paid',      label:'Оплаченные (тек. период)',    cv:'cvPaid',      cvLbl:'% оплат от всех заявок', sec:'result', secLabel:'Результат', dot:'result'},
   {key:'paidTgt',   label:'Оплаченные из ЦА',            cv:'cvPaidTgt',   cvLbl:'% оплат от ЦА заявок', dot:'result'},
   {key:'avgCheck',  label:'Средний чек',                 cv:null,          fmt:'rub', dot:'result'},
