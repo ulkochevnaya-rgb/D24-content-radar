@@ -83,31 +83,27 @@ padding:8px 10px;color:#6b5216;font-weight:700;text-align:center}
 border-radius:12px;padding:14px 18px;margin-top:12px;font-size:14.5px}
 .say .t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px}
 .say .msg{background:var(--wash);border-radius:10px;padding:10px 14px;color:var(--ink)}
-/* макет переключателя чатов внизу карточки */
-.chooser{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;max-width:640px}
-.ch-cap{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px}
-.ch-bar{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;
-padding:12px 14px;font-size:15.5px;background:#fbfcfe}
-.ch-bar .lnk{color:var(--accent-2);font-weight:600}
-.ch-bar .drop{margin-left:2px;border:1px solid var(--line);border-radius:6px;padding:1px 7px;
-color:var(--muted);background:#fff;font-size:13px}
-.ch-bar .ph{color:#a7b0bc}
-.ch-dd{border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;margin:0 10px;
-box-shadow:0 18px 34px -22px rgba(24,34,48,.4);overflow:visible;position:relative;background:var(--card)}
-.ch-item{display:flex;align-items:center;gap:12px;padding:13px 16px;font-size:15.5px;border-top:1px solid var(--line-2);position:relative}
-.ch-item .nm{font-weight:700;color:var(--ink)}
-.ch-item .sub{font-size:13px;color:var(--muted)}
-.ch-item.pick{border:3px solid #1e9e56;border-radius:10px;margin:8px;box-shadow:0 0 0 4px rgba(30,158,86,.18);background:#f2faf5}
-.ch-item.dim{opacity:.85}
-.ch-b{flex:0 0 auto;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff}
-.ch-b.wzb{background:#3ac24f}
-.ch-b.d24{background:linear-gradient(135deg,#2f7cb5,#235d8a)}
-.ch-pick-tag{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:#1e9e56;color:#fff;
-font-weight:800;font-size:12.5px;padding:6px 11px;border-radius:8px;white-space:nowrap}
-@media(max-width:560px){.ch-pick-tag{position:static;transform:none;display:inline-block;margin-top:6px}}
-.chooser.cmp .ch-pick-tag{position:static;transform:none;display:inline-block;margin-top:8px}
-.chooser.cmp{padding:14px}
-.chooser.cmp .ch-item{flex-wrap:wrap}
+/* макет реального списка чатов amoCRM */
+.amosel{max-width:520px}
+.as-cap{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+.as-dd{background:#fff;border:1px solid #cfd6df;border-radius:6px;overflow:hidden;
+box-shadow:0 16px 34px -20px rgba(24,34,48,.45);font-size:15px}
+.as-h{background:#7fb0e0;color:#1d3c5e;font-weight:800;font-size:13px;letter-spacing:.04em;padding:8px 14px}
+.as-h.yellow{background:#f7f3a1;color:#5c5410;display:flex;align-items:center;gap:10px;justify-content:space-between}
+.as-dept{border:1px solid #b9b177;border-radius:6px;padding:1px 8px;font-size:11px;font-weight:700}
+.as-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid #eceff3;background:#f4f5f7}
+.as-item.mute{background:#fff;color:var(--ink)}
+.as-item .nm{font-weight:700;color:var(--ink)}
+.as-item .sub{font-size:13px;color:var(--muted)}
+.as-ic{flex:0 0 auto;color:#2f7cb5}
+.as-txt{flex:1 1 auto}
+.as-badge{flex:0 0 auto;background:#35b66a;color:#fff;font-weight:800;font-size:13px;border-radius:5px;padding:3px 9px}
+.as-item.pick{outline:3px solid #1e9e56;outline-offset:-3px;background:#eaf7ef;position:relative}
+.as-item.dim{opacity:.8}
+.as-tag{background:#1e9e56;color:#fff;font-weight:800;font-size:13px;padding:8px 14px;line-height:1.35}
+.as-note{margin-top:12px;font-size:13.5px;color:var(--ink-2);background:var(--card);
+border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px}
+.as-note b{color:var(--ink)}
 </style></head><body>
 <div class="wrap">
 
@@ -134,24 +130,30 @@ font-weight:800;font-size:12.5px;padding:6px 11px;border-radius:8px;white-space:
     <div class="vsgrid">
       <div class="vscol ok">
         <h3>&#9989; Клиент ПЕРЕШЕЛ в бота</h3>
-        <p class="fnote" style="margin:0 0 10px">В карточке появилась беседа <b>«Delegator24 Bot» (№ A…)</b> с пометками «&#129302; АВТОВОРОНКА». Пишите в нее — сообщение уйдет клиенту прямо в бот. Если бесед несколько — выбирайте так:</p>
-        <div class="chooser cmp">
-      <div class="ch-cap">Низ карточки · нажмите стрелку у поля «Чат» — раскроется список бесед</div>
-      <div class="ch-bar"><span>Чат для</span> <span class="lnk">Иван Иванов</span>:
-        <span class="drop">&#8964;</span> <span class="ph">введите текст …</span></div>
-      <div class="ch-dd">
-        <div class="ch-item pick">
-          <span class="ch-b d24">D24</span>
-          <span><span class="nm">Delegator24 Bot</span><br>
-          <span class="sub">Беседа № A497 · наш бот (Telegram / MAX / соцсети)</span></span>
-          <span class="ch-pick-tag">&#10004; ВЫБИРАЙТЕ ЭТОТ — уйдет клиенту в бот</span>
+        <p class="fnote" style="margin:0 0 10px">В карточке появилась беседа <b>«Delegator24» (№ A…)</b> с пометками «&#129302; АВТОВОРОНКА». Пишите в нее — сообщение уйдет клиенту прямо в бот. Если бесед несколько — выбирайте так:</p>
+        <div class="amosel cmp">
+      <div class="as-cap">Так выглядит список при выборе чата в карточке</div>
+      <div class="as-dd">
+        <div class="as-h">КОНТАКТЫ</div>
+        <div class="as-item pick">
+          <span class="as-ic">&#128172;</span>
+          <span class="as-txt"><span class="nm">Delegator24</span><br><span class="sub">&#8627; Имя клиента</span></span>
+          <span class="as-badge">A642</span>
         </div>
-        <div class="ch-item dim">
-          <span class="ch-b wzb">wz</span>
-          <span><span class="nm">WhatsApp (Wazzup)</span> · +7 900 000-00-00<br>
-          <span class="sub">только если клиент писал сюда сам</span></span>
+        <div class="as-tag">&#10004; ВЫБИРАЙТЕ ЭТОТ — Delegator24 с зеленым номером A… Сообщение уйдет клиенту в бот</div>
+        <div class="as-item dim">
+          <span class="as-ic">&#128172;</span>
+          <span class="as-txt"><span class="nm">Delegator24</span><br><span class="sub">&#8627; Имя клиента</span></span>
+          <span class="as-badge">A565</span>
         </div>
+        <div class="as-h">БОТЫ</div>
+        <div class="as-item mute"><span class="as-txt">Businessbot</span></div>
+        <div class="as-item mute"><span class="as-txt">Salesbot</span></div>
+        <div class="as-h yellow">ОТДЕЛ ПРОДАЖ <span class="as-dept">ВЕСЬ ОТДЕЛ</span></div>
+        <div class="as-item mute"><span class="as-txt">Анастасия Абрамович</span></div>
       </div>
+      <div class="as-note">Разделы <b>БОТЫ</b> и <b>ОТДЕЛ ПРОДАЖ</b> — НЕ для ответа клиенту (это служебные боты и внутренние чаты). Клиенту в бот пишет только беседа <b>Delegator24</b> из раздела КОНТАКТЫ.<br>
+      Если бесед Delegator24 две — выбирайте ту, где уже идет переписка: ее номер совпадает с «Беседа № A…» в ленте карточки.</div>
     </div>
       </div>
       <div class="vscol no">
@@ -238,26 +240,32 @@ font-weight:800;font-size:12.5px;padding:6px 11px;border-radius:8px;white-space:
   <figcaption><b>Куда писать.</b> Выделенное поле «Чат» внизу карточки: ваше сообщение уйдет клиенту прямо в бот (Telegram/MAX/соцсеть — мост сам знает куда). «Беседа № A…» — признак нашего бот-канала.</figcaption></figure>
 
   <h2 style="margin-top:30px">Если чатов в карточке несколько — какой выбрать</h2>
-  <div class="chooser">
-      <div class="ch-cap">Низ карточки · нажмите стрелку у поля «Чат» — раскроется список бесед</div>
-      <div class="ch-bar"><span>Чат для</span> <span class="lnk">Иван Иванов</span>:
-        <span class="drop">&#8964;</span> <span class="ph">введите текст …</span></div>
-      <div class="ch-dd">
-        <div class="ch-item pick">
-          <span class="ch-b d24">D24</span>
-          <span><span class="nm">Delegator24 Bot</span><br>
-          <span class="sub">Беседа № A497 · наш бот (Telegram / MAX / соцсети)</span></span>
-          <span class="ch-pick-tag">&#10004; ВЫБИРАЙТЕ ЭТОТ — уйдет клиенту в бот</span>
+  <div class="amosel">
+      <div class="as-cap">Так выглядит список при выборе чата в карточке</div>
+      <div class="as-dd">
+        <div class="as-h">КОНТАКТЫ</div>
+        <div class="as-item pick">
+          <span class="as-ic">&#128172;</span>
+          <span class="as-txt"><span class="nm">Delegator24</span><br><span class="sub">&#8627; Имя клиента</span></span>
+          <span class="as-badge">A642</span>
         </div>
-        <div class="ch-item dim">
-          <span class="ch-b wzb">wz</span>
-          <span><span class="nm">WhatsApp (Wazzup)</span> · +7 900 000-00-00<br>
-          <span class="sub">только если клиент писал сюда сам</span></span>
+        <div class="as-tag">&#10004; ВЫБИРАЙТЕ ЭТОТ — Delegator24 с зеленым номером A… Сообщение уйдет клиенту в бот</div>
+        <div class="as-item dim">
+          <span class="as-ic">&#128172;</span>
+          <span class="as-txt"><span class="nm">Delegator24</span><br><span class="sub">&#8627; Имя клиента</span></span>
+          <span class="as-badge">A565</span>
         </div>
+        <div class="as-h">БОТЫ</div>
+        <div class="as-item mute"><span class="as-txt">Businessbot</span></div>
+        <div class="as-item mute"><span class="as-txt">Salesbot</span></div>
+        <div class="as-h yellow">ОТДЕЛ ПРОДАЖ <span class="as-dept">ВЕСЬ ОТДЕЛ</span></div>
+        <div class="as-item mute"><span class="as-txt">Анастасия Абрамович</span></div>
       </div>
+      <div class="as-note">Разделы <b>БОТЫ</b> и <b>ОТДЕЛ ПРОДАЖ</b> — НЕ для ответа клиенту (это служебные боты и внутренние чаты). Клиенту в бот пишет только беседа <b>Delegator24</b> из раздела КОНТАКТЫ.<br>
+      Если бесед Delegator24 две — выбирайте ту, где уже идет переписка: ее номер совпадает с «Беседа № A…» в ленте карточки.</div>
     </div>
   <ul class="look" style="margin-top:14px">
-    <li>Клиент из бота / автоворонки &#8594; беседа <b>«Delegator24 Bot»</b> (номер начинается с A) — сообщение уйдет ему в бот.</li>
+    <li>Клиент из бота / автоворонки &#8594; беседа <b>«Delegator24»</b> с зеленым номером A… — сообщение уйдет ему в бот.</li>
     <li>Клиент писал в WhatsApp / личный Telegram &#8594; чат <b>wz (Wazzup)</b>.</li>
     <li>Есть и то и другое &#8594; пишите туда, где клиент писал <b>последним</b>.</li>
   </ul>
