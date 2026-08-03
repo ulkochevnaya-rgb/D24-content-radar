@@ -1210,6 +1210,30 @@
 
     <div class="sidebar-year">2026</div>
 
+    <!-- Месяц: Август -->
+    <div class="month-group open" id="month-aug-2026">
+      <div class="month-header" onclick="toggleMonth('month-aug-2026')">
+        <div>
+          <div class="month-name">Август</div>
+          <div class="month-meta" id="month-meta-aug-2026">1 спринт</div>
+        </div>
+        <div class="month-arrow">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 4l4 4 4-4" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="month-sprints">
+        <div class="sprint-item active" data-sprint="sprint-03-aug" onclick="showSprint('sprint-03-aug')">
+          <div class="sprint-item-dates">3–9 августа <span class="sprint-now-badge">сейчас</span></div>
+          <div class="sprint-item-progress" id="sidebar-progress-sprint-03-aug">загрузка...</div>
+        </div>
+        <div class="sprint-item new-sprint-btn" onclick="openNewSprintModal()">
+          <div class="sprint-item-dates">+ Новый спринт</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Месяц: Июль -->
     <div class="month-group open" id="month-jul-2026">
       <div class="month-header" onclick="toggleMonth('month-jul-2026')">
@@ -1224,8 +1248,16 @@
         </div>
       </div>
       <div class="month-sprints">
-        <div class="sprint-item active" data-sprint="sprint-13-jul" onclick="showSprint('sprint-13-jul')">
-          <div class="sprint-item-dates">13–19 июля <span class="sprint-now-badge">сейчас</span></div>
+        <div class="sprint-item" data-sprint="sprint-27-jul" onclick="showSprint('sprint-27-jul')">
+          <div class="sprint-item-dates">27 июл – 2 авг <span class="sprint-archive-badge">закрыт</span></div>
+          <div class="sprint-item-progress" id="sidebar-progress-sprint-27-jul">загрузка...</div>
+        </div>
+        <div class="sprint-item" data-sprint="sprint-20-jul" onclick="showSprint('sprint-20-jul')">
+          <div class="sprint-item-dates">20–26 июля <span class="sprint-archive-badge">закрыт</span></div>
+          <div class="sprint-item-progress" id="sidebar-progress-sprint-20-jul">загрузка...</div>
+        </div>
+        <div class="sprint-item" data-sprint="sprint-13-jul" onclick="showSprint('sprint-13-jul')">
+          <div class="sprint-item-dates">13–19 июля</div>
           <div class="sprint-item-progress" id="sidebar-progress-sprint-13-jul">загрузка...</div>
         </div>
         <div class="sprint-item" data-sprint="sprint-06-jul" onclick="showSprint('sprint-06-jul')">
@@ -1235,9 +1267,6 @@
         <div class="sprint-item" data-sprint="sprint-30-jun" onclick="showSprint('sprint-30-jun')">
           <div class="sprint-item-dates">29 июн – 5 июл <span class="sprint-archive-badge">закрыт</span></div>
           <div class="sprint-item-progress" id="sidebar-progress-sprint-30-jun">загрузка...</div>
-        </div>
-        <div class="sprint-item new-sprint-btn" onclick="openNewSprintModal()">
-          <div class="sprint-item-dates">+ Новый спринт</div>
         </div>
       </div>
     </div>
@@ -1275,8 +1304,877 @@
   <main class="main">
 
     <!-- ====== СПРИНТ: 6–12 ИЮЛ (НОВЫЙ) ====== -->
+    <!-- ====== СПРИНТ: 3–9 АВГУСТА ====== -->
+    <div class="sprint-panel active" id="sprint-03-aug" data-week-start="2026-08-03">
+
+      <header>
+        <div class="badge">Delegator24 · Маркетинг</div>
+        <h1>Неделя 3 – 9 августа</h1>
+        <p class="subtitle">Юлия Кочевная · Директор по маркетингу</p>
+        <div class="progress-wrap">
+          <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar-sprint-03-aug"></div></div>
+          <div class="progress-label" id="progress-label-sprint-03-aug">загрузка...</div>
+        </div>
+        <div class="header-toolbar">
+          <button class="toolbar-btn" onclick="collapseAll()">↑ Свернуть все</button>
+          <button class="toolbar-btn" onclick="expandAll()">↓ Развернуть все</button>
+          <button class="toolbar-btn" onclick="toggleHideDone()">✓ Скрыть выполненные</button>
+          <button class="toolbar-btn" onclick="showExport()">↗ Экспорт задач</button>
+        </div>
+      </header>
+
+<!-- Аналитика и CRM -->
+      <div class="section" id="s-crm">
+        <div class="section-header">
+          <div class="section-icon icon-crm">🔧</div>
+          <div class="section-label">Аналитика и CRM</div>
+          <span class="section-tag tag-crm">Инфраструктура</span>
+        </div>
+
+        <div class="task-group" data-color="blue">
+          <div class="task-group-header">
+            <div class="task-group-title">Регулярные задачи</div>
+            <span class="task-group-count">0/3</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Прогресс сделок по воронке — движение по этапам, нет ли зависших без активности</div>
+                <div class="subtask-meta"><span class="pill pill-active">ежедневно</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Актуальность данных в сделках: источники привлечения, статусы, заполнение полей</div>
+                <div class="subtask-meta"><span class="pill pill-active">ежедневно</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Аудит касаний: своевременность и регулярность контактов с клиентами → рост конверсии в базе</div>
+                <div class="subtask-meta"><span class="pill pill-active">ежедневно</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="task-group" data-color="blue">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">4/9</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Входящая телефония: найдено, что звонки уходили на сценарии уволенных менеджеров — собран единый сценарий «Входящие 2026», тест прошел</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Оценщик: экспертный слой — роль менеджера в диалоге и 5 глубинных паттернов + бэкфилл июля</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Оценщик: две шкалы — балл продажи и балл прогрева; микро-диалоги и зумы вне записи без балла</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Срез: слабые места ранжированным списком по серьезности, «Вернуть в работу» зеркалит разбор</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">UIS: снять галки «Передавать чаты в amoCRM» и «Вести переписку в amoCRM» в интеграции с CRM — убрать задвоение диалогов в карточках</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">UIS: проверить через день-два — новые входящие звонки доходят до менеджеров, беседы в amoCRM не двоятся</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Отправить Лидии письмо по итогам разбора жалобы на оценку (черновик в чате готов)</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Донести до отдела продаж приоритет августа: вопрос о бюджете до озвучивания цены (контроль по срезу — провал пункта должен упасть вдвое)</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">UIS: удалить 10 старых именных сценариев уволенных менеджеров (перед сносом проверить приветствие в «Новый с амо»)</div>
+                <div class="subtask-meta"><span class="pill pill-p2">P2</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Лидогенерация -->
+      <div class="section" id="s-leads">
+        <div class="section-header">
+          <div class="section-icon icon-leads">🎯</div>
+          <div class="section-label">Лидогенерация</div>
+          <span class="section-tag tag-leads">Рост</span>
+        </div>
+
+        <div class="task-group" data-color="orange">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">0/9</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Ревизия целей Яндекс.Метрики: сверить цели счетчика 39533920 с фактическими формами на сайте, новых лендингах и старом лендинге — похоже, часть целей устарела и не совпадает</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span><span class="pill" style="background:#fff7ed;color:#c2410c">перенос 13–19.07</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Создать и загрузить новые рекламные офферы в Яндекс Директ, запустить тест</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span><span class="pill" style="background:#fff7ed;color:#c2410c">перенос 13–19.07</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Дать ТЗ копирайтеру на создание статей по лид-магнитам</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span><span class="pill" style="background:#fff7ed;color:#c2410c">перенос 13–19.07</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Новый сайт: утвердить тексты главной (13 блоков) и вариант первого экрана — после этого собирать динамический прототип</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Новый сайт: решить по тарифам — названия и цены на живом сайте расходятся с таблицей «Подписки 2026»</div>
+                <div class="subtask-meta"><span class="pill pill-p1">P1</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Новый сайт: собрать отзывы клиентов</div>
+                <div class="subtask-meta"><span class="pill pill-p2">P2</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Достроить и задеплоить лид-магнит «Снимок дня»</div>
+                <div class="subtask-meta"><span class="pill pill-p2">P2</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Доработать «Карту разгрузки» до боевой версии</div>
+                <div class="subtask-meta"><span class="pill pill-p2">P2</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Карта AI-возможностей: обогатить промпт знаниями Романа; после 20–30 заявок — сводка «что несут люди»</div>
+                <div class="subtask-meta"><span class="pill pill-p2">P2</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+<!-- Контент -->
+      <div class="section" id="s-content">
+        <div class="section-header">
+          <div class="section-icon icon-content">📣</div>
+          <div class="section-label">Контент-маркетинг</div>
+          <span class="section-tag tag-content">Прогрев</span>
+        </div>
+
+        <div class="cw-wrap">
+          <div class="cw-header">
+            <span class="cw-title">📅 Контент этой недели</span>
+            <span class="cw-week-lbl"></span>
+            <button class="cw-tmpl-btn" onclick="cwSaveAsTemplate(this)" title="Добавить контент-виджет в шаблон нового спринта">↻</button>
+            <a class="cw-link" href="content_hub.html" target="_blank">Полная карта →</a>
+          </div>
+          <iframe class="cw-embed-iframe cw-grid-root" frameborder="0" scrolling="no"></iframe>
+        </div>
+      </div>
+
+      <!-- Регулярная отчётность -->
+      <div class="section" id="s-reporting">
+        <div class="section-header">
+          <div class="section-icon" style="background:#edfaf3;">📊</div>
+          <div class="section-label">Регулярная отчётность</div>
+          <span class="section-tag" style="background:#edfaf3;color:#22a06b;">Регулярное</span>
+        </div>
+
+        <div class="task-group" data-color="teal">
+          <div class="task-group-header">
+            <div class="task-group-title">Еженедельные задачи</div>
+            <span class="task-group-count">0/3</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Ежедневно: заполнять таблицу по метрикам прошлого дня для Романа</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">ежедневно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?pli=1&gid=726020795#gid=726020795" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                </div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Еженедельные показатели по основным метрикам</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">еженедельно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?pli=1&gid=241894299#gid=241894299" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                  <a href="dashboard.html" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#059669;text-decoration:none;border:1px solid #6ee7b7;border-radius:6px;padding:2px 8px;font-weight:600;">↗ дашборд</a>
+                </div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Еженедельный отчёт по OKR — стратегические цели и задачи (апдейт еженедельно, цели на месяц)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-active">еженедельно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1N-lpKRgmQ_1803Zs-Fwb6_Mi2_qHbltTQ3trgBfnxos/edit?pli=1&gid=1675440595#gid=1675440595" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="task-group" data-color="teal">
+          <div class="task-group-header">
+            <div class="task-group-title">Ежемесячные задачи</div>
+            <span class="task-group-count">0/5</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Заявки на оплату по регулярным платежам</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <span class="pill" style="background:#f0f4ff;color:#4361ee">в первых числах</span>
+                  <a href="https://workspace.delegator24.ru/task/442717" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ задача</a>
+                </div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Ежемесячные показатели по основным метрикам</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1xMZkSwJ28E7hXUBoFrPXjIUbzwrB3SZ_/edit?pli=1&gid=1700449446#gid=1700449446" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                  <a href="dashboard.html" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#059669;text-decoration:none;border:1px solid #6ee7b7;border-radius:6px;padding:2px 8px;font-weight:600;">↗ дашборд</a>
+                </div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Отчёт по каналам привлечения</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <span class="pill" style="background:#d1fae5;color:#065f46">✓ автоматизировано</span>
+                  <a href="https://docs.google.com/spreadsheets/d/1wxwS2Cn-D80f14GygrP4u2jws3Q4-dh36B-eJpp5zK8/edit?gid=649283860#gid=649283860" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                  <a href="dashboard.html" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#059669;text-decoration:none;border:1px solid #6ee7b7;border-radius:6px;padding:2px 8px;font-weight:600;">↗ дашборд</a>
+                </div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Планирование бюджета на следующий месяц</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <span class="pill pill-p1">до 26 числа</span>
+                  <a href="https://docs.google.com/spreadsheets/d/16WFJrZTOzzLT6F32B4OYqZlk3fnHhFPaSlpWFIDK9Fo/edit?gid=0#gid=0" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                </div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Отчёты по эффективности каналов привлечения (разные срезы)</div>
+                <div class="subtask-meta">
+                  <span class="pill pill-week">ежемесячно</span>
+                  <a href="https://docs.google.com/spreadsheets/d/16_43HAnjHeCsENXGg-VFKK9SxkmZtbtXSD5aKbOwMQk/edit?gid=1239880610#gid=1239880610" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#4361ee;text-decoration:none;border:1px solid #c7ceff;border-radius:6px;padding:2px 8px;font-weight:600;">↗ таблица</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Бэклог -->
+      <div class="section" id="s-backlog">
+        <div class="section-header">
+          <div class="section-icon icon-backlog">📦</div>
+          <div class="section-label">Бэклог</div>
+          <span class="section-tag tag-backlog">Идеи и отложенное</span>
+          <button class="section-tmpl-btn" onclick="saveBacklogAsTemplates(event)" title="Сохранить весь бэклог как шаблоны для нового спринта">↻ в шаблон</button>
+        </div>
+        <div class="task-group task-group-bare" data-color="gray">
+          <div class="backlog-list" id="backlog-list-main">
+
+        <!-- СПРИНТ 2 · 6–12 июл -->
+        <div style="padding:8px 12px 4px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;">Спринт 2 · 6–12 июля</div>
+
+        <div class="backlog-item" data-backlog-id="tests-dashboard">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Дашборд внедрений по тестам</div>
+            <div class="backlog-desc">Страница со всеми запущенными рекламными тестами: дата запуска, что именно тестируем, ссылки на кампании и лендинги, метрики по результатам. Чтобы видеть, что уже проверили и с каким итогом.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">идея</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'tests-dashboard','Дашборд внедрений по тестам')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="funnels-viz">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Визуализация воронок</div>
+            <div class="backlog-desc">Схема существующих воронок, по которым идет клиент: откуда приходит, через какие шаги проходит, где отваливается. Все текущие пути в одной картине.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">идея</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'funnels-viz','Визуализация воронок')">→ В спринт</button>
+          </div>
+        </div>
+
+<div class="backlog-item" data-backlog-id="bot-new-entry" style="background:#f0f9ff;border:2px solid #0ea5e9;">
+          <div class="backlog-dot" style="border-color:#0ea5e9;background:#0ea5e9;"></div>
+          <div class="backlog-content">
+            <div class="backlog-title" style="color:#1e2235;font-size:15px;font-weight:700;">🤖 Бот Salebot: новый вход под каждый лид-магнит + сбор телефона</div>
+            <div class="backlog-desc">Новые точки входа в бот: (1) лид скачал шаблон тайм-аудита → бот доставляет файл + плавно переходит в прогревающую цепочку; (2) то же для калькулятора ФОТ. Добавить сбор телефона через нативную кнопку Telegram. Остальная воронка пока без изменений.</div>
+            <div class="backlog-meta">
+              <span class="pill" style="background:#0ea5e9;color:#fff;font-weight:700;">▶ спринт 2 · 6–12 июл</span>
+              <span class="pill" style="background:#f0f9ff;color:#0369a1;">Salebot · MVP</span>
+            </div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'bot-new-entry','Бот Salebot: новый вход под каждый лид-магнит + сбор телефона')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="lm-trap-test" style="background:#faf5ff;border:2px solid #a855f7;">
+          <div class="backlog-dot" style="border-color:#a855f7;background:#a855f7;"></div>
+          <div class="backlog-content">
+            <div class="backlog-title" style="color:#1e2235;font-size:15px;font-weight:700;">✅ Лид-магнит: Тест «Операционная ловушка»</div>
+            <div class="backlog-desc">Интерактивный тест (5–7 вопросов) — диагностирует насколько руководитель погружён в операционку. Результат → скачать разбор или перейти в бот. Под SEO-статью «7 признаков операционной ловушки» (9k/мес).</div>
+            <div class="backlog-meta">
+              <span class="pill" style="background:#a855f7;color:#fff;font-weight:700;">▶ спринт 2 · 6–12 июл</span>
+              <span class="pill" style="background:#faf5ff;color:#7c3aed;">TOFU · лид-магнит</span>
+            </div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'lm-trap-test','Лид-магнит: Тест «Операционная ловушка»')">→ В спринт</button>
+          </div>
+        </div>
+
+        <!-- СПРИНТ 3 · 13–19 июл -->
+        <div style="padding:8px 12px 4px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-top:8px;">Спринт 3 · 13–19 июля</div>
+
+        <div class="backlog-item" data-backlog-id="direct-analysis">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Яндекс Директ: анализ теста → оптимизация</div>
+            <div class="backlog-desc">Смотрим что сработало: TOFU vs BOFU, шаблон vs калькулятор. Отключаем неэффективное, масштабируем победителя. Корректируем ставки и аудитории.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">спринт 3 · 13–19 июл</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'direct-analysis','Яндекс Директ: анализ теста → оптимизация')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="seo-publish">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">SEO-статьи: публикация на Яндекс Дзен</div>
+            <div class="backlog-desc">Получить от копирайтера, проверить, опубликовать. Добавить призыв скачать лид-магнит внутри статьи + ссылку на страницу скачивания.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">спринт 3 · 13–19 июл</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'seo-publish','SEO-статьи: публикация на Яндекс Дзен')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="email-funnel" style="background:#f0f0ff;border:2px solid #4361ee;">
+          <div class="backlog-dot" style="border-color:#4361ee;background:#4361ee;"></div>
+          <div class="backlog-content">
+            <div class="backlog-title" style="color:#1e2235;font-size:15px;font-weight:700;">✉️ Email-воронка: платформа + настройка + цепочка писем</div>
+            <div class="backlog-desc">Выбрать платформу (Unisender / GetResponse / eSputnik) → зарегистрироваться → настроить форму подписки → написать 5-письменную прогревающую цепочку. Согласовать с Михаилом.</div>
+            <div class="backlog-meta">
+              <span class="pill" style="background:#4361ee;color:#fff;font-weight:700;">▶ спринт 3 · 13–19 июл</span>
+              <span class="pill" style="background:#eef0ff;color:#4361ee;">прогрев · контент</span>
+            </div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'email-funnel','Email-воронка: платформа + настройка + цепочка писем')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="salebot-amocrm-bridge">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Бот Salebot: полная переработка воронки + интеграция с amoCRM</div>
+            <div class="backlog-desc">Полный рерайт месседжей под позиционирование «живой слой поверх ИИ» + «операционный партнёр». Сбор телефона внутри бота. Salebot callback → поиск сделки в amoCRM. Делать если тест Директа показал результаты — вкладывать в переработку бота смысл.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">спринт 3 · 13–19 июл · при успехе теста</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'salebot-amocrm-bridge','Бот Salebot: полная переработка воронки + интеграция с amoCRM')">→ В спринт</button>
+          </div>
+        </div>
+
+        <!-- СПРИНТ 4 · 20–26 июл -->
+        <div style="padding:8px 12px 4px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-top:8px;">Спринт 4 · 20–26 июля</div>
+
+        <div class="backlog-item" data-backlog-id="direct-scale">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Яндекс Директ: масштабирование победителя</div>
+            <div class="backlog-desc">На основе анализа спринта 3 — увеличить бюджет на работающую связку, отключить неэффективные кампании.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">спринт 4 · 20–26 июл</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'direct-scale','Яндекс Директ: масштабирование победителя')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="referral-program">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Реферальная программа: механика + запуск</div>
+            <div class="backlog-desc">26% клиентов приходят по рекомендации, конверсия 61%, стоимость лида 0 ₽ — это лучший канал, но он случайный. Нужна система: шаблон просьбы рекомендации на 30-й и 90-й день, NPS-опрос, механика бонуса за рекомендацию.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">спринт 4 · 20–26 июл</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'referral-program','Реферальная программа: механика + запуск')">→ В спринт</button>
+          </div>
+        </div>
+
+        <!-- Без срока -->
+        <div style="padding:8px 12px 4px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-top:8px;">Без срока · Идеи</div>
+
+        <div class="backlog-item" data-backlog-id="seo-article-swap" style="background:#f0fff8;border:2px solid #10b981;">
+          <div class="backlog-dot" style="border-color:#10b981;background:#10b981;"></div>
+          <div class="backlog-content">
+            <div class="backlog-title" style="color:#1e2235;font-size:15px;font-weight:700;">🔗 SEO: обмен статьями с сервисом нарезки видео на шорты</div>
+            <div class="backlog-desc">Aleron Milenkin предложил обмен статьями — каждый пишет про сервис друг друга, +1 обратная ссылка для SEO.</div>
+            <div class="backlog-meta">
+              <span class="pill" style="background:#ecfdf5;color:#065f46;">SEO · контент · ждём ответа</span>
+            </div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'seo-article-swap','SEO: обмен статьями с сервисом нарезки видео на шорты')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="insta-ai">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Инста + Threads: автоматизировать комментинг через ИИ-агента</div>
+            <div class="backlog-desc">Заменить ручной комментинг на агента по заданным критериям аудитории.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">идея · автоматизация</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'insta-ai','Инста + Threads: автоматизировать комментинг через ИИ-агента')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="ai-calls">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">ИИ-ассистент на созвонах — авто-фиксация задач и решений</div>
+            <div class="backlog-desc">Аргус присутствует на созвонах, фиксирует задачи. После созвона — готовый список. Следующий шаг: Fireflies.ai или Otter.ai.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">идея</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'ai-calls','ИИ-ассистент на созвонах — авто-фиксация задач и решений')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="product-amo-methodology">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Упаковать в продукт: внедрение AMO + порядок в маркетинге и продажах для малого бизнеса</div>
+            <div class="backlog-desc">Наш опыт внедрения amoCRM, выстраивания воронки и наведения порядка в маркетинге — упаковать в отдельный продукт/методологию для небольших предпринимателей. Потенциально новый оффер или направление.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">идея · новый продукт</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'product-amo-methodology','Упаковать в продукт: внедрение AMO + порядок в маркетинге и продажах для малого бизнеса')">→ В спринт</button>
+          </div>
+        </div>
+
+        <div class="backlog-item" data-backlog-id="email-campaigns">
+          <div class="backlog-dot"></div>
+          <div class="backlog-content">
+            <div class="backlog-title">Настройка и запуск email-рассылок</div>
+            <div class="backlog-desc">Регулярные рассылки по базе — выбрать платформу, настроить, запустить. Отдельно от прогревающей email-воронки под лид-магниты.</div>
+            <div class="backlog-meta"><span class="pill pill-idea">идея · email-маркетинг</span></div>
+            <button class="backlog-move-btn" onclick="openMovePopup(event,'email-campaigns','Настройка и запуск email-рассылок')">→ В спринт</button>
+          </div>
+        </div>
+
+          </div>
+        </div>
+      </div>
+
+        </div>
+
+        <!-- ====== СПРИНТ: 20 – 26 ИЮЛЯ ====== -->
+    <div class="sprint-panel" id="sprint-20-jul" data-week-start="2026-07-20" data-archived="true">
+
+      <header>
+        <div class="badge">Delegator24 · Маркетинг</div>
+        <h1>Неделя 20 – 26 июля</h1>
+        <p class="subtitle">Юлия Кочевная · Директор по маркетингу</p>
+        <div class="progress-wrap">
+          <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar-sprint-20-jul"></div></div>
+          <div class="progress-label" id="progress-label-sprint-20-jul">загрузка...</div>
+        </div>
+        <div class="header-toolbar">
+          <button class="toolbar-btn" onclick="collapseAll()">↑ Свернуть все</button>
+          <button class="toolbar-btn" onclick="expandAll()">↓ Развернуть все</button>
+          <button class="toolbar-btn" onclick="toggleHideDone()">✓ Скрыть выполненные</button>
+          <button class="toolbar-btn" onclick="showExport()">↗ Экспорт задач</button>
+        </div>
+      </header>
+
+      <div class="section" id="s-crm">
+        <div class="section-header">
+          <div class="section-icon icon-crm">🔧</div>
+          <div class="section-label">Аналитика и CRM</div>
+          <span class="section-tag tag-crm">Инфраструктура</span>
+        </div>
+
+        <div class="task-group" data-color="blue">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">3/3</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Оценщик не видел бот-диалоги: связка чата Salebot со сделкой в amoCRM</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Вложения из amoCRM: голосовые и файлы менеджера доходят до клиента в бот</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Оценщик: горизонт оценки только для Wazzup — бот-чаты связаны со сделкой</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section" id="s-leads">
+        <div class="section-header">
+          <div class="section-icon icon-leads">🎯</div>
+          <div class="section-label">Лидогенерация</div>
+          <span class="section-tag tag-leads">Рост</span>
+        </div>
+
+        <div class="task-group" data-color="orange">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">1/1</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Хронометраж рабочего дня 24.07: живой журнал весь день → честная фотография рабочего дня для руководства</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section" id="s-content">
+        <div class="section-header">
+          <div class="section-icon icon-content">📣</div>
+          <div class="section-label">Контент-маркетинг</div>
+          <span class="section-tag tag-content">Прогрев</span>
+        </div>
+
+        <div class="task-group" data-color="purple">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">4/4</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Демо-ролик для зума по ИИ: «Путь клиента» — от заявки до карточки в CRM</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Демо-ролик «AI-оценщик диалогов» + демо-разбор в проде</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Карусель Instagram «Ассистент уволилась в пятницу»</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Мем-рилс «ЖИВОЙ лид в 2026» (Нагиев)</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ====== СПРИНТ: 27 ИЮЛЯ – 2 АВГУСТА ====== -->
+    <div class="sprint-panel" id="sprint-27-jul" data-week-start="2026-07-27" data-archived="true">
+
+      <header>
+        <div class="badge">Delegator24 · Маркетинг</div>
+        <h1>Неделя 27 июля – 2 августа</h1>
+        <p class="subtitle">Юлия Кочевная · Директор по маркетингу</p>
+        <div class="progress-wrap">
+          <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar-sprint-27-jul"></div></div>
+          <div class="progress-label" id="progress-label-sprint-27-jul">загрузка...</div>
+        </div>
+        <div class="header-toolbar">
+          <button class="toolbar-btn" onclick="collapseAll()">↑ Свернуть все</button>
+          <button class="toolbar-btn" onclick="expandAll()">↓ Развернуть все</button>
+          <button class="toolbar-btn" onclick="toggleHideDone()">✓ Скрыть выполненные</button>
+          <button class="toolbar-btn" onclick="showExport()">↗ Экспорт задач</button>
+        </div>
+      </header>
+
+      <div class="section" id="s-crm">
+        <div class="section-header">
+          <div class="section-icon icon-crm">🔧</div>
+          <div class="section-label">Аналитика и CRM</div>
+          <span class="section-tag tag-crm">Инфраструктура</span>
+        </div>
+
+        <div class="task-group" data-color="blue">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">10/10</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Реактивация в аналитике воронки: дозревающие лиды отдельной строкой (заявки прошлых месяцев)</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Оценщик тихо терял звонки: запись не успевала собраться на стороне телефонии — починено, повтор попыток</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Мост: терялись ответы менеджеров — ответ пишется сразу из вебхука amoCRM</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Голосовые и файлы клиента не доходили в amoCRM — починено, потерянные восстановлены</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Ложные тревоги сторожа доставки: чинили корень, тревога только на реальную ошибку</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Месячный срез по менеджерам: разбор по пунктам с динамикой + холодные vs теплые</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Месячный срез: блок «Итог месяца» и готовый текст «Вернуть в работу» менеджеру</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Оценщик: 12-й критерий «отработка возражений вопросом» + конвертер возражений в коде</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Сервер: изоляция наших данных правами + онбординг коллег (решили не переезжать)</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Двусторонний синк ПК↔сервер + уборка диска C</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section" id="s-leads">
+        <div class="section-header">
+          <div class="section-icon icon-leads">🎯</div>
+          <div class="section-label">Лидогенерация</div>
+          <span class="section-tag tag-leads">Рост</span>
+        </div>
+
+        <div class="task-group" data-color="orange">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">6/6</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Лид-магнит «500+ задач»: собран и задеплоен (флэт-модель, слайдер ставки, форма-квиз)</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">«500+ задач»: воронка бота + автозадача менеджеру на расчет команды</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Мост: починен сценарий «возвращающийся клиент» — повторная заявка привязывается к новой сделке</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Калькулятор 7П+1 разморожен: разбивка по неделям, починка PDF, ИИ-разбор — задеплоено</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Лид-магнит «Карта AI-возможностей» для зумов Романа: сервис с нуля, живой на chat.delegator24.ru/razbor</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Новый сайт Delegator24: фундамент, позиционирование, тексты главной, бриф, продуктовая правда</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section" id="s-content">
+        <div class="section-header">
+          <div class="section-icon icon-content">📣</div>
+          <div class="section-label">Контент-маркетинг</div>
+          <span class="section-tag tag-content">Прогрев</span>
+        </div>
+
+        <div class="task-group" data-color="purple">
+          <div class="task-group-header">
+            <div class="task-group-title">Разовые задачи</div>
+            <span class="task-group-count">3/3</span>
+          </div>
+          <ul class="subtask-list">
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Презентация «Что мы построили с ИИ»: 10 слайдов + текст спикера — задеплоена</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Карта второго мозга brain-map.html — интерактивный граф файловой системы</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Быстрый доступ к важным ссылкам в Telegram: меню в боте Аргуса</div>
+                <div class="subtask-meta"><span class="pill" style="background:#d1fae5;color:#065f46">сделано</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
     <!-- ====== СПРИНТ: 13–19 ИЮЛЯ ====== -->
-    <div class="sprint-panel active" id="sprint-13-jul" data-week-start="2026-07-13">
+    <div class="sprint-panel" id="sprint-13-jul" data-week-start="2026-07-13">
 
       <header>
         <div class="badge">Delegator24 · Маркетинг</div>
@@ -5817,6 +6715,8 @@
       document.querySelectorAll('.cw-grid-root').forEach(cwRenderOne);
     }
     window.cwRender = cwRender;
+    // showSprint живет вне этого IIFE и зовет cwRenderOne при переключении спринта
+    window.cwRenderOne = cwRenderOne;
 
     // Toggle content widget template preference
     window.cwSaveAsTemplate = function(btn) {
