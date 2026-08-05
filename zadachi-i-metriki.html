@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Маркетинг Delegator24 — задачи и метрики, на которые они работают</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #4F8EF7;
+    --blue-dark: #2B5FD9;
+    --bg-dark: #06102A;
+    --bg-card: #0C1A3A;
+    --text: #1A2035;
+    --text-muted: #5A6A8A;
+    --border: #DDE6F5;
+    --green: #10B981;
+    --orange: #F59E0B;
+    --violet: #9B5EF5;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #F4F7FD;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    background: var(--bg-dark);
+    padding: 18px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 10px;
+  }
+  .header-logo { color: #fff; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+  .header-logo span { color: var(--blue); }
+  .header-meta { color: #6080B0; font-size: 13px; }
+
+  .page { max-width: 1060px; margin: 0 auto; padding: 40px 24px 90px; }
+
+  .hero-block {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #0C1A3A 100%);
+    border-radius: 16px; padding: 34px 40px; color: #fff; margin-bottom: 40px;
+  }
+  .hero-block .label {
+    color: var(--blue); font-size: 12px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .hero-block h1 { font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 14px; letter-spacing: -0.5px; }
+  .hero-block h1 em { color: var(--blue); font-style: normal; }
+  .hero-block .sub { color: #8AAAE0; font-size: 16px; max-width: 720px; }
+  .meta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+  .meta-chip {
+    background: rgba(79,142,247,0.15); color: #8AAAE0;
+    border: 1px solid rgba(79,142,247,0.25);
+    border-radius: 8px; padding: 6px 14px; font-size: 13px;
+  }
+  .meta-chip strong { color: #C5D8F8; }
+
+  .section { margin-bottom: 46px; }
+  .section-title {
+    font-size: 20px; font-weight: 700; margin-bottom: 8px; padding-bottom: 12px;
+    border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .num {
+    background: var(--blue); color: #fff; font-size: 12px; font-weight: 700;
+    padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px;
+  }
+  .section-lead { color: var(--text-muted); margin: 14px 0 22px; max-width: 780px; }
+
+  /* ─── БЛОК НАПРАВЛЕНИЯ ─── */
+  .dir {
+    background: #fff; border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px 26px; margin-bottom: 16px;
+  }
+  .dir-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+  .dir-icon {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+    background: rgba(79,142,247,0.12);
+  }
+  .dir-title { font-size: 17px; font-weight: 700; line-height: 1.35; }
+  .dir-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+  .dir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .dir-grid { grid-template-columns: 1fr; } }
+
+  .dir-cell .cell-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 7px;
+  }
+  .dir-cell p { font-size: 14.5px; }
+
+  .metrics { display: flex; flex-wrap: wrap; gap: 7px; }
+  .m {
+    font-size: 13px; font-weight: 600;
+    background: #EEF4FE; color: var(--blue-dark);
+    border: 1px solid #D6E4FB; border-radius: 7px; padding: 4px 10px;
+  }
+  .m.new { background: #F6F1FE; color: #6B32C9; border-color: #E4D8FA; }
+  .m.op  { background: #ECFDF5; color: #067A57; border-color: #CDF0E1; }
+
+  .fact {
+    margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border);
+    font-size: 14px; color: var(--text);
+  }
+  .fact b { color: var(--blue-dark); }
+  .fact .fact-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-muted); margin-right: 8px;
+  }
+
+  /* ─── ЛЕГЕНДА ─── */
+  .legend {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 22px; display: flex; gap: 26px; flex-wrap: wrap; margin-bottom: 30px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--text-muted); }
+
+  /* ─── ТАБЛИЦА ИТОГА ─── */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th {
+    text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.7px; color: var(--text-muted); padding: 12px 16px;
+    border-bottom: 1px solid var(--border); background: #FAFCFF; white-space: nowrap;
+  }
+  td { padding: 11px 16px; border-bottom: 1px solid #EEF3FB; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td.num { text-align: right; white-space: nowrap; }
+  td.name { font-weight: 600; }
+
+  /* ─── CALLOUT ─── */
+  .callout {
+    border-left: 4px solid var(--blue);
+    background: #fff; border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    border-top: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .callout.orange { border-left-color: var(--orange); }
+  .callout .co-title { font-weight: 700; margin-bottom: 6px; }
+  .note { font-size: 13px; color: var(--text-muted); }
+  .muted { color: var(--text-muted); }
+
+  /* ─── ВРЕМЯ ─── */
+  .tm { display: flex; flex-direction: column; gap: 10px; }
+  .tm-row { display: flex; align-items: center; gap: 14px; }
+  .tm-name { width: 210px; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+  .tm-bar-wrap { width: 200px; background: #E7EEFA; border-radius: 6px; height: 22px; flex-shrink: 0; overflow: hidden; }
+  .tm-bar { height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--blue) 0%, var(--blue-dark) 100%); }
+  .tm-bar.v { background: linear-gradient(90deg, #B389F8 0%, var(--violet) 100%); }
+  .tm-bar.o { background: linear-gradient(90deg, #FBBF5B 0%, var(--orange) 100%); }
+  .tm-bar.g { background: linear-gradient(90deg, #6EE7B7 0%, var(--green) 100%); }
+  .tm-pct { width: 46px; font-size: 15px; font-weight: 800; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .tm-what { font-size: 13.5px; color: var(--text-muted); }
+  @media (max-width: 860px) {
+    .tm-row { flex-wrap: wrap; gap: 8px 12px; }
+    .tm-name { width: auto; }
+    .tm-bar-wrap { width: 120px; }
+    .tm-what { width: 100%; }
+  }
+
+  ul.clean { list-style: none; }
+  ul.clean li { padding-left: 20px; position: relative; margin-bottom: 9px; }
+  ul.clean li::before {
+    content: ''; position: absolute; left: 4px; top: 10px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--blue);
+  }
+
+  .footer {
+    border-top: 1px solid var(--border); margin-top: 56px; padding-top: 22px;
+    font-size: 13px; color: var(--text-muted);
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 24px 16px 60px; }
+    .hero-block { padding: 26px 22px; }
+    .hero-block h1 { font-size: 23px; }
+    .header { padding: 14px 20px; }
+    .dir { padding: 20px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">Delegator<span>24</span> · Маркетинг</div>
+  <div class="header-meta">Задачи и метрики · июнь – август 2026</div>
+</div>
+
+<div class="page">
+
+  <div class="hero-block">
+    <div class="label">Карта работы</div>
+    <h1>Что делает маркетинг и <em>на какие цифры KPI</em> это работает</h1>
+    <div class="sub">
+      Каждое направление работы привязано к конкретным строкам таблицы еженедельных KPI.
+      Слева — что делаем и зачем, справа — метрики, которые это двигает.
+      Отдельно отмечены метрики, для которых строки в таблице пока нет.
+    </div>
+    <div class="meta-row">
+      <div class="meta-chip">Направлений: <strong>12</strong></div>
+      <div class="meta-chip">Задач за период: <strong>215</strong></div>
+      <div class="meta-chip">Спринтов: <strong>8</strong></div>
+      <div class="meta-chip">Период: <strong>июнь – август 2026</strong></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="m">метрика</span> строка есть в таблице KPI</div>
+    <div class="legend-item"><span class="m new">метрика</span> строки нет — предлагаю добавить</div>
+    <div class="legend-item"><span class="m op">метрика</span> зона отдела продаж, маркетинг влияет косвенно</div>
+  </div>
+
+  <!-- ============ 1. УЧЕТ ============ -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> Фундамент: чтобы метрики вообще было чем считать</div>
+    <div class="section-lead">
+      До июня сквозного учета не существовало: заявка, диалог и оплата жили в разных местах и не связывались между собой.
+      Эти три направления не создают лиды — они делают возможным весь остальной счет.
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">🗂</div>
+        <div>
+          <div class="dir-title">Внедрение amoCRM: воронка, карточка сделки, квалификация, источники</div>
+          <div class="dir-sub">Июнь – июль · сделано, ведется постоянно</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы видеть путь каждой заявки от источника до оплаты и понимать, на каком шаге и по какой причине
+            теряются деньги. Без этого нельзя ни посчитать стоимость клиента, ни сравнить каналы между собой,
+            ни отличить слабый трафик от слабой обработки.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Все заявки</span><span class="m">Все заявки ЦА</span><span class="m">Маркетинг квал</span>
+            <span class="m">Вышли на диалог ОП</span><span class="m">ОП квал</span><span class="m">Оплаченные заявки</span>
+            <span class="m">Стоимость лида</span><span class="m">Стоимость продажи</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что работает</span>
+        Воронка из 9 этапов, единая карточка с полями квалификации A/B/C/D, источники проставлены по всем сделкам.
+        <b>Сквозная аналитика по каналам ведется с 10 июня</b> — все строки лидогенерации в таблице KPI считаются из нее.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">💬</div>
+        <div>
+          <div class="dir-title">Единый канал переписки: Wazzup, мост из ботов, MAX, Telegram</div>
+          <div class="dir-sub">Июль · сделано, работает автоматически</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы ни одно обращение не терялось между ботом, мессенджером и CRM, а менеджер вел весь диалог
+            из одной карточки. Половина обращений приходит в боты — раньше эта половина в отчетность не попадала вообще.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Все заявки</span><span class="m">Все заявки ЦА</span><span class="m">Маркетинг квал</span>
+            <span class="m new">Скорость первого ответа</span><span class="m new">Потери коммуникации</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что работает</span>
+        Переписка из Telegram, WhatsApp, MAX и ботов идет в карточку сделки, менеджер отвечает прямо оттуда.
+        Заявка с лендинга и диалог в боте склеиваются в одну сделку. Сделка создается автоматически со стартом бота,
+        с каналом и меткой источника.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">📞</div>
+        <div>
+          <div class="dir-title">Входящая телефония: единый сценарий приема звонков</div>
+          <div class="dir-sub">Август · сделано</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы звонок с сайта и из рекламы доходил до живого менеджера. На сайте работает динамический коллтрекинг:
+            подменные номера были привязаны к именным сценариям сотрудников прошлых лет, и звонок уходил в пустоту.
+            Теперь любой входящий идет веером на всю группу продаж.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Вышли на диалог ОП</span><span class="m">Оплаченные заявки</span>
+            <span class="m new">Доля отвеченных входящих</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что работает</span>
+        Сценарий «Входящие 2026» с 3 августа: веерный обзвон группы, дозвон 30 секунд, все номера коллтрекинга
+        перепривязаны. Тестовый звонок проходит. <b>Первый месяц для оценки эффекта — август.</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2. КАЧЕСТВО ОБРАБОТКИ ============ -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> Качество обработки: чтобы заявка доходила до оплаты</div>
+    <div class="section-lead">
+      Самый дорогой участок воронки — между «лид квалифицирован» и «оплата». Эти направления работают на конверсию
+      уже полученных заявок, а не на их количество.
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">🤖</div>
+        <div>
+          <div class="dir-title">Автооценка диалогов менеджеров + месячный срез + недельная оперативка</div>
+          <div class="dir-sub">Июль – август · работает каждую ночь автоматически</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы понимать, почему квалифицированный лид не становится клиентом, и чинить это адресно.
+            Каждый диалог разбирается по технологии продаж и по экспертному слою: в какой роли менеджер вел разговор,
+            перевел ли боль клиента в деньги, отработал ли возражение. Раньше это можно было увидеть только
+            выборочным ручным прослушиванием.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m op">ОП квал</span><span class="m op">Оплаченные заявки</span><span class="m op">Средний чек по новым</span>
+            <span class="m new">Качество диалога и роль менеджера</span><span class="m new">Отработка возражений</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что работает</span>
+        Каждая сделка получает разбор в карточке: балл, процент выполнения технологии, сегмент клиента и рекомендацию.
+        Из этих данных собирается месячный срез по каждому менеджеру и еженедельная оперативка с конкретными сделками.
+        <b>Приоритет отдела на август уже назначен по данным:</b> вопрос о бюджете до озвучивания цены.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">📊</div>
+        <div>
+          <div class="dir-title">Дашборд воронки и аналитика каналов привлечения</div>
+          <div class="dir-sub">Июль · работает, обновляется по кнопке</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы бюджет распределялся по каналам, которые дают оплаты, а не клики. Дашборд считает этап сделки
+            по реальной истории, продажи по дате оплаты, длину сделки и дозревающие заявки прошлых месяцев
+            отдельной строкой — это разные деньги и разная скорость.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Стоимость лида</span><span class="m">Стоимость квал лида</span><span class="m">Стоимость продажи</span>
+            <span class="m">Оплаченные заявки</span><span class="m new">Конверсия канала в оплату</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что дало</span>
+        Впервые видно, как каждый канал доходит до оплаты, а не только до клика:
+        <b>рекомендации 40%, реактивация базы 28%, органика 13%</b>.
+        Замер идет с июля, и по мере накопления данных по нему можно будет планировать нагрузку
+        на каждый канал — с поправкой на то, что цикл сделки длиннее месяца.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3. ПРИВЛЕЧЕНИЕ ============ -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> Привлечение: чтобы заявок стало больше и они были целевые</div>
+    <div class="section-lead">
+      Эти направления работают на верх воронки — количество и качество входящего потока.
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">🎯</div>
+        <div>
+          <div class="dir-title">Анализ целевой аудитории и позиционирование</div>
+          <div class="dir-sub">Июнь – июль · база собрана, применяется в упаковке</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы реклама и контент приводили тех, кто может купить, а не всех подряд. Собран портрет клиента,
+            сегменты, барьеры и возражения, система оценки лида A/B/C. От этого зависит и текст объявления,
+            и вопросы квалификации, и то, кого менеджер берет в работу первым.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Все заявки ЦА</span><span class="m">Заявки ЦА, конверсия</span>
+            <span class="m">ЦА-лиды из всех ОП квал</span><span class="m">Стоимость квал лида</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что видно в цифрах</span>
+        Доля целевых заявок держится <b>62,3% при плане 60%</b>, признание лида отделом продаж — <b>75% при плане 50%</b>.
+        Входящий поток по качеству выше норматива.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">🧲</div>
+        <div>
+          <div class="dir-title">Лид-магниты и воронки в боте</div>
+          <div class="dir-sub">Июль – август · собраны, подключены к CRM</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы получать заявки от тех, кто еще не готов покупать сегодня: человек приходит за полезным материалом,
+            оставляет данные и квалифицирует себя сам до разговора с менеджером. Так расширяется верх воронки
+            без роста стоимости лида, а менеджер получает лид с уже собранным контекстом.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Все заявки</span><span class="m">Все заявки ЦА</span><span class="m">Подписки на бот</span>
+            <span class="m">Стоимость лида</span><span class="m">Маркетинг квал</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что готово</span>
+        Три воронки целиком: лендинг с квизом → заявка в amoCRM → выдача материала в боте → автозадача менеджеру.
+        Заявка попадает в CRM, даже если человек не дошел до бота. Плюс два отдельных инструмента для зумов
+        и партнерской работы: калькулятор разгрузки руководителя и карта AI-возможностей.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">🌐</div>
+        <div>
+          <div class="dir-title">Новый сайт и упаковка оффера</div>
+          <div class="dir-sub">Август · фундамент и тексты собраны</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы визит превращался в заявку чаще. Сайт должен объяснять ценность подписной модели и продавать
+            команду под операционку, а не разовые поручения — то есть говорить то же, что менеджер говорит в диалоге.
+            Открытые цены и понятная структура снимают часть возражений до разговора.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Посетители на сайте</span><span class="m">Все заявки</span>
+            <span class="m new">Конверсия визита в заявку</span><span class="m">Стоимость лида</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что готово</span>
+        Позиционирование, структура, тексты главной, продуктовая правда по тарифам и SLA, бриф.
+        Следующий шаг — утверждение текстов и сборка прототипа.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">📣</div>
+        <div>
+          <div class="dir-title">Контент-маркетинг: 9 каналов на регулярной основе</div>
+          <div class="dir-sub">Постоянно · Telegram, MAX, Instagram, VK, Threads, YouTube, Дзен, блог, эфиры</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы приводить теплый трафик и формировать спрос у аудитории, которая услугу в поиске
+            не ищет, — реклама ловит готовых, контент создает готовых. Он же работает на прогрев базы:
+            клиент, который читает нас, дольше остается и чаще берет допы.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Посетители на сайте</span><span class="m">Подписки на бот</span><span class="m">Все заявки</span>
+            <span class="m">Стоимость лида</span><span class="m op">Непродленные клиенты</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">чем подтверждается</span>
+        Заявки из органики доходят до оплаты в <b>13%</b> случаев — выше среднего по воронке.
+        Это канал, который не включается деньгами и накапливает эффект месяцами,
+        поэтому контент требует регулярной работы, а не публикаций по остаточному принципу.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">🤝</div>
+        <div>
+          <div class="dir-title">Партнерства, эфиры и коллаборации</div>
+          <div class="dir-sub">Постоянно · банки, подкасты, совместные эфиры, витрина в Telegram</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы получать доступ к чужой прогретой аудитории без рекламного бюджета и с высоким доверием на входе.
+            Рекомендация от партнера — самый конверсионный вход, который у нас есть.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Все заявки</span><span class="m">Выручка от партнерских комиссий</span>
+            <span class="m">Новые клиенты и вернувшиеся</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">чем подтверждается</span>
+        Заявки по рекомендации доходят до оплаты в <b>40%</b> случаев — доверие на входе сокращает
+        и цикл сделки, и количество возражений. Канал разовый по своей природе: его нельзя запустить
+        один раз и оставить, он требует постоянной работы с довольными клиентами и партнерами.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">♻️</div>
+        <div>
+          <div class="dir-title">Реактивация базы и работа с рекомендациями</div>
+          <div class="dir-sub">Август · механика согласована, тест на топ-клиентах</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы продавать тем, кто уже нас знает: ушедшим, спящим и довольным клиентам. Это самый быстрый
+            и самый дешевый источник новых оплат — знакомство и доверие уже оплачены, цикл сделки короче.
+            Вход всегда через пользу, а не через «вернитесь».
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Новые клиенты и вернувшиеся</span><span class="m">Выручка от продаж новым</span>
+            <span class="m">Оплаченные заявки</span><span class="m new">Реактивация отдельной строкой</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">чем подтверждается</span>
+        Конверсия реактивации в оплату — <b>28%</b>, второй результат после рекомендаций.
+        В дашборде дозревающие заявки прошлых периодов уже считаются отдельно от текущих.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 4. УПРАВЛЕНИЕ ============ -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> Управление и достоверность данных</div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">📋</div>
+        <div>
+          <div class="dir-title">Регулярная отчетность и ведение метрик</div>
+          <div class="dir-sub">Ежедневно, еженедельно, ежемесячно</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы решения принимались по цифрам, а расхождения между источниками находились до того,
+            как по ним примут решение. Сюда входит эта таблица KPI, ежедневная сводка, отчеты по каналам,
+            OKR и планирование бюджета.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m">Все строки лидогенерации</span><span class="m">Стоимость лида и продажи</span>
+            <span class="m new">Достоверность источников</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что дало</span>
+        Посчитана реальная стоимость каждого этапа воронки: лид, диалог, квалифицированный лид, клиент.
+        Зафиксировано правило расчета: по каналам считаем медийные деньги, по компании — полный бюджет.
+      </div>
+    </div>
+
+    <div class="dir">
+      <div class="dir-head">
+        <div class="dir-icon">🛡</div>
+        <div>
+          <div class="dir-title">Автоматизация и надежность системы</div>
+          <div class="dir-sub">Постоянно · мониторинг, резервные копии, AI-агенты</div>
+        </div>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-cell">
+          <div class="cell-label">Зачем это делаем</div>
+          <p>
+            Чтобы учет не зависел от того, вспомнил ли человек нажать кнопку. Система сама принимает заявки,
+            связывает диалоги со сделками, оценивает разговоры ночью и сообщает, если что-то встало.
+            Это же освобождает время маркетинга на задачи роста вместо ручного сбора данных.
+          </p>
+        </div>
+        <div class="dir-cell">
+          <div class="cell-label">На какие метрики работает</div>
+          <div class="metrics">
+            <span class="m new">Непрерывность учета заявок</span><span class="m">Все заявки</span>
+            <span class="m new">Время на ручной сбор данных</span>
+          </div>
+        </div>
+      </div>
+      <div class="fact">
+        <span class="fact-label">что работает</span>
+        Пять автоматических проверок каждые десять минут, ежедневные резервные копии базы диалогов,
+        ночная оценка без ручного запуска, тревога в Telegram при сбое и отбой при восстановлении.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ СВОДКА ============ -->
+  <div class="section">
+    <div class="section-title"><span class="num">5</span> Сводка: направление → строка в таблице KPI</div>
+    <div class="section-lead">
+      Одним экраном: какое направление на какую строку работает и когда по ней можно судить о результате.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Направление</th><th>Основные строки KPI</th><th>Когда виден эффект</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">amoCRM и сквозной учет</td><td>все строки лидогенерации</td><td>работает с 10.06</td></tr>
+          <tr><td class="name">Единый канал переписки</td><td>Все заявки · Маркетинг квал</td><td>работает с июля</td></tr>
+          <tr><td class="name">Входящая телефония</td><td>Вышли на диалог ОП · Оплаченные заявки</td><td>август, срез 1 сентября</td></tr>
+          <tr><td class="name">Автооценка диалогов и срез</td><td>ОП квал → Оплаченные заявки · Средний чек</td><td>работает с июля, срез ежемесячно</td></tr>
+          <tr><td class="name">Дашборд и аналитика каналов</td><td>Стоимость лида, квала, продажи</td><td>работает</td></tr>
+          <tr><td class="name">Анализ ЦА и позиционирование</td><td>Заявки ЦА · ЦА-лиды из ОП квал</td><td>держится выше плана</td></tr>
+          <tr><td class="name">Лид-магниты и воронки бота</td><td>Все заявки · Подписки на бот · Стоимость лида</td><td>после запуска рекламных офферов</td></tr>
+          <tr><td class="name">Новый сайт</td><td>Посетители · Все заявки</td><td>после утверждения текстов и сборки</td></tr>
+          <tr><td class="name">Контент-маркетинг</td><td>Посетители · Подписки на бот · Все заявки</td><td>накопительно, органика 13% в оплату</td></tr>
+          <tr><td class="name">Партнерства и эфиры</td><td>Партнерские комиссии · Новые клиенты</td><td>по мере запуска, рекомендации 40%</td></tr>
+          <tr><td class="name">Реактивация базы</td><td>Новые и вернувшиеся · Выручка ОП1</td><td>август – сентябрь, канал дает 28%</td></tr>
+          <tr><td class="name">Отчетность и надежность</td><td>достоверность всех строк</td><td>постоянно</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ============ 6. ВРЕМЯ ============ -->
+  <div class="section">
+    <div class="section-title"><span class="num">6</span> Куда уходит рабочее время</div>
+    <div class="section-lead">
+      Два независимых замера: состав задач за восемь спринтов и хронометраж рабочего дня,
+      который велся в момент выполнения задач, а не восстанавливался по памяти.
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin:0 0 14px">Распределение времени в неделю</h3>
+    <div class="tm">
+      <div class="tm-row">
+        <div class="tm-name">Привлечение и упаковка</div>
+        <div class="tm-bar-wrap"><div class="tm-bar" style="width:30%"></div></div>
+        <div class="tm-pct">30%</div>
+        <div class="tm-what">лид-магниты, сайт, офферы и реклама, анализ ЦА, позиционирование, тарифы</div>
+      </div>
+      <div class="tm-row">
+        <div class="tm-name">Инфраструктура приема лида</div>
+        <div class="tm-bar-wrap"><div class="tm-bar v" style="width:25%"></div></div>
+        <div class="tm-pct">25%</div>
+        <div class="tm-what">CRM, каналы переписки, телефония, автооценка диалогов, устранение сбоев</div>
+      </div>
+      <div class="tm-row">
+        <div class="tm-name">Контент и соцсети</div>
+        <div class="tm-bar-wrap"><div class="tm-bar" style="width:20%"></div></div>
+        <div class="tm-pct">20%</div>
+        <div class="tm-what">9 каналов, производство материалов, эфиры, работа с аудиторией</div>
+      </div>
+      <div class="tm-row">
+        <div class="tm-name">Операционка и помощь ОП</div>
+        <div class="tm-bar-wrap"><div class="tm-bar o" style="width:15%"></div></div>
+        <div class="tm-pct">15%</div>
+        <div class="tm-what">ревизия сделок, квалификация, разбор обращений менеджеров, движение по этапам</div>
+      </div>
+      <div class="tm-row">
+        <div class="tm-name">Отчетность и аналитика</div>
+        <div class="tm-bar-wrap"><div class="tm-bar g" style="width:10%"></div></div>
+        <div class="tm-pct">10%</div>
+        <div class="tm-what">эта таблица KPI, ежедневная сводка, OKR, отчеты по каналам, планирование бюджета</div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:12px">
+      Доли оценочные: блоки идут внахлест. Например, починка мессенджера у менеджеров шла одновременно
+      с производством визуала акции, а ревизия сделок — параллельно с разбором вложений.
+    </p>
+
+    <h3 style="font-size:16px;font-weight:700;margin:32px 0 14px">Состав работы: 215 задач за 8 спринтов</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Блок работ</th><th class="num">Задач</th><th class="num">Доля</th><th>Что это по сути</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Аналитика, CRM и системы</td><td class="num">78</td><td class="num">36%</td><td>чтобы лид дошел до менеджера и разговор состоялся</td></tr>
+          <tr><td class="name">Лидогенерация</td><td class="num">55</td><td class="num">26%</td><td>чтобы лидов стало больше и они были целевые</td></tr>
+          <tr><td class="name">Регулярная отчетность</td><td class="num">42</td><td class="num">20%</td><td>чтобы решения принимались по цифрам</td></tr>
+          <tr><td class="name">AI-инфраструктура и автоматизация</td><td class="num">19</td><td class="num">9%</td><td>чтобы рутина не съедала время маркетинга</td></tr>
+          <tr><td class="name">Контент-маркетинг</td><td class="num">18</td><td class="num">8%</td><td>теплый трафик и прогрев базы</td></tr>
+          <tr><td class="name">Партнерства</td><td class="num">3</td><td class="num">1%</td><td>чужая аудитория без рекламного бюджета</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" style="margin-top:24px">
+      <div class="co-title">Почему прямой лидогенерации на первый взгляд мало</div>
+      Работа на привлечение — 26% задач, вместе с контентом 34%. Еще 36% — это инфраструктура приема лида,
+      и она относится к лидогенерации не меньше, чем реклама. Привлечение работает ровно до той секунды,
+      пока сообщение доходит до менеджера, а ответ — до клиента.
+      <br><br>
+      Как это выглядит на живом примере из хронометража: в 13:17 ушла рассылка по базе, в 13:22 вышел пост —
+      пошли обращения. И с 13:19 до 13:48 система молча теряла входящие: не доходили ни вопросы клиентов,
+      ни первые ответы менеджеров. Полчаса в пик отклика на рассылку, за которую уже заплачено временем
+      и материалами. В тот же день выяснилось, что часть диалогов уходила в объединенные карточки,
+      голосовые приходили клиенту нечитаемой ссылкой, а файлы не отправлялись вообще — переполнилось
+      хранилище CRM. Каждый такой сбой означает одно: <strong>лид пришел, но разговора не было</strong>.
+      <br><br>
+      Итого на путь лида — от привлечения до состоявшегося разговора — работает <strong>70% задач</strong>.
+      Остальное: данные для решений и автоматизация, которая это время возвращает.
+    </div>
+
+    <div class="callout orange" style="margin-top:16px">
+      <div class="co-title">Что показал хронометраж дня</div>
+      За один рабочий день (09:37 – 18:25, один перерыв 35 минут) в работе были четыре роли:
+      маркетолог, дизайнер-продакшн, технический специалист и менеджер по продажам.
+      Переключение между ними — 15–20 раз за день. Ни один блок не был доведен без прерывания:
+      производство акции прерывалось починкой мессенджера, публикация — аварией моста,
+      вечер — двумя обращениями отдела продаж.
+      <br><br>
+      В тот же день акция прошла путь от реплики в чате до публикации в двух каналах за 3 часа 45 минут,
+      включая три итерации визуала и анимацию. Это возможно только потому, что шаблоны, конвейер рендера
+      и каналы уже собраны раньше.
+    </div>
+  </div>
+
+  <!-- ============ 7. ВЫВОД ============ -->
+  <div class="section">
+    <div class="section-title"><span class="num">7</span> Коротко: что из этого следует</div>
+
+    <div class="dir" style="border-left:4px solid var(--blue)">
+      <ul class="clean">
+        <li>
+          <strong>Система собрана и работает с июля.</strong>
+          Сквозной учет в amoCRM ведется с 10 июня, мост из ботов и автооценка диалогов запущены
+          в начале июля — июльский срез по менеджерам уже собран из реальных данных.
+          В августе к этому добавился единый прием входящих звонков.
+          Дальше это не стройка, а эксплуатация: система работает ночью сама и дает данные каждую неделю.
+        </li>
+        <li>
+          <strong>Качество входящего потока уже выше норматива.</strong>
+          Целевых заявок 62,3% при плане 60%, признание лида отделом продаж 75% при плане 50%.
+          Проблема не в том, кого приводит маркетинг, а в объеме входа и в том, что происходит
+          с заявкой после передачи.
+        </li>
+        <li>
+          <strong>Органика, контент и рекомендации требуют системной работы, а не остаточного внимания.</strong>
+          По первым замерам рекомендации и реактивация базы дают самую высокую конверсию в оплату,
+          органика — заметно выше средней. Особенность этих каналов в том, что их нельзя включить деньгами:
+          они работают только при постоянном ведении и накапливают эффект месяцами, а если пустить их
+          на самотек, поток просто исчезает. Реклама при этом остается основным источником объема заявок —
+          без нее верх воронки схлопывается, и никакая органика этот объем в моменте не заменит.
+          <br><br>
+          <span class="muted">Оговорка по данным: продажи считаются в системе с июля — это первый месяц
+          полноценного замера, а цикл сделки заметно длиннее месяца. Поэтому цифры по каналам предварительные:
+          они годятся для расстановки приоритетов и распределения внимания, но не для решений
+          об отключении источников.</span>
+        </li>
+        <li>
+          <strong>Треть времени уходит на то, чтобы привлеченное не терялось.</strong>
+          Это не отвлечение от лидогенерации — это ее условие. Каждый сбой в приеме лида обнуляет
+          деньги, уже потраченные на его привлечение.
+        </li>
+        <li>
+          <strong>Что определит сентябрь.</strong> Три вещи: запуск рекламных офферов на готовые
+          лид-магниты, приоритет отдела продаж на август (вопрос о бюджете до озвучивания цены)
+          и сборка нового сайта после утверждения текстов. Первые две дают эффект в пределах месяца.
+        </li>
+      </ul>
+    </div>
+
+    <p style="margin-top:20px" class="muted">
+      Часть результата этой работы пока не имеет отдельных строк в таблице — например, доля отвеченных
+      входящих звонков, скорость первого ответа и качество диалога. Эти метрики уже считаются в системе,
+      и их можно вывести в еженедельный отчет, если это нужно для управления.
+    </p>
+  </div>
+
+  <div class="footer">
+    Источники: доска задач маркетинга (8 спринтов, июнь – август 2026), таблица «ДГ24 Еженедельные_KPI_ассистенты»,
+    amoCRM, Яндекс Метрика, база автооценки диалогов. Подготовлено 5 августа 2026.
+  </div>
+
+</div>
+</body>
+</html>
