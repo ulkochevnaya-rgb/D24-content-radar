@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+  <meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEO-паспорт Delegator24 — что и как настроено</title>
+<style>
+  :root{
+    --ink:#182230; --ink-2:#3d4a5c; --muted:#6a7686;
+    --ground:#eef1f5; --card:#ffffff; --line:#dde3ec;
+    --accent:#235d8a; --accent-2:#2f7cb5; --accent-wash:#eaf1f7;
+    --ready:#2e8b6b; --ready-wash:#e6f4ee;
+    --warn:#9a6700; --warn-wash:#fff3d6;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--sans);background:var(--ground);color:var(--ink);font-size:15px;line-height:1.55}
+  .wrap{max-width:880px;margin:0 auto;padding:34px 20px 80px}
+  h1{font-size:26px;letter-spacing:-.02em;margin-bottom:6px}
+  .sub{color:var(--muted);font-size:13.5px;margin-bottom:28px}
+  h2{font-size:19px;letter-spacing:-.01em;margin:34px 0 12px;padding-top:22px;border-top:1px solid var(--line)}
+  h3{font-size:15.5px;margin:18px 0 6px}
+  p{margin:8px 0;color:var(--ink-2)}
+  ul{margin:8px 0 8px 22px;color:var(--ink-2)}
+  li{margin:5px 0}
+  code{font-family:var(--mono);font-size:13px;background:var(--accent-wash);padding:1px 6px;border-radius:6px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13.5px;margin:12px 0}
+  th{background:var(--accent-wash);color:var(--accent);text-align:left;padding:9px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+  td:first-child{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+  .ok{color:var(--ready);font-weight:700}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:2px}
+  .tag-ok{color:var(--ready);background:var(--ready-wash)}
+  .tag-warn{color:var(--warn);background:var(--warn-wash)}
+  .note{background:var(--warn-wash);border:1px solid #f0dfae;border-radius:10px;padding:12px 15px;font-size:13.5px;color:#6b5518;margin:12px 0}
+  a{color:var(--accent-2)}
+  @media(max-width:640px){td:first-child{white-space:normal}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>SEO-паспорт Delegator24</h1>
+<div class="sub">Что и как настроено по доменам · собран 13.08.2026 по итогам полного технического аудита · вопросы: Юлия Кочевная</div>
+
+<h2>1. Карта доменов: кто где живет</h2>
+<table>
+<tr><th>Домен</th><th>Что это</th><th>Хостинг</th><th>Индексация</th></tr>
+<tr><td>delegator24.ru</td><td>Основной сайт</td><td>Тильда (планируется переезд на свой сервер, см. раздел 7)</td><td>Да, в индексе</td></tr>
+<tr><td>start.delegator24.ru</td><td>Лендинги лид-магнитов: /pochemu-sam/ (тест), /400-zadach/ (каталог 500+ задач), /m/ (тетрадь-выдача), /r/* (персональные отчеты)</td><td>GitHub Pages</td><td>Публичные — да; /m/ и /r/* — noindex осознанно (выдача после заявки и персональные страницы)</td></tr>
+<tr><td>chat.delegator24.ru</td><td>Сервисы: /razbor и /karta (интерактивные лид-магниты), служебные вебхуки</td><td>Свой сервер (Caddy)</td><td>/razbor и /karta открыты; персональные /karta/&lt;id&gt; — noindex; служебное закрыто в robots</td></tr>
+<tr><td>kp.delegator24.biz</td><td>Рабочее КП партнерки для банков</td><td>GitHub Pages</td><td>Не трогать — рабочий документ</td></tr>
+<tr><td>delegator24.biz (корень)</td><td>Старый сайт, отдает 403, но висит в выдаче</td><td>—</td><td>301 на delegator24.ru поставим при переезде основного сайта</td></tr>
+<tr><td>ulkochevnaya-rgb.github.io/D24-content-radar</td><td>Внутренние рабочие документы</td><td>GitHub Pages</td><td>Закрыто: noindex на всех страницах + robots.txt Disallow — осознанно, не открывать</td></tr>
+</table>
+
+<h2>2. Что настроено на start.delegator24.ru <span class="tag tag-ok">сделано 13.08</span></h2>
+<div class="card">
+<ul>
+<li><code>robots.txt</code> — открыт весь домен, указан sitemap (до 13.08 файла не было вообще)</li>
+<li><code>sitemap.xml</code> — два боевых лендинга: /pochemu-sam/ и /400-zadach/</li>
+<li><code>llms.txt</code> — карта для AI-краулеров: описание компании + оба лендинга</li>
+<li><code>&lt;link rel="canonical"&gt;</code> на обоих лендингах</li>
+<li><code>og:image</code> 1200×630 на обоих (трафик идет из мессенджеров)</li>
+<li>Enforce HTTPS включен: http → 301 на https (до 13.08 http отдавал 200 — дубль)</li>
+<li>Своя страница 404 со ссылками на воронки (вместо стандартной GitHub)</li>
+<li>Мета: title, description, og:title/description/type, favicon, viewport — на месте</li>
+<li>Счетчик Метрики 39533920 + noscript-пиксель на обоих лендингах</li>
+</ul>
+</div>
+<div class="note"><b>Важно знать:</b> субдомен пока НЕ в индексе Google/Яндекса — до 13.08 у него не было ни robots, ни sitemap, и на него нет ни одной ссылки с основного сайта (страницы-сироты). Техническая база теперь готова; для индексации не хватает ссылок с delegator24.ru — они появятся на новом сайте (Тильду решено не править). Можно ускорить: добавить домен в Вебмастер/Search Console и отправить sitemap.</div>
+
+<h2>3. Яндекс.Метрика</h2>
+<div class="card">
+<p>Один счетчик на все: <code>39533920</code>. Стоит на: delegator24.ru (Тильда), обоих лендингах start, тетради /m/, карте /karta.</p>
+<p>Осознанно НЕТ счетчика: kp (рабочее КП), персональные отчеты /r/*.</p>
+</div>
+<h3>Цели, прошитые в коде страниц (JavaScript-события)</h3>
+<table>
+<tr><th>Идентификатор</th><th>Что значит</th><th>Статус в счетчике</th></tr>
+<tr><td>lead_form</td><td>Отправка заявки на лендинге</td><td rowspan="4"><span class="tag tag-warn">завести</span> события шлются, но целей в счетчике нет — задача у маркетолога (памятка от 13.08). Пока не заведены, конверсии лид-магнитов не считаются</td></tr>
+<tr><td>to_bot</td><td>Переход в бота</td></tr>
+<tr><td>test_done, to_catalog</td><td>Тест пройден; переход в каталог</td></tr>
+<tr><td>barrier_* (6 шт.)</td><td>Результаты теста по барьерам</td></tr>
+</table>
+<p>Мертвые цели в счетчике (0 достижений за 14 дней при живых формах): 9 целей квиза главной NEWSITE, «Отправка формы заявки», «Заказать звонок», «заявка ловец лидов uis», CRM-цели «оплачен/отменен/спам» (при работающей «заказ создан» = 40). Разбирается маркетолог.</p>
+
+<h2>4. Безопасность и заголовки (для понимания, почему так)</h2>
+<div class="card">
+<ul>
+<li>chat.delegator24.ru: HSTS, CSP, X-Frame-Options DENY, nosniff, no-referrer; корень / → 302 на delegator24.ru</li>
+<li>Лендинги: CSP в meta (разрешены только Метрика, UIS, шрифты), антифрейм, honeypot + серверный rate-limit на приеме заявок</li>
+<li>Скрипт UIS-виджета вставляется после window.load — их сервер отдает его до 25 секунд и раньше «подвешивал» загрузку страницы. Это не баг, а осознанная отложенная загрузка</li>
+<li>Cookie-плашка на всех страницах с Метрикой (требование практики РКН)</li>
+<li>Персональные страницы (/r/*, /karta/&lt;id&gt;) — noindex + непредсказуемые адреса. Не «чинить» их появлением в sitemap</li>
+</ul>
+</div>
+
+<h2>5. AI-видимость (GEO)</h2>
+<div class="card">
+<ul>
+<li>AI-краулеры (GPTBot, ClaudeBot, PerplexityBot и др.) нигде не запрещены — осознанно</li>
+<li>llms.txt: на start — ручной (норм); на delegator24.ru — автогенерация Тильды с мусорным списком страниц, править не будем — уйдет с переездом</li>
+<li>Известная проблема: выдача «делегатор24 отзывы» занята негативом бывших сотрудников (antijob и др.), клиентских отзовиков нет — план работ по репутации есть у Юлии (Яндекс.Бизнес, отзовики, ответы работодателя)</li>
+<li>В категорийных подборках («лучшие сервисы аутсорсинга» на finuslugi, vc.ru) компании нет — план: размещения + 2-3 экспертные статьи</li>
+</ul>
+</div>
+
+<h2>6. Известные хвосты в индексе</h2>
+<table>
+<tr><th>Адрес</th><th>Проблема</th><th>Решение</th></tr>
+<tr><td>/category/otzyvy-sotrudnikov/ и другие WP-адреса</td><td>404 без редиректа, вес теряется</td><td>Войдут в карту 301 при переезде (в Тильде решено не делать)</td></tr>
+<tr><td>delegator24.biz</td><td>403, но в выдаче</td><td>301 при переезде</td></tr>
+<tr><td>Старые нетематические посты блога в sitemap</td><td>Размывают тематический профиль</td><td>Ревизия при переезде</td></tr>
+<tr><td>description главной: «Наш сервис... поможем»</td><td>Грамматика в сниппете выдачи</td><td>Уйдет с новым сайтом</td></tr>
+</table>
+
+<h2>7. Переезд на новый сайт (решение от 13.08.2026)</h2>
+<div class="card">
+<p><b>Решение:</b> новый сайт (на коде, без Тильды) и лендинги — на основном домене delegator24.ru, хостинг — свой сервер за Caddy. GitHub остается хранилищем кода и запасным зеркалом.</p>
+<p><b>Почему не GitHub Pages для основного домена:</b> он не умеет серверные 301 — а карта редиректов на ~100 адресов Тильды и старого WP обязательна, иначе теряем накопленный ссылочный вес.</p>
+<ul>
+<li>Карта 301 уже заготовлена: 97 адресов из sitemap Тильды + известные WP-адреса, назначения проставляются по мере готовности структуры нового сайта</li>
+<li>Лендинги переезжают путями (например /zadachi/, /test/) в день переключения DNS, со start — 301</li>
+<li>План переключения: снизить TTL за сутки → переключить A-запись → прогнать полный аудит → Тильду держать 2-3 недели как страховку отката</li>
+<li>На новом сайте закладываются: перелинковка на лендинги, единые цели Метрики, schema.org (Organization + sameAs, Service с ценой, FAQ), ручной llms.txt, чек-лист на каждую страницу</li>
+</ul>
+</div>
+
+<h2>8. Чего не делать (осознанные решения)</h2>
+<div class="card">
+<ul>
+<li>Не заводить www-варианты поддоменов (www.start, www.kp) — решение от 13.08</li>
+<li>Не трогать kp.delegator24.biz — рабочее КП</li>
+<li>Не «чинить» noindex на /m/, /r/*, github.io-документах — он там намеренно</li>
+<li>Не править Тильду — все изменения уровня сайта идут в новый сайт</li>
+<li>Не отправлять тестовые заявки через формы — каждая создает реальную сделку в CRM и задачу менеджеру</li>
+</ul>
+</div>
+
+<div class="sub" style="margin-top:30px">Технические вопросы по лендингам и серверу — через Юлию Кочевную. Полный чек-лист требований к страницам и карта редиректов — во внутренней документации проекта.</div>
+</div>
+</body>
+</html>
