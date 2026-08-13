@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="robots" content="noindex,nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Delegator24 — Аналитика</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
@@ -147,7 +148,7 @@
   <div class="upload-box">
     <span class="upload-emoji">📊</span>
     <h1>Аналитика лидов</h1>
-    <p>Данные тянутся из amoCRM сами.<br>Отчёт по метрикам и каналам построится автоматически.</p>
+    <p>Данные тянутся из amoCRM сами.<br>Отчет по метрикам и каналам построится автоматически.</p>
     <button class="btn btn-primary" onclick="event.stopPropagation();обновитьСервер()">↻ Загрузить данные</button>
     <div class="upload-hint">Обновляются каждый час ·
       <a href="#" onclick="event.stopPropagation();document.getElementById('file-input').click();return false"
@@ -285,7 +286,7 @@ var STAGE_RANK = {
 // Нижняя планка по причине закрытия: что человек ОБЯЗАН был пройти, чтобы такая
 // причина возникла. Менеджеры перескакивают этапы — бросают сделку в «закрытые»
 // прямо из начала воронки, хотя разговор был. «Не подходит формат» без обсуждения
-// не выяснишь, значит квалификация была, её просто не отметили.
+// не выяснишь, значит квалификация была, ее просто не отметили.
 // Итоговый этап = максимум из фактической истории («Максимальный этап») и планки.
 var CLOSE_REASON_RANK = {
   'спам':1,'соискатель':1,'партнерка':1,'контент-интерес':1,
@@ -335,7 +336,7 @@ function rnk(row){
   // диалог и квалификацию, и только потом выясниться, что человек не ЦА —
   // работа-то была сделана. Гадать по причине нельзя: замер 17.07 показал, что
   // сделки с одной причиной («Нет связи») доходили до пяти разных этапов.
-  // Планка по причине уже учтена в самой колонке (build_export.py), но берём
+  // Планка по причине уже учтена в самой колонке (build_export.py), но берем
   // максимум и здесь — на случай, если файл собран старой версией скрипта.
   if(COL.maxStage>=0){
     var mx=v(row,COL.maxStage).toLowerCase().trim();
@@ -375,7 +376,7 @@ function median(arr){
   return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2);
 }
 // Порог достоверности: на одной-двух сделках «средний срок» — это не средний
-// срок, а срок одной сделки. Лучше прочерк, чем уверенное враньё.
+// срок, а срок одной сделки. Лучше прочерк, чем уверенное вранье.
 var MIN_CYCLE=3;
 function cycleOf(deals){
   var d=deals.map(dealDays).filter(function(x){return x!==null;});
@@ -424,9 +425,9 @@ function computeMetrics(deals, вПериод) {
     });
   }
   // Разбивка осмысленна только для ОДНОГО месяца. На широком периоде год
-  // считается «одним периодом», всё сваливается в «этого периода», а ноль в
+  // считается «одним периодом», все сваливается в «этого периода», а ноль в
   // «прошлых» читается как пропавшие данные. Честнее прочерк.
-  // ── текущего = заявки периода, ДОШЕДШИЕ до этапа (dialog/opQual, по дате заявки — считает и тех, кто дошёл позже);
+  // ── текущего = заявки периода, ДОШЕДШИЕ до этапа (dialog/opQual, по дате заявки — считает и тех, кто дошел позже);
   //    реактивация = заявки ПРОШЛОГО месяца, вышедшие на этап в этом периоде (по дате выхода на этап).
   function ymN(dt){return dt.getFullYear()*12+dt.getMonth();}
   var dlgOld=0,opqOld=0,opqTgtOld=0;
@@ -1069,16 +1070,16 @@ function обновитьСервер(){
     .then(function(r){
       if(r.status===403){
         try{localStorage.removeItem('d24_funnel_key');}catch(e){}
-        throw new Error('Ключ не подошёл. Нажмите ещё раз и введите заново.');
+        throw new Error('Ключ не подошел. Нажмите еще раз и введите заново.');
       }
-      if(r.status===503)throw new Error('Выгрузка на сервере ещё не собрана, попробуйте через минуту.');
+      if(r.status===503)throw new Error('Выгрузка на сервере еще не собрана, попробуйте через минуту.');
       if(!r.ok)throw new Error('Сервер ответил '+r.status);
       var ts=r.headers.get('X-Built-At');
       return r.text().then(function(t){return{текст:t,ts:ts?+ts:0};});
     })
     .then(function(о){
       var rows=parseCSV(о.текст);
-      if(rows.length<2)throw new Error('Пришёл пустой файл');
+      if(rows.length<2)throw new Error('Пришел пустой файл');
       loadData(rows);
       показатьСвежесть(о.ts);
     })
