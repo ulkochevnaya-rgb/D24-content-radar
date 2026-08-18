@@ -5611,18 +5611,28 @@
     if (currentUser) {
       fbAuth.signOut();
     } else {
-      fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(){});
+      fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e){
+        var code = (e && e.code) ? e.code : String(e);
+        var hint = code === 'auth/unauthorized-domain'
+          ? 'этот домен не добавлен в Firebase: Authentication → Settings → Authorized domains'
+          : code === 'auth/popup-blocked'
+          ? 'браузер заблокировал окно входа — разрешите всплывающие окна для этого сайта'
+          : code === 'auth/popup-closed-by-user'
+          ? 'окно входа закрылось до завершения'
+          : '';
+        showAuthToast('Вход не прошел: ' + code + (hint ? ' — ' + hint : ''), 15000);
+      });
     }
   }
 
   var _authToastTimer = null;
-  function showAuthToast(msg) {
+  function showAuthToast(msg, ms) {
     var el = document.getElementById('auth-toast');
     if (!el) return;
     el.textContent = msg || '🔐 Войдите для редактирования';
     el.classList.add('show');
     clearTimeout(_authToastTimer);
-    _authToastTimer = setTimeout(function() { el.classList.remove('show'); }, 2500);
+    _authToastTimer = setTimeout(function() { el.classList.remove('show'); }, ms || 2500);
   }
 
   var _taskStateCache = null;
