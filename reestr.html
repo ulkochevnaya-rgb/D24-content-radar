@@ -35,12 +35,13 @@
   .note{background:var(--warn-wash);border:1px solid #f0dfae;border-radius:10px;padding:12px 15px;font-size:13.5px;color:#6b5518;margin:12px 0}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
   a{color:var(--accent-2)}
+  .mono{font-family:var(--mono);font-size:12.5px}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>Реестр форм, разборов и&nbsp;чек-листов</h1>
-<div class="sub">Единый список точек входа и&nbsp;рабочих материалов маркетинга Delegator24 · зеркало меню /links у&nbsp;Аргуса · обновлен 17.08.2026 · вопросы: Юлия Кочевная</div>
+<div class="sub">Единый список точек входа и&nbsp;рабочих материалов маркетинга Delegator24 · зеркало меню /links у&nbsp;Аргуса · обновлен 21.08.2026 · вопросы: Юлия Кочевная</div>
 
 <h2>1. Формы и&nbsp;лид-магниты</h2>
 <p>Клиентские точки входа: лендинги с&nbsp;формой заявки и&nbsp;выдачей материала.</p>
@@ -148,6 +149,43 @@
 </tr>
 </table>
 </div>
+
+<h2>4. Мероприятия (событийная воронка)</h2>
+<p>Отдельные страницы под офлайн-выступления: человек уже пойман QR-кодом в&nbsp;боте, поэтому квиз и&nbsp;заявка вырезаны — материал выдается сразу. Отдельный сервис (порт 8012), боевые лид-магниты не&nbsp;затрагивает. Вход один на&nbsp;все выступление: метка <b>events</b>.</p>
+<div class="tablebox">
+<table>
+<tr><th>Название</th><th>Что это</th><th>Ссылка</th><th>След в&nbsp;системе</th><th>Статус</th></tr>
+<tr>
+  <td><b>Карта задач — мероприятия</b></td>
+  <td>Копия боевой карты без&nbsp;квиза: анкета → ИИ-разбор → карта в&nbsp;бота</td>
+  <td><a href="https://chat.delegator24.ru/zadachi" target="_blank">chat.delegator24.ru/zadachi</a></td>
+  <td>Флаг <span class="mono">ev_karta</span> в&nbsp;Salebot, карта в&nbsp;бота, Лина со&nbsp;следующего дня</td>
+  <td><span class="tag tag-ok">боевая</span></td>
+</tr>
+<tr>
+  <td><b>Тест «Почему сам» — мероприятия</b></td>
+  <td>10 утверждений → барьер и&nbsp;разбор сразу на&nbsp;странице, дубль в&nbsp;бота, тетрадь по&nbsp;ссылке</td>
+  <td><a href="https://chat.delegator24.ru/zadachi/test" target="_blank">chat.delegator24.ru/zadachi/test</a></td>
+  <td>Флаги <span class="mono">ev_test</span> + <span class="mono">ev_barrier</span>, барьер в&nbsp;поле сделки amoCRM</td>
+  <td><span class="tag tag-ok">боевая</span></td>
+</tr>
+<tr>
+  <td><b>Каталог 500+ задач — мероприятия</b></td>
+  <td>Боевой каталог без&nbsp;квиза: список копируется одним кликом, уходит нам и&nbsp;открывает бота</td>
+  <td><a href="https://chat.delegator24.ru/zadachi/catalog" target="_blank">chat.delegator24.ru/zadachi/catalog</a></td>
+  <td>Список задач пишется в&nbsp;сделку amoCRM</td>
+  <td><span class="tag tag-ok">боевая</span></td>
+</tr>
+<tr>
+  <td><b>Вход по&nbsp;QR (Telegram / MAX)</b></td>
+  <td>Один код на&nbsp;все выступление, дальше воронка бота: старт → тест / карта → напоминание 3&nbsp;ч → каталог 6&nbsp;ч → прогрев</td>
+  <td><a href="https://t.me/Delegator24_bot?start=events" target="_blank">t.me/Delegator24_bot?start=events</a><br><a href="https://max.ru/id2634102694_bot?start=events" target="_blank">max.ru/id2634102694_bot?start=events</a></td>
+  <td>Сделка в&nbsp;amoCRM сразу по&nbsp;входу, метка events</td>
+  <td><span class="tag tag-ok">боевая</span></td>
+</tr>
+</table>
+</div>
+<div class="note">Страницы закрыты от&nbsp;индексации (noindex) и&nbsp;живут отдельно от&nbsp;боевых лид-магнитов: правки под мероприятие не&nbsp;трогают <span class="mono">/karta</span>, <span class="mono">pochemu-sam</span> и&nbsp;<span class="mono">400-zadach</span>. Презентация выступления — <span class="mono">preza-delegirovanie/index.html</span> в&nbsp;рабочей папке.</div>
 
 <h2>Как обновлять</h2>
 <div class="card">
