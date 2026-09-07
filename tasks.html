@@ -517,6 +517,12 @@
       line-height: 1.4;
       margin-bottom: 4px;
     }
+    .subtask-desc {
+      font-size: 12px;
+      color: #5b6178;
+      line-height: 1.45;
+      margin: -1px 0 5px;
+    }
 
     .subtask-meta {
       display: flex;
@@ -1250,7 +1256,7 @@
       </div>
       <div class="month-sprints">
         <div class="sprint-item" data-sprint="sprint-17-aug" onclick="showSprint('sprint-17-aug')">
-          <div class="sprint-item-dates">17–31 августа</div>
+          <div class="sprint-item-dates">17–31 августа <span class="sprint-archive-badge">закрыт</span></div>
           <div class="sprint-item-progress" id="sidebar-progress-sprint-17-aug">загрузка...</div>
         </div>
         <div class="sprint-item" data-sprint="sprint-03-aug" onclick="showSprint('sprint-03-aug')">
@@ -1389,9 +1395,25 @@
         <div class="task-group" data-color="blue">
           <div class="task-group-header">
             <div class="task-group-title">Разовые задачи</div>
-            <span class="task-group-count">0/0</span>
+            <span class="task-group-count">0/2</span>
           </div>
           <ul class="subtask-list">
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Переанализ аудитории: выгрузка базы</div>
+                <div class="subtask-desc">Действующие и ушедшие клиенты с чеком, LTV и причиной ухода: amoCRM плюс таблица Кати. На входе: паузников 21%, причины «дорого» и «ушли к живому ассистенту».</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">до 18.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Переанализ аудитории: сегменты и три гипотезы</div>
+                <div class="subtask-desc">Проверить, есть ли в базе сегменты под новый продукт, найти гипотезы 2 и 3 (продукт, канал, оффер) с оценкой емкости. Решение по 1–2 гипотезам 15.10.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">до 30.09</span></div>
+              </div>
+            </li>
           </ul>
         </div>
 
@@ -1408,66 +1430,114 @@
         <div class="task-group" data-color="orange">
           <div class="task-group-header">
             <div class="task-group-title">Разовые задачи</div>
-            <span class="task-group-count">0/8</span>
+            <span class="task-group-count">1/13</span>
           </div>
           <ul class="subtask-list">
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">Контроль переиндексации после переезда (к ~15.09): Яндекс.Вебмастер — «Страницы в поиске» перешли на чистые URL, предупреждение о дублях title/description погасло (это слепок Тильды, в новой сборке дублей 0); GSC — покрытие индекса и первые данные «Эффективности» (запросы, позиции); Bing — URLs discovered по sitemap и вкладка AI Performance. Все три кабинета на корп-аккаунтах, sitemap отправлен везде, IndexNow отправил все 103 адреса 01.09</div>
+                <div class="subtask-title">Контроль переиндексации после переезда</div>
+                <div class="subtask-desc">Вебмастер: страницы в поиске на чистых адресах, дубли погасли. GSC: покрытие и первые данные эффективности. Bing: sitemap и вкладка AI Performance.</div>
                 <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">с ~15.09</span></div>
               </div>
             </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">GEO: повторный замер видимости по матрице промптов из аудита (9 формулировок × 5 платформ) после переиндексации — сравнить BMR 17%, SOV 7%, CMR 3%</div>
+                <div class="subtask-title">GEO: повторный замер видимости в ответах ИИ</div>
+                <div class="subtask-desc">Матрица аудита: 9 формулировок, 5 платформ. База: узнаваемость 17%, доля голоса 7%, цитируемость 3%.</div>
                 <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">после переиндексации</span></div>
               </div>
             </li>
-                      <li class="subtask">
-              <div class="sub-checkbox"></div>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
               <div class="subtask-body">
-                <div class="subtask-title">Преза Романа для выступления в ИКИГАЙ 03.09 (4 слайда, pptx): Рокфеллер, тест «Почему сам» с QR, нетворкинг-тренировки, бот-слайд на метку ikigai. Сделано 02.09, сокращенная воронка ikigai в Salebot собрана</div>
+                <div class="subtask-title">Преза Романа для ИКИГАЙ 03.09</div>
+                <div class="subtask-desc">4 слайда pptx: Рокфеллер, тест «Почему сам» с QR, бот-слайд на метку ikigai. Сокращенная воронка ikigai в Salebot собрана.</div>
                 <div class="subtask-meta"><span class="pill" style="background:#eef7e0;color:#5c8f1d">сделано 02.09</span></div>
               </div>
             </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">Индексация после переезда, отчет GSC 06.09: 404 — 81, с переадресацией — 54 (норма: старые адреса Тильды 301), canonical-вариант — 40 (норма), 5xx — 1, просканировано/обнаружено но не в индексе — 17+13 (новые страницы, ждать), «проиндексировано несмотря на robots» — 1 (узнать URL в GSC). По логам Caddy с 02.09 реальные 404 у Googlebot: старые слаги блога /blog/&lt;слаг&gt; без редиректа (~29), /main, /spasibo, tpost-адреса старого блога, относительные картинки /blog/logo-d24.png и /blog/favicon-d24.png (баг верстки блога — сделать абсолютные пути), /ads.txt (Google Ads, положить пустой). СДЕЛАНО 06.09 ночью по выгрузкам: старые адреса и tpost → 301, ~55 недостающих статей старого блога → 301 на /blog, картинки блога из корня (логотип на статьях был битый), ads.txt, IndexNow. ОСТАЛОСЬ Юле: в GSC «Проверить исправление» по 404 и «Запросить индексирование» для /pochemu-sam/, /500-zadach/, /materialy_dlya_delegirovaniya/, /karta. Решение Юли 07.09: старые статьи НЕ возвращаем (ведут на /blog). 07.09 по Вебмастеру: дубли .html → 301, /tarify /team /tpost → 301, Clean-param для Яндекса, noindex снят с /karta. ОСТАЛОСЬ Юле в Вебмастере: обе рекомендации «на проверку», «Переобход» 4 адресов. Потом ждать 2 недели и сверить цифры</div>
-                <div class="subtask-meta"><span class="pill" style="background:#eef7e0;color:#5c8f1d">починено, осталось GSC руками + решение по статьям</span></div>
+                <div class="subtask-title">Индексация: хвосты руками в GSC и Вебмастере</div>
+                <div class="subtask-desc">Сделано 06–07.09: старые адреса и 55 статей на 301, картинки блога, ads.txt, Clean-param, noindex снят с карты. Осталось Юле: в GSC «Проверить исправление» и «Запросить индексирование» для 4 адресов, в Вебмастере две рекомендации на проверку и переобход.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">осталось руками</span></div>
               </div>
             </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">Позиции в поиске по ключевым запросам (Юля 07.09: «сильно проседаем»). Факт по Метрике: органика 84–112 визитов/нед, за 28 дней 365 против 340 месяцем раньше и 543 год назад (−33% г/г); почти вся органика — брендовые запросы «делегатор 24» и случайные статьи блога, коммерческих запросов нет вовсе. 07.09: список ключевых УТВЕРЖДЕН (site-2026/seo-queries.md, 4 группы). По GSC: коммерческие запросы на 5–10 местах с нулевым CTR, «книги по делегированию» упали с 1 на 10–13. План: 1) title/description главной под «бизнес-ассистент» — СДЕЛАНО 07.09 (вариант А, на бою); 2) три посадочные: нанять бизнес-ассистента / удаленный помощник / аутсорсинг секретаря и операционки; 3) обновить статью «5 книг по делегированию»; 4) через месяц сверка. Из Вебмастера еще нужна таблица «Популярные запросы»</div>
-                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">шаг 1 сделан 07.09; дальше посадочные</span></div>
+                <div class="subtask-title">Позиции в поиске: список запросов и title главной</div>
+                <div class="subtask-desc">Список ключевых утвержден 07.09 (seo-queries.md, 4 группы). Новый title и description главной внесены, главная отправлена в IndexNow. Коммерческие запросы стоят на 5–10 местах почти без кликов.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#eef7e0;color:#5c8f1d">шаг 1 сделан 07.09</span></div>
               </div>
             </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">SEO, шаг 2: три посадочные под коммерческие запросы, где уже есть показы без кликов — «нанять бизнес-ассистента» (личный/персональный/услуги/сервис), «удаленный ассистент» (нанять/найм/сервис удаленных ассистентов, подбор ассистента руководителя), «аутсорсинг секретаря и операционных задач». В языке нового сайта, с формой заявки по чек-листу лендинга, ссылки с главной и из блога. Запросы и позиции — site-2026/seo-queries.md</div>
-                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">план, после презентации</span></div>
-              </div>
-            </li>
-            <li class="subtask">
-              <div class="sub-checkbox"></div>
-              <div class="subtask-body">
-                <div class="subtask-title">SEO, шаг 3: вернуть статью «5 книг по делегированию» на первое место по «книги по делегированию» (было 1,2, стало 10–13, клики 55 вместо 105): обновить текст и дату, добавить книги 2025–2026, внутренние ссылки на нее с главной и статей</div>
+                <div class="subtask-title">SEO, шаг 2: три посадочные под коммерческие запросы</div>
+                <div class="subtask-desc">«Нанять бизнес-ассистента», «удаленный ассистент», «аутсорсинг секретаря и операционных задач». В языке нового сайта, форма по чек-листу лендинга, ссылки с главной.</div>
                 <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">план</span></div>
               </div>
             </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">SEO, шаг 4: контрольная сверка через месяц (к ~07.10): выгрузки GSC «Эффективность» и Вебмастер «Популярные запросы» → сравнить с seo-queries.md по CTR и позициям; отдельно бренд, отдельно коммерческие. Плюс проверить, что 404 в GSC ушли и «обнаружены, не проиндексированы» вошли в индекс</div>
+                <div class="subtask-title">SEO, шаг 3: статья про 5 книг обратно на первое место</div>
+                <div class="subtask-desc">Было 1,2, стало 10–13, клики 55 вместо 105. Обновить текст и дату, добавить книги 2025–2026, поставить внутренние ссылки.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">план</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">SEO, шаг 4: контрольная сверка позиций</div>
+                <div class="subtask-desc">Выгрузки GSC «Эффективность» и Вебмастер «Популярные запросы» против seo-queries.md: CTR и позиции, бренд отдельно. Проверить, что 404 ушли из индекса.</div>
                 <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">к 07.10</span></div>
               </div>
             </li>
-</ul>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Конверсия новой главной: замер каждую неделю</div>
+                <div class="subtask-desc">Метрика: отправки формы с главной к визитам на главную. База 0,4%, неделя 01–06.09 тоже 0,4% (2 из 465). Проверить автоцель «Отправка всех форм»: 19 против 2, гипотеза про шаги квиза.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">еженедельно</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Аудит Кладова: закрыть замечания</div>
+                <div class="subtask-desc">Обновленный аудит нового сайта: вес главной страницы и поведение прокрутки. Формат: консультация, без подряда.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">до 20.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Закрыть Тильду и хвосты переезда</div>
+                <div class="subtask-desc">Отключить Тильду, вернуть TTL зоны на 1 день, CSP-заголовок (риск для Метрики и UIS), переобход sitemap.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">до 15.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Лина: замер результата к 30.09</div>
+                <div class="subtask-desc">Конверсия «дошел до бота, вышел на диалог»: было 34% в июле, стало по августу и сентябрю. Открыто: окно ответов до 21–22 МСК, возврат в затихшие диалоги (решение РОПа).</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">к 30.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Воронка бота: развести серию с Линой</div>
+                <div class="subtask-desc">Автоворонка пишет поверх касаний Лины, два голоса в одном чате. Сентябрь: схема, какие шаги отдать Лине и как развести остальные по расписанию. Октябрь: внедрение и замер.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">схема в сентябре</span></div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
 
@@ -1482,35 +1552,119 @@
         <div class="task-group" data-color="purple">
           <div class="task-group-header">
             <div class="task-group-title">Разовые задачи</div>
-            <span class="task-group-count">0/4</span>
+            <span class="task-group-count">0/14</span>
           </div>
           <ul class="subtask-list">
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">Новый продукт «ИИ-ассистент + команда» (созвоны 02.09 и 04.09): лендинг с CTA на карту задач /karta, два формата («сам» с консультантом и часами команды за 9 900 / «под ключ» индивидуально), PDF-версия для менеджеров, третье сообщение скрипта КАМов, кейс Богдана как алгоритм внедрения. 06.09: сервис и лендинг ЗАПУЩЕНЫ на chat.delegator24.ru/ai-start/?m=roman|mop|kam, два сквозных теста прошли. Ждет приемки Юли (тексты, состав пакета) и старта рассылки</div>
-                <div class="subtask-meta"><span class="pill" style="background:#eef7e0;color:#5c8f1d">запущено, приемка</span></div>
+                <div class="subtask-title">Новый продукт: решить формат с Романом</div>
+                <div class="subtask-desc">Вариант А: ИИ разворачивается у ассистентов по каждому клиенту как часть подписки. Вариант Б: внедрение ИИ клиенту как доп продукт. Лендинг ai-start уже готов под вариант Б.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">до 15.09</span></div>
               </div>
             </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">ai-start: инструкция по настройке ИИ-ассистента для формата «Сам по инструкции» (по шагам, со скриншотами, готовые файлы памяти и навыков под задачи клиента). Лендинг ее уже обещает — собрать ДО первой оплаты. База: страница «Быстрый старт» курса SB + архив скиллов</div>
+                <div class="subtask-title">ai-start: инструкция для формата «Сам по инструкции»</div>
+                <div class="subtask-desc">По шагам, со скриншотами, готовые файлы памяти и навыков под задачи клиента. База: «Быстрый старт» курса плюс архив скиллов.</div>
                 <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">до первой продажи</span></div>
               </div>
             </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">ai-start: скрипт для МОПов/КАМов/Романа — цепочка сообщений (самооценка 1-2-3 → оффер со ссылкой по коду → напоминание через 2 дня), ответы на возражения («уже пользуюсь ChatGPT», «не разберусь», «мало задач», «данные»), памятка по чтению примечания с картой. Черновик трех сообщений отправлен Юле 06.09</div>
-                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">после презентации команде 07.09</span></div>
+                <div class="subtask-title">ai-start: короткий текст для менеджеров</div>
+                <div class="subtask-desc">Два первых варианта не приняты. Нужен один готовый текст со ссылкой по коду отправителя, без правил и инструкций. Формат уточнить после презентации команде.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">уточнить формат</span></div>
               </div>
             </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
-                <div class="subtask-title">Оцифровать обучение по ИИ для команды (внутреннее): что уже есть (страница «Быстрый старт», скиллы, инструкция по VS Code для кураторов от Эльвины, кейс Богдана) → собрать в один маршрут по шагам с проверкой усвоения; кураторы/КАМы/МОПы должны уметь повторять внедрение без Юли</div>
+                <div class="subtask-title">Обучение по ИИ для команды: собрать маршрут</div>
+                <div class="subtask-desc">Что есть: «Быстрый старт», скиллы, инструкция VS Code для кураторов от Эльвины, кейс Богдана. Собрать в один маршрут по шагам с проверкой усвоения.</div>
                 <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">новая, 06.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Богдан: сервер и бот</div>
+                <div class="subtask-desc">Ждем его регистрацию хостинга: наш провайдер, Амстердам, его аккаунт и оплата, 10 минут. Затем Claude под его логином, синк папки, Telegram-бот.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">ждем клиента</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Богдан: ноутбук из России</div>
+                <div class="subtask-desc">Ответ про второе устройство отправляет Юля: VPN не нужен, только VS Code с Remote-SSH к серверу, на claude.ai из РФ не ходить. После сервера подключить ноутбук.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">после сервера</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Богдан: интервью и калибровка</div>
+                <div class="subtask-desc">Стартовое интервью он проходит в системе голосом. По итогам: калибровка, персона оркестратора, второй список скиллов (docx, LinkedIn, ToV, ресерчи), вычерк из первого списка.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">ждем интервью</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Богдан: RustDesk вместо AnyDesk</div>
+                <div class="subtask-desc">Поставить через текущий AnyDesk на следующем подключении, уйти от гео-блока и VPN. Вписать в этап C плана.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">следующее подключение</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Богдан: журнал, вкладка «План действий»</div>
+                <div class="subtask-desc">Этап E прошел раньше C и в другом порядке. Обновить ленту этапов и чек-лист, добавить вкладку «Установка» за 07.09.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">при следующем заходе</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Богдан: нетворк-модуль Dex</div>
+                <div class="subtask-desc">От клиента API-ключ и план Professional, MCP-мост dex-mcp, скилл «поводы для бесед» с дайджестом в бота.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">после сервера</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Богдан: сдача системы</div>
+                <div class="subtask-desc">Демо готовой системы и приемка клиентом. Проверить план подписки: если Pro, проговорить Max, бот делит лимиты. Экспорт claude.ai отложен, некритично.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">к 30.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Алгоритм внедрения из кейса Богдана</div>
+                <div class="subtask-desc">Поручение Романа 02.09. Кейс: запрос, что сделано у нас и у клиента, результат, шаги. Общее и уникальное, скилл внедрителя, анкета до старта (сервер, аккаунт, интерфейс, хостинг, сервисы). Себестоимость: 33 часа по логам.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">к 30.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Внешний клиент: CRM, каналы, воронка, оценщик</div>
+                <div class="subtask-desc">Ждем оплату. Старт за 3 рабочих дня: доступ к amoCRM, воронка и поля, каналы, правила оценки диалогов. Сумму, срок и состав вписать в ОКР (F10).</div>
+                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">ждем оплату</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Внутреннее: кураторские скиллы Романа</div>
+                <div class="subtask-desc">curator-control-tower и assistant-return-loop: внедрить в контур обслуживания, обсудить с Романом.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#eef0f4;color:#4a5068">обсудить</span></div>
               </div>
             </li>
           </ul>
@@ -1528,9 +1682,25 @@
         <div class="task-group" data-color="purple">
           <div class="task-group-header">
             <div class="task-group-title">Разовые задачи</div>
-            <span class="task-group-count">0/0</span>
+            <span class="task-group-count">0/2</span>
           </div>
           <ul class="subtask-list">
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Вернуть регулярность публикаций с 14.09</div>
+                <div class="subtask-desc">За 01–07.09 публикаций 0. Планка сентября: 6 статей (три посадочные из SEO-задач плюс книги) и 12 публикаций в соцсетях по контент-системе.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">с 14.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Линия контента под новый продукт</div>
+                <div class="subtask-desc">Что отдать ИИ, что команде: из карт задач и первых внедрений. Формат после решения с Романом.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">после 15.09</span></div>
+              </div>
+            </li>
           </ul>
         </div>
 
@@ -1773,7 +1943,7 @@
       </div>
 
     <!-- ====== СПРИНТ: 17–31 АВГУСТА ====== -->
-<div class="sprint-panel" id="sprint-17-aug" data-week-start="2026-08-17">
+<div class="sprint-panel" id="sprint-17-aug" data-week-start="2026-08-17" data-archived="true">
 
       <header>
         <div class="badge">Delegator24 · Маркетинг</div>
