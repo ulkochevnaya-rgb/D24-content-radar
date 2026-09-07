@@ -1065,8 +1065,50 @@ function обновитьСервер(){
   if(!k)return;
   var b=document.getElementById('btn-sync');
   var было=b.textContent;
-  b.textContent='загружаю…'; b.disabled=true;
-  fetch(СЕРВЕР+'?k='+encodeURIComponent(k),{cache:'no-store'})
+  b.disabled=true;
+  var БАЗА=СЕРВЕР.replace(/\/funnel\.csv$/,'');
+  // Реальное время по запросу (07.09.2026): сначала просим сервер пересобрать
+  // выгрузку из amoCRM (30-60 сек), ждем готовности, потом забираем результат.
+  // Если данные моложе 90 сек — сервер отвечает fresh, грузим сразу без сборки.
+  b.textContent='проверяю…';
+  fetch(БАЗА+'/funnel/rebuild?k='+encodeURIComponent(k),{cache:'no-store'})
+    .then(function(r){
+      if(r.status===403){
+        try{localStorage.removeItem('d24_funnel_key');}catch(e){}
+        throw new Error('Ключ не подошел. Нажмите еще раз и введите заново.');
+      }
+      if(!r.ok)throw new Error('Сервер ответил '+r.status);
+      return r.json();
+    })
+    .then(function(о){
+      if(о.status==='fresh')return null;           // уже свежее — сразу к загрузке
+      var старый=о.built_at||0, попытка=0;
+      b.textContent='собираю данные…';
+      return new Promise(function(готово,провал){
+        (function опрос(){
+          попытка++;
+          if(попытка>25){провал(new Error('Сборка затянулась — грузим то, что есть.'));return;}
+          setTimeout(function(){
+            fetch(БАЗА+'/funnel/status?k='+encodeURIComponent(k),{cache:'no-store'})
+              .then(function(r){return r.json();})
+              .then(function(st){
+                if((st.built_at||0)>старый)готово(null);
+                else{b.textContent='собираю данные… '+(попытка*4)+'с';опрос();}
+              })
+              .catch(провал);
+          },4000);
+        })();
+      });
+    })
+    .catch(function(e){
+      // пересборка не вышла — не смертельно: скажем в консоль и загрузим что есть
+      if(e.message.indexOf('Ключ')===0){alert(e.message);b.textContent=было;b.disabled=false;return Promise.reject('stop');}
+      console.warn('rebuild:',e.message);
+    })
+    .then(function(){
+      b.textContent='загружаю…';
+      return fetch(СЕРВЕР+'?k='+encodeURIComponent(k),{cache:'no-store'});
+    })
     .then(function(r){
       if(r.status===403){
         try{localStorage.removeItem('d24_funnel_key');}catch(e){}
@@ -1084,12 +1126,12 @@ function обновитьСервер(){
       показатьСвежесть(о.ts);
     })
     .catch(function(e){
-      // Отдельно ловим обрыв связи: fetch не различает «нет сети» и «блокировка».
+      if(e==='stop')return;
       alert(e.message==='Failed to fetch'
         ? 'Не достучался до сервера. Проверьте интернет — или загрузите файл кнопкой «файл».'
         : e.message);
     })
-    .finally(function(){b.textContent=было;b.disabled=false;});
+    .finally(function(){if(b.disabled){b.textContent=было;b.disabled=false;}});
 }
 
 // ── LOAD ──────────────────────────────────────────
