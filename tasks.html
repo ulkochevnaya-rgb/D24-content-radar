@@ -1438,9 +1438,33 @@
         <div class="task-group" data-color="orange">
           <div class="task-group-header">
             <div class="task-group-title">Разовые задачи</div>
-            <span class="task-group-count">1/14</span>
+            <span class="task-group-count">1/17</span>
           </div>
           <ul class="subtask-list">
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Проверить ym_uid у первой заявки после 14.09</div>
+                <div class="subtask-desc">С 14.09 14:32 все формы (сайт, лендинги, квизы) шлют ClientID Метрики и плоские utm/yclid. Открыть первую новую заявку в amoCRM: поле ym_uid заполнено, utm на месте. Пусто = у человека заблокирована Метрика (как у Романа 45284335), это норма, не баг.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">с 15.09</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Sitemap: lastmod=сегодня всем URL при каждой сборке</div>
+                <div class="subtask-desc">_build-seo.py ставит текущую дату всем 103 адресам при любом прогоне. При пересборке без реальных правок sitemap на бой не заливать. Починить: дата из времени изменения исходника страницы.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">хвост</span></div>
+              </div>
+            </li>
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Удалить старую копию pochemu-sam.html в зеркале доски</div>
+                <div class="subtask-desc">/srv/d24-board/pochemu-sam.html от 13.08 (и в репо D24-content-radar) — устаревший дубль лендинга с живой формой на скрытом пути. Удалить, чтобы не плодить заявки со старой формой.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">хвост</span></div>
+              </div>
+            </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
