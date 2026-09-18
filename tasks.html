@@ -1395,9 +1395,17 @@
         <div class="task-group" data-color="blue">
           <div class="task-group-header">
             <div class="task-group-title">Разовые задачи</div>
-            <span class="task-group-count">0/5</span>
+            <span class="task-group-count">0/6</span>
           </div>
           <ul class="subtask-list">
+            <li class="subtask">
+              <div class="sub-checkbox"></div>
+              <div class="subtask-body">
+                <div class="subtask-title">Платформа вместо Планфикса: зеркало и модель данных</div>
+                <div class="subtask-desc">Выгрузить Планфикс в Postgres, посчитать карту беспорядка, утвердить модель из 7 сущностей. Ждет отмашки: зеркало, два куратора-пилота, апгрейд сервера, владелец чистки. Бриф: plans/2026-09-18-client-platform-brief.md</div>
+                <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">недели 1–2</span></div>
+              </div>
+            </li>
             <li class="subtask">
               <div class="sub-checkbox"></div>
               <div class="subtask-body">
@@ -1414,12 +1422,12 @@
                 <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">до 30.09</span></div>
               </div>
             </li>
-            <li class="subtask">
-              <div class="sub-checkbox"></div>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
               <div class="subtask-body">
                 <div class="subtask-title">Мост: полный список меток входа в бота</div>
-                <div class="subtask-desc">Юля присылает все метки ?start= из Salebot, вписать в SOURCE_MARK в triggers.py на сервере. Пока списка нет, короткая латиница не из списка идет в карточку громко и отмечается в журнале моста строкой «? короткая латиница не в списке меток».</div>
-                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">ждем список от Юли</span></div>
+                <div class="subtask-desc">Список от Юли 18.09 (38 меток) вписан в SOURCE_MARK_EXACT в triggers.py, кнопки «Начать»/«старт» добавлены в КНОПКИ_ВОРОНКИ оценщика. Проверено: все метки отсекаются, живые «Ok», «123», «18-00» остались репликами. Бэкапы *.bak-marks-20260918.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#eef7e0;color:#5c8f1d">сделано 18.09</span></div>
               </div>
             </li>
             <li class="subtask">
