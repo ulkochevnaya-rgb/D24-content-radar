@@ -1481,12 +1481,12 @@
                 <div class="subtask-meta"><span class="pill" style="background:#f0f4ff;color:#4361ee">с 15.09</span></div>
               </div>
             </li>
-            <li class="subtask">
-              <div class="sub-checkbox"></div>
+            <li class="subtask done">
+              <div class="sub-checkbox checked"></div>
               <div class="subtask-body">
-                <div class="subtask-title">Sitemap: lastmod=сегодня всем URL при каждой сборке</div>
-                <div class="subtask-desc">_build-seo.py ставит текущую дату всем 103 адресам при любом прогоне. При пересборке без реальных правок sitemap на бой не заливать. Починить: дата из времени изменения исходника страницы.</div>
-                <div class="subtask-meta"><span class="pill" style="background:#fff3e0;color:#b45309">хвост</span></div>
+                <div class="subtask-title">Sitemap: lastmod из даты правки исходника</div>
+                <div class="subtask-desc">_build-seo.py: lastmod = git-дата последней правки исходника страницы (главная, pages, юрдоки, статьи по json не раньше даты публикации, лендинги по Last-Modified с боя), fallback прошлый sitemap. Повторная сборка sitemap не меняет. На бою заменен 21.09 (бэкап .bak-lastmod-20260921): 96 адресов 25.08, job 16.09, legaldoc 15.09, главная и лендинги 18.09.</div>
+                <div class="subtask-meta"><span class="pill" style="background:#eef7e0;color:#5c8f1d">сделано 21.09</span></div>
               </div>
             </li>
             <li class="subtask">
